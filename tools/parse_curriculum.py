@@ -98,7 +98,7 @@ ids = [p['id'] for p in problems]
 dupes = {i: ids.count(i) for i in set(ids) if ids.count(i) > 1}
 print('duplicate ids:', dupes or 'none')
 
-json.dump(problems, open('problems.json', 'w'), indent=1, ensure_ascii=False)
+json.dump(problems, open('src/lcsr/data/problems.json', 'w'), indent=1, ensure_ascii=False)
 
 # ---- Cue -> pattern table (the curriculum's stated "object of study").
 # Two columns split by 2+ spaces; the left cell wraps onto a continuation line
@@ -115,4 +115,4 @@ for ln in lines[start + 1:]:
     elif cues:
         cues[-1]['says'] += ' ' + parts[0].strip()   # wrapped left cell
 print('cue rows:', len(cues))
-json.dump(cues, open('cues.json', 'w'), indent=1, ensure_ascii=False)
+json.dump(cues, open('src/lcsr/data/cues.json', 'w'), indent=1, ensure_ascii=False)
