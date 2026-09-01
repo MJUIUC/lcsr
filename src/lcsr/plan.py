@@ -5,7 +5,7 @@ means, so the rule lives here once rather than being reimplemented per surface.
 """
 
 from collections import Counter
-from datetime import date
+from datetime import date, timedelta
 
 from . import curriculum as cur
 from .schedule import SOLVED
@@ -39,37 +39,55 @@ def current_week(on: date | None = None) -> int:
     return ((on or date.today()) - start).days // 7 + 1
 
 
+def _started_on(first_seen: dict[int, str], day: date) -> Counter:
+    """New problems whose FIRST attempt fell on `day`, by tier."""
+    probs = cur.problems()
+    return Counter(probs[pid]["tier"] for pid, d in first_seen.items()
+                   if d == day.isoformat() and pid in probs)
+
+
 def todays_plan(on: date | None = None) -> dict:
-    on = on or date.today()
+    today = date.today()
+    on = on or today
     states = replay()
     rows = entries()
     wk = current_week(on)
     attempted = set(states)
+    is_future = on > today
 
-    due = [
-        {**cur.get(s.pid),
-         "due": s.due.isoformat(),
-         "days_late": (on - s.due).days,
-         "box": s.box,
-         "attempts": s.attempts}
-        for s in sorted((s for s in states.values() if s.due and s.due <= on),
-                        key=lambda s: s.due)
-    ]
-
-    # What today's intake has already used up. Only a problem's FIRST attempt
-    # counts: a re-solve is a due review, which is tracked separately and does
-    # not eat the day's quota for new material.
     first_seen: dict[int, str] = {}
     for r in rows:
         first_seen.setdefault(r["id"], r["date"])
-    started_today: Counter[str] = Counter(
-        cur.problems()[pid]["tier"]
-        for pid, d in first_seen.items()
-        if d == on.isoformat() and pid in cur.problems()
-    )
 
-    quota = allowance(wk)
-    remaining = {t: max(0, n - started_today.get(t, 0)) for t, n in quota.items()}
+    if is_future:
+        # A previewed day sits behind every day between now and then, each of
+        # which consumes its own intake. Without this offset every future day
+        # shows the same list -- day+2 repeats day+1 forever.
+        skip: Counter = Counter()
+        skip.update({t: max(0, n - _started_on(first_seen, today).get(t, 0))
+                     for t, n in allowance(current_week(today)).items()})
+        d = today + timedelta(days=1)
+        while d < on:
+            skip.update(allowance(current_week(d)))
+            d += timedelta(days=1)
+        quota = allowance(wk)
+        remaining = dict(quota)
+        started_today = Counter()
+        # Only re-solves falling due on that exact day: anything due earlier is
+        # assumed cleared on its own day, so carrying it forward would be wrong.
+        due_states = [s for s in states.values() if s.due and s.due == on]
+    else:
+        skip = Counter()
+        quota = allowance(wk)
+        started_today = _started_on(first_seen, on)
+        remaining = {t: max(0, n - started_today.get(t, 0)) for t, n in quota.items()}
+        due_states = [s for s in states.values() if s.due and s.due <= on]
+
+    due = [
+        {**cur.get(s.pid), "due": s.due.isoformat(), "days_late": (on - s.due).days,
+         "box": s.box, "attempts": s.attempts}
+        for s in sorted(due_states, key=lambda s: s.due)
+    ]
 
     def pool(tier, week=None):
         """week=None means any; week='<=' means every week up to the current one.
@@ -93,28 +111,47 @@ def todays_plan(on: date | None = None) -> dict:
         rows_.sort(key=lambda p: (p["week"] or 0, p["order"]))
         return rows_
 
+    def core_title(got):
+        """Name the section after the weeks actually drawn, not the calendar.
+
+        Core is week-scoped in the document but drawn in document order here: if
+        you outrun the week's seven problems the queue must flow into the next
+        week rather than going empty, and the label has to say so or it reads as
+        a bug. Order is still never broken -- "never skipped, never reordered"
+        constrains the sequence, not the pace.
+        """
+        weeks = sorted({p["week"] for p in got if p["week"]})
+        if not weeks:
+            return "Core"
+        if weeks == [wk]:
+            return f"Week {wk} core"
+        span = f"{weeks[0]}" if len(weeks) == 1 else f"{weeks[0]}–{weeks[-1]}"
+        ahead_of = " · running ahead of schedule" if weeks[0] > wk else ""
+        return f"Core — week {span}{ahead_of}"
+
     def build(limit_by):
         out = []
         for title, tier, week in (
             ("Foundations", "foundations", None),
-            (f"Week {wk} core", "core", wk),
+            (None, "core", None),
             ("Reps — interleaved across weeks 1–%d" % wk, "reps", "<="),
             ("Added", "custom", None),
         ):
             n = limit_by(tier)
             if n <= 0:
                 continue
-            got = [p for p in pool(tier, week) if p["id"] not in taken][:n]
+            off = skip.get(tier, 0)
+            got = [p for p in pool(tier, week) if p["id"] not in taken][off:off + n]
             taken.update(p["id"] for p in got)
             if got:
-                out.append({"title": title, "problems": got})
+                out.append({"title": title or core_title(got), "problems": got})
         return out
 
     taken: set[int] = set()
     sections = build(lambda t: remaining.get(t, 0))
     # The next batch, offered behind a toggle once the day's intake is met, so
     # working ahead is a deliberate choice rather than an endlessly refilling list.
-    ahead = build(lambda t: quota.get(t, 0))
+    ahead = [] if is_future else build(lambda t: quota.get(t, 0))
 
     done_today = sum(started_today.values())
     target_today = sum(quota.values()) - quota.get("custom", 0)
@@ -130,7 +167,7 @@ def todays_plan(on: date | None = None) -> dict:
         "target_today": target_today,
         "resolves_today": sum(1 for r in rows if r["date"] == on.isoformat()
                               and first_seen.get(r["id"]) != on.isoformat()),
-        "caught_up": not sections and not due,
+        "caught_up": (not sections and not due) and not is_future,
         "metrics": metrics(on),
     }
 

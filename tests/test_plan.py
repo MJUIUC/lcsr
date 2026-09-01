@@ -108,3 +108,69 @@ def test_reps_interleave_back_across_earlier_weeks():
     reps = [s for s in p["sections"] if s["title"].startswith("Reps")]
     assert reps, "no reps section in week 5"
     assert any(q["week"] < 5 for q in reps[0]["problems"]), "reps did not reach back"
+
+
+# --- future-day previews -------------------------------------------------
+# Bug this guards: future days ignored the intake of the days in between, so
+# every previewed day returned the same problems -- day+2 repeated day+1 forever.
+
+def _preview(n):
+    return todays_plan(TODAY + timedelta(days=n))
+
+
+def test_consecutive_future_days_are_different():
+    assert ids(_preview(1)["sections"]) != ids(_preview(2)["sections"])
+
+
+def test_future_days_never_repeat_a_problem():
+    seen = []
+    for n in range(1, 8):
+        seen += ids(_preview(n)["sections"])
+    assert len(seen) == len(set(seen)), "a problem appears on two previewed days"
+
+
+def test_future_days_continue_where_the_previous_left_off():
+    """Day+2 must start after everything day+1 would consume."""
+    first, second = ids(_preview(1)["sections"]), ids(_preview(2)["sections"])
+    assert set(first).isdisjoint(second)
+
+
+def test_tomorrow_is_stable_as_today_is_worked_through():
+    """Tomorrow sits after today's FULL intake, so ticking today's problems off
+    must not shift it -- the same total is consumed by end of day either way.
+    Only overshooting today's target pulls tomorrow forward."""
+    before = ids(_preview(1)["sections"])
+    log(1)
+    assert ids(_preview(1)["sections"]) == before
+    log(217)
+    assert ids(_preview(1)["sections"]) == before
+
+
+def test_overshooting_today_pulls_tomorrow_forward():
+    before = ids(_preview(1)["sections"])
+    for pid in (1, 217, 242, 49, 128, 125):   # 6 foundations against a quota of 3
+        log(pid)
+    assert ids(_preview(1)["sections"]) != before
+
+
+def test_future_day_shows_only_resolves_falling_due_that_day():
+    log(1, "stuck", TODAY)       # due TODAY+3
+    assert [q["id"] for q in _preview(3)["due"]] == [1]
+    assert _preview(4)["due"] == [], "an earlier due date leaked forward"
+
+
+def test_future_days_are_never_caught_up_and_offer_no_ahead():
+    p = _preview(2)
+    assert p["caught_up"] is False
+    assert p["ahead"] == []
+
+
+def test_core_flows_into_the_next_week_when_the_current_one_runs_out():
+    """Week 1 has 7 core problems; at 2/day a fast start exhausts it, and the
+    queue must continue in document order rather than going empty."""
+    for pid in (643, 1456, 1052, 167, 11, 15, 42):
+        log(pid)
+    core = [s for s in _preview(1)["sections"] if "ore" in s["title"]]
+    assert core, "core section vanished once week 1 was exhausted"
+    assert all(q["week"] > 1 for q in core[0]["problems"])
+    assert "ahead of schedule" in core[0]["title"]
