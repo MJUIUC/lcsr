@@ -16,4 +16,4 @@ lcsr = "lcsr.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-lcsr = ["data/*.json"]
+lcsr = ["data/*.json", "static/*.html"]

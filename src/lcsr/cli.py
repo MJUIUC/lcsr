@@ -2,12 +2,12 @@
 
 import argparse
 import sys
-from collections import Counter
 from datetime import date, timedelta
 
 from . import curriculum as cur
+from .plan import metrics, todays_plan
 from .schedule import SOLVED, STUCK
-from .store import MISTAKES, append, entries, make_entry, replay
+from .store import MISTAKES, append, make_entry, replay
 
 B, D, R, G, Y, X = "\033[1m", "\033[2m", "\033[31m", "\033[32m", "\033[33m", "\033[0m"
 if not sys.stdout.isatty():
@@ -16,33 +16,20 @@ if not sys.stdout.isatty():
 
 def parse_day(s: str) -> date:
     s = s.strip().lower()
-    today = date.today()
     if s in ("today", "t"):
-        return today
+        return date.today()
     if s in ("yesterday", "y"):
-        return today - timedelta(days=1)
+        return date.today() - timedelta(days=1)
     try:
         return date.fromisoformat(s)
     except ValueError:
         raise SystemExit(f"bad date {s!r}: use today, yesterday, or YYYY-MM-DD")
 
 
-def label(pid: int) -> str:
-    p = cur.get(pid)
+def label(p: dict) -> str:
     tag = f"{R}H{X}" if p["hard"] else " "
-    return f"{B}{pid:>5}{X} {p['title']:<46}{tag} {D}{p['tier']:<11} W{p['week'] or '-'}{X}"
-
-
-def day_one() -> date | None:
-    rows = entries()
-    return date.fromisoformat(rows[0]["date"]) if rows else None
-
-
-def current_week() -> int:
-    start = day_one()
-    if start is None:
-        return 1
-    return (date.today() - start).days // 7 + 1
+    return (f"{B}{p['id']:>5}{X} {p['title'][:46]:<46}{tag} "
+            f"{D}{p['tier']:<11} W{p['week'] or '-'}{X}")
 
 
 # ---------------------------------------------------------------- commands
@@ -53,109 +40,66 @@ def cmd_log(a):
     if a.mistake and outcome == SOLVED:
         raise SystemExit("--mistake only applies to a stuck attempt")
     for pid in a.ids:
-        cur.get(pid)  # validate before writing anything
+        cur.get(pid)                       # validate all before writing any
     for pid in a.ids:
         append(make_entry(pid, outcome, on, a.mistake, a.approach_min, a.note))
     states = replay()
     print(f"\nlogged {len(a.ids)} as {B}{outcome}{X} on {on}\n")
     for pid in a.ids:
         st = states[pid]
-        when = f"{Y}re-solve {st.due}{X}" if st.due else f"{G}done{X}"
-        print(f"  {label(pid)}  {when}")
+        print(f"  {label(cur.get(pid))}  "
+              f"{f'{Y}re-solve {st.due}{X}' if st.due else f'{G}done{X}'}")
     print()
 
 
 def cmd_today(a):
-    today = date.today()
-    states = replay()
-    wk = current_week()
-
-    due = sorted((s for s in states.values() if s.due and s.due <= today),
-                 key=lambda s: s.due)
-    print(f"\n{B}Week {wk}{X} {D}·{X} {today}\n")
-
-    if due:
-        print(f"{B}Due re-solves{X} {D}(these come first){X}")
-        for s in due:
-            late = (today - s.due).days
-            when = f"{R}{late}d late{X}" if late else f"{Y}today{X}"
-            print(f"  {label(s.pid)}  {when}")
+    p = todays_plan()
+    print(f"\n{B}Day {p['day']} · Week {p['week']}{X} {D}·{X} {p['date']}\n")
+    if p["due"]:
+        print(f"{B}{Y}Due re-solves{X} {D}(these come first){X}")
+        for q in p["due"]:
+            late = q["days_late"]
+            print(f"  {label(q)}  "
+                  f"{f'{R}{late}d late{X}' if late else f'{Y}today{X}'}")
         print()
-
-    attempted = set(states)
-    fresh = [p for p in cur.problems().values() if p["id"] not in attempted]
-
-    def show(title, rows, n):
-        rows = rows[:n]
-        if not rows:
-            return
-        print(f"{B}{title}{X}")
-        for p in rows:
-            print(f"  {label(p['id'])}")
+    for s in p["sections"]:
+        print(f"{B}{s['title']}{X}")
+        for q in s["problems"]:
+            print(f"  {label(q)}")
         print()
-
-    if wk <= 3:
-        show("Foundations", [p for p in fresh if p["tier"] == "foundations"], 3)
-    show(f"Week {wk} core", [p for p in fresh if p["tier"] == "core" and p["week"] == wk], 2)
-    show(f"Week {wk} reps", [p for p in fresh if p["tier"] == "reps" and p["week"] == wk], 2)
-
-    blocks = {p["block"]: p.get("cue") for p in cur.problems().values()
-              if p["week"] == wk and p.get("cue")}
-    for block, cue in blocks.items():
-        print(f"{D}cue · {block}: {cue}{X}\n")
+    if not p["due"] and not p["sections"]:
+        print(f"{D}nothing queued{X}\n")
 
 
 def cmd_stats(a):
-    rows = entries()
-    if not rows:
+    m = metrics()
+    if not m.get("attempted"):
         raise SystemExit("nothing logged yet")
-    states = replay(rows)
-    start = day_one()
-
-    attempted = len(states)
-    first_try = sum(1 for s in states.values() if s.outcomes[0] == SOLVED)
-
-    # Cold re-solve rate: of attempts that were a re-solve (not the first
-    # attempt at that problem), how many were solved. The curriculum's headline
-    # metric -- deliberately NOT "problems completed".
-    seen: Counter[int] = Counter()
-    resolves = [0, 0]
-    for r in rows:
-        if seen[r["id"]]:
-            resolves[1] += 1
-            resolves[0] += r["outcome"] == SOLVED
-        seen[r["id"]] += 1
-
-    print(f"\n{B}Day {(date.today() - start).days + 1}{X} {D}· started {start} · week {current_week()}{X}\n")
-    print(f"  attempted            {attempted} of 314")
-    print(f"  solved cold 1st try  {first_try}/{attempted}"
-          f" {D}({first_try / attempted:.0%}){X}")
-    if resolves[1]:
-        rate = resolves[0] / resolves[1]
-        col = G if rate > 0.70 else R
-        print(f"  cold re-solve rate   {col}{rate:.0%}{X} {D}of {resolves[1]} re-solves · target >70%{X}")
-    else:
+    print(f"\n{B}Day {m['day']} · week {m['week']}{X}\n")
+    print(f"  attempted            {m['attempted']} of {m['total']}")
+    print(f"  solved cold 1st try  {m['first_try']}/{m['attempted']}"
+          f" {D}({m['first_try'] / m['attempted']:.0%}){X}")
+    if m["resolve_rate"] is None:
         print(f"  cold re-solve rate   {D}-- no re-solves due yet{X}")
-
-    mistakes = Counter(r["mistake"] for r in rows if r.get("mistake"))
-    if mistakes:
+    else:
+        col = G if m["resolve_rate"] > 0.70 else R
+        print(f"  cold re-solve rate   {col}{m['resolve_rate']:.0%}{X}"
+              f" {D}of {m['resolve_n']} re-solves · target >70%{X}")
+    if m["mistakes"]:
         print(f"\n  {B}mistake classes{X}")
-        for m, n in mistakes.most_common():
-            print(f"    {m:<14} {'#' * n} {n}")
+        for k, n in sorted(m["mistakes"].items(), key=lambda kv: -kv[1]):
+            print(f"    {k:<14} {'#' * n} {n}")
     else:
         print(f"\n  {D}no mistake classes logged{X}")
-
-    approach = [r["approach_min"] for r in rows if r.get("approach_min")]
-    if approach:
-        print(f"\n  time to approach     {sum(approach) / len(approach):.1f} min avg"
+    if m["approach_avg"]:
+        print(f"\n  time to approach     {m['approach_avg']:.1f} min avg"
               f" {D}· target <5 by week 10{X}")
     print()
 
 
 def cmd_cues(a):
-    rows = cur.cues()
     print(f"\n{B}Cue -> pattern{X} {D}· cover the right column, fill it from memory{X}\n")
-    for i, c in enumerate(rows, 1):
+    for i, c in enumerate(cur.cues(), 1):
         print(f"{i:>3}. {c['says']}")
         if a.answers:
             print(f"     {G}{c['reach_for']}{X}")
@@ -165,12 +109,14 @@ def cmd_cues(a):
 
 
 def cmd_week(a):
+    from .plan import current_week
     wk = a.n or current_week()
-    ps = [p for p in cur.problems().values() if p["week"] == wk]
+    ps = sorted((p for p in cur.problems().values() if p["week"] == wk),
+                key=lambda p: p["order"])
     if not ps:
         raise SystemExit(f"no week {wk}")
     print(f"\n{B}Week {wk} · {ps[0]['block']}{X}")
-    print(f"{D}cue: {ps[0].get('cue', '')}{X}\n")
+    print(f"{D}cue: {ps[0].get('cue') or ''}{X}\n")
     states = replay()
     for role in ("core", "reps"):
         rows = [p for p in ps if p["role"] == role]
@@ -180,8 +126,7 @@ def cmd_week(a):
         for p in rows:
             st = states.get(p["id"])
             mark = f"{G}v{X}" if st and st.done else (f"{Y}~{X}" if st else " ")
-            arrow = f"{D}->{X}" if p["immediately_after_prev"] else "  "
-            print(f"  {mark} {arrow} {label(p['id'])}")
+            print(f"  {mark} {f'{D}->{X}' if p['immediately_after_prev'] else '  '} {label(p)}")
         print()
 
 
@@ -195,17 +140,34 @@ def cmd_show(a):
     print(f"\n{Y}Name the pattern and the target complexity before writing code.{X}\n")
 
 
+def cmd_add(a):
+    p = cur.add(a.id, a.title, week=a.week, hard=a.hard,
+                block=a.block or "Added", cue=a.cue)
+    print(f"\nadded {label(p)}\n{D}{cur.url(p['id'])}{X}\n")
+
+
+def cmd_serve(a):
+    from .server import serve
+    serve(a.host, a.port, open_browser=not a.no_open)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="lcsr", description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
+
+    p = sub.add_parser("serve", help="open the web UI")
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--no-open", action="store_true")
+    p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("log", help="record attempts")
     p.add_argument("ids", nargs="+", type=int)
     p.add_argument("--date", default="today", help="today | yesterday | YYYY-MM-DD")
     p.add_argument("--stuck", action="store_true", help="needed the editorial")
     p.add_argument("--mistake", choices=MISTAKES)
-    p.add_argument("--approach-min", type=float, help="minutes to the correct approach")
-    p.add_argument("--note", help="one line: the cue -> the pattern")
+    p.add_argument("--approach-min", type=float)
+    p.add_argument("--note")
     p.set_defaults(fn=cmd_log)
 
     p = sub.add_parser("today", help="what to solve now")
@@ -226,10 +188,19 @@ def main(argv=None):
     p.add_argument("id", type=int)
     p.set_defaults(fn=cmd_show)
 
+    p = sub.add_parser("add", help="add your own problem")
+    p.add_argument("id", type=int)
+    p.add_argument("title")
+    p.add_argument("--week", type=int)
+    p.add_argument("--block")
+    p.add_argument("--cue")
+    p.add_argument("--hard", action="store_true")
+    p.set_defaults(fn=cmd_add)
+
     a = ap.parse_args(argv)
     try:
         a.fn(a)
-    except KeyError as e:
+    except (KeyError, ValueError) as e:
         raise SystemExit(str(e).strip("'"))
 
 

@@ -7,7 +7,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 0
  },
  {
   "id": 217,
@@ -17,7 +18,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 1
  },
  {
   "id": 242,
@@ -27,7 +29,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 2
  },
  {
   "id": 49,
@@ -37,7 +40,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 3
  },
  {
   "id": 128,
@@ -47,7 +51,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 4
  },
  {
   "id": 125,
@@ -57,7 +62,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 5
  },
  {
   "id": 344,
@@ -67,7 +73,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 6
  },
  {
   "id": 121,
@@ -77,7 +84,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 7
  },
  {
   "id": 26,
@@ -87,7 +95,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 8
  },
  {
   "id": 88,
@@ -97,7 +106,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 9
  },
  {
   "id": 283,
@@ -107,7 +117,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 10
  },
  {
   "id": 169,
@@ -117,7 +128,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 11
  },
  {
   "id": 383,
@@ -127,7 +139,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Arrays & hashing",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 12
  },
  {
   "id": 20,
@@ -137,7 +150,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Stack",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 13
  },
  {
   "id": 155,
@@ -147,7 +161,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Stack",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 14
  },
  {
   "id": 150,
@@ -157,7 +172,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Stack",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 15
  },
  {
   "id": 21,
@@ -167,7 +183,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Linked list",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 16
  },
  {
   "id": 141,
@@ -177,7 +194,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Linked list",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 17
  },
  {
   "id": 160,
@@ -187,7 +205,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Linked list",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 18
  },
  {
   "id": 234,
@@ -197,7 +216,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Linked list",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 19
  },
  {
   "id": 19,
@@ -207,7 +227,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Linked list",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 20
  },
  {
   "id": 2,
@@ -217,7 +238,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Linked list",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 21
  },
  {
   "id": 226,
@@ -227,7 +249,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 22
  },
  {
   "id": 101,
@@ -237,7 +260,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 23
  },
  {
   "id": 100,
@@ -247,7 +271,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 24
  },
  {
   "id": 572,
@@ -257,7 +282,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 25
  },
  {
   "id": 112,
@@ -267,7 +293,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 26
  },
  {
   "id": 111,
@@ -277,7 +304,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 27
  },
  {
   "id": 108,
@@ -287,7 +315,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 28
  },
  {
   "id": 700,
@@ -297,7 +326,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Trees",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 29
  },
  {
   "id": 35,
@@ -307,7 +337,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Binary search",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 30
  },
  {
   "id": 278,
@@ -317,7 +348,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Binary search",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 31
  },
  {
   "id": 74,
@@ -327,7 +359,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Binary search",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 32
  },
  {
   "id": 703,
@@ -337,7 +370,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Heap & backtracking",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 33
  },
  {
   "id": 1046,
@@ -347,7 +381,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Heap & backtracking",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 34
  },
  {
   "id": 17,
@@ -357,7 +392,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Heap & backtracking",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 35
  },
  {
   "id": 22,
@@ -367,7 +403,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Heap & backtracking",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 36
  },
  {
   "id": 733,
@@ -377,7 +414,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Graph & bits",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 37
  },
  {
   "id": 191,
@@ -387,7 +425,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Graph & bits",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 38
  },
  {
   "id": 190,
@@ -397,7 +436,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Graph & bits",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 39
  },
  {
   "id": 268,
@@ -407,7 +447,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Graph & bits",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 40
  },
  {
   "id": 202,
@@ -417,7 +458,8 @@
   "tier": "foundations",
   "week": 0,
   "block": "Graph & bits",
-  "role": "foundation"
+  "role": "foundation",
+  "order": 41
  },
  {
   "id": 643,
@@ -428,7 +470,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "core"
+  "role": "core",
+  "order": 42
  },
  {
   "id": 1456,
@@ -439,7 +482,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "core"
+  "role": "core",
+  "order": 43
  },
  {
   "id": 1052,
@@ -450,7 +494,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "core"
+  "role": "core",
+  "order": 44
  },
  {
   "id": 167,
@@ -461,7 +506,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "core"
+  "role": "core",
+  "order": 45
  },
  {
   "id": 11,
@@ -472,7 +518,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "core"
+  "role": "core",
+  "order": 46
  },
  {
   "id": 15,
@@ -483,7 +530,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "core"
+  "role": "core",
+  "order": 47
  },
  {
   "id": 42,
@@ -494,7 +542,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "core"
+  "role": "core",
+  "order": 48
  },
  {
   "id": 977,
@@ -505,7 +554,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "reps"
+  "role": "reps",
+  "order": 49
  },
  {
   "id": 75,
@@ -516,7 +566,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "reps"
+  "role": "reps",
+  "order": 50
  },
  {
   "id": 16,
@@ -527,7 +578,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "reps"
+  "role": "reps",
+  "order": 51
  },
  {
   "id": 18,
@@ -538,7 +590,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "reps"
+  "role": "reps",
+  "order": 52
  },
  {
   "id": 611,
@@ -549,7 +602,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "reps"
+  "role": "reps",
+  "order": 53
  },
  {
   "id": 80,
@@ -560,7 +614,8 @@
   "week": 1,
   "block": "Two pointers & fixed window",
   "cue": "“a window of size k” · “sorted array, find a pair”",
-  "role": "reps"
+  "role": "reps",
+  "order": 54
  },
  {
   "id": 209,
@@ -571,7 +626,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 55
  },
  {
   "id": 3,
@@ -582,7 +638,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 56
  },
  {
   "id": 1004,
@@ -593,7 +650,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 57
  },
  {
   "id": 424,
@@ -604,7 +662,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 58
  },
  {
   "id": 904,
@@ -615,7 +674,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 59
  },
  {
   "id": 2958,
@@ -626,7 +686,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 60
  },
  {
   "id": 567,
@@ -637,7 +698,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 61
  },
  {
   "id": 438,
@@ -648,7 +710,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 62
  },
  {
   "id": 76,
@@ -659,7 +722,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "core"
+  "role": "core",
+  "order": 63
  },
  {
   "id": 1493,
@@ -670,7 +734,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "reps"
+  "role": "reps",
+  "order": 64
  },
  {
   "id": 2024,
@@ -681,7 +746,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "reps"
+  "role": "reps",
+  "order": 65
  },
  {
   "id": 1208,
@@ -692,7 +758,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "reps"
+  "role": "reps",
+  "order": 66
  },
  {
   "id": 1695,
@@ -703,7 +770,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "reps"
+  "role": "reps",
+  "order": 67
  },
  {
   "id": 2401,
@@ -714,7 +782,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "reps"
+  "role": "reps",
+  "order": 68
  },
  {
   "id": 1234,
@@ -725,7 +794,8 @@
   "week": 2,
   "block": "Variable window",
   "cue": "“longest / shortest subarray such that…” · shrink while invalid · needs all-non-negative",
-  "role": "reps"
+  "role": "reps",
+  "order": 69
  },
  {
   "id": 303,
@@ -736,7 +806,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 70
  },
  {
   "id": 304,
@@ -747,7 +818,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 71
  },
  {
   "id": 238,
@@ -758,7 +830,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 72
  },
  {
   "id": 560,
@@ -769,7 +842,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 73
  },
  {
   "id": 974,
@@ -780,7 +854,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 74
  },
  {
   "id": 523,
@@ -791,7 +866,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 75
  },
  {
   "id": 525,
@@ -802,7 +878,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 76
  },
  {
   "id": 1371,
@@ -813,7 +890,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 77
  },
  {
   "id": 1542,
@@ -824,7 +902,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "core"
+  "role": "core",
+  "order": 78
  },
  {
   "id": 724,
@@ -835,7 +914,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "reps"
+  "role": "reps",
+  "order": 79
  },
  {
   "id": 1590,
@@ -846,7 +926,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "reps"
+  "role": "reps",
+  "order": 80
  },
  {
   "id": 1524,
@@ -857,7 +938,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "reps"
+  "role": "reps",
+  "order": 81
  },
  {
   "id": 1442,
@@ -868,7 +950,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "reps"
+  "role": "reps",
+  "order": 82
  },
  {
   "id": 2270,
@@ -879,7 +962,8 @@
   "week": 3,
   "block": "Prefix sum & hashing",
   "cue": "“count subarrays whose sum equals k” · or the array contains negatives",
-  "role": "reps"
+  "role": "reps",
+  "order": 83
  },
  {
   "id": 930,
@@ -890,7 +974,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "core"
+  "role": "core",
+  "order": 84
  },
  {
   "id": 1248,
@@ -901,7 +986,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "core"
+  "role": "core",
+  "order": 85
  },
  {
   "id": 992,
@@ -912,7 +998,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "core"
+  "role": "core",
+  "order": 86
  },
  {
   "id": 1358,
@@ -923,7 +1010,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "core"
+  "role": "core",
+  "order": 87
  },
  {
   "id": 239,
@@ -934,7 +1022,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "core"
+  "role": "core",
+  "order": 88
  },
  {
   "id": 1438,
@@ -945,7 +1034,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "core"
+  "role": "core",
+  "order": 89
  },
  {
   "id": 862,
@@ -956,7 +1046,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "core"
+  "role": "core",
+  "order": 90
  },
  {
   "id": 713,
@@ -967,7 +1058,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "reps"
+  "role": "reps",
+  "order": 91
  },
  {
   "id": 2302,
@@ -978,7 +1070,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "reps"
+  "role": "reps",
+  "order": 92
  },
  {
   "id": 1499,
@@ -989,7 +1082,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "reps"
+  "role": "reps",
+  "order": 93
  },
  {
   "id": 2444,
@@ -1000,7 +1094,8 @@
   "week": 4,
   "block": "The atMost(K) − atMost(K−1) trick & monotonic deque",
   "cue": "“exactly K distinct / odd / sum” · “max or min over every window of size k”",
-  "role": "reps"
+  "role": "reps",
+  "order": 94
  },
  {
   "id": 496,
@@ -1011,7 +1106,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 95
  },
  {
   "id": 503,
@@ -1022,7 +1118,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 96
  },
  {
   "id": 739,
@@ -1033,7 +1130,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 97
  },
  {
   "id": 901,
@@ -1044,7 +1142,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 98
  },
  {
   "id": 907,
@@ -1055,7 +1154,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 99
  },
  {
   "id": 84,
@@ -1066,7 +1166,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 100
  },
  {
   "id": 85,
@@ -1077,7 +1178,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 101
  },
  {
   "id": 402,
@@ -1088,7 +1190,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 102
  },
  {
   "id": 735,
@@ -1099,7 +1202,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 103
  },
  {
   "id": 853,
@@ -1110,7 +1214,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "core"
+  "role": "core",
+  "order": 104
  },
  {
   "id": 394,
@@ -1121,7 +1226,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "reps"
+  "role": "reps",
+  "order": 105
  },
  {
   "id": 456,
@@ -1132,7 +1238,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "reps"
+  "role": "reps",
+  "order": 106
  },
  {
   "id": 316,
@@ -1143,7 +1250,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "reps"
+  "role": "reps",
+  "order": 107
  },
  {
   "id": 1019,
@@ -1154,7 +1262,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "reps"
+  "role": "reps",
+  "order": 108
  },
  {
   "id": 2104,
@@ -1165,7 +1274,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "reps"
+  "role": "reps",
+  "order": 109
  },
  {
   "id": 1856,
@@ -1176,7 +1286,8 @@
   "week": 5,
   "block": "Monotonic stack",
   "cue": "“next greater / next smaller” · “span” · “largest rectangle” · “sum over all subarrays of the min”",
-  "role": "reps"
+  "role": "reps",
+  "order": 110
  },
  {
   "id": 704,
@@ -1187,7 +1298,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 111
  },
  {
   "id": 34,
@@ -1198,7 +1310,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 112
  },
  {
   "id": 33,
@@ -1209,7 +1322,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 113
  },
  {
   "id": 153,
@@ -1220,7 +1334,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 114
  },
  {
   "id": 162,
@@ -1231,7 +1346,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 115
  },
  {
   "id": 875,
@@ -1242,7 +1358,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 116
  },
  {
   "id": 1011,
@@ -1253,7 +1370,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 117
  },
  {
   "id": 410,
@@ -1264,7 +1382,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 118
  },
  {
   "id": 4,
@@ -1275,7 +1394,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "core"
+  "role": "core",
+  "order": 119
  },
  {
   "id": 81,
@@ -1286,7 +1406,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "reps"
+  "role": "reps",
+  "order": 120
  },
  {
   "id": 154,
@@ -1297,7 +1418,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "reps"
+  "role": "reps",
+  "order": 121
  },
  {
   "id": 240,
@@ -1308,7 +1430,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "reps"
+  "role": "reps",
+  "order": 122
  },
  {
   "id": 1482,
@@ -1319,7 +1442,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "reps"
+  "role": "reps",
+  "order": 123
  },
  {
   "id": 1552,
@@ -1330,7 +1454,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "reps"
+  "role": "reps",
+  "order": 124
  },
  {
   "id": 2226,
@@ -1341,7 +1466,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "reps"
+  "role": "reps",
+  "order": 125
  },
  {
   "id": 719,
@@ -1352,7 +1478,8 @@
   "week": 6,
   "block": "Binary search, then binary search on the answer",
   "cue": "“sorted” · “minimise the maximum” · “largest k such that a feasibility check passes”",
-  "role": "reps"
+  "role": "reps",
+  "order": 126
  },
  {
   "id": 206,
@@ -1363,7 +1490,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 127
  },
  {
   "id": 92,
@@ -1374,7 +1502,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 128
  },
  {
   "id": 25,
@@ -1385,7 +1514,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 129
  },
  {
   "id": 142,
@@ -1396,7 +1526,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 130
  },
  {
   "id": 143,
@@ -1407,7 +1538,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 131
  },
  {
   "id": 23,
@@ -1418,7 +1550,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 132
  },
  {
   "id": 138,
@@ -1429,7 +1562,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 133
  },
  {
   "id": 146,
@@ -1440,7 +1574,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "core"
+  "role": "core",
+  "order": 134
  },
  {
   "id": 61,
@@ -1451,7 +1586,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "reps"
+  "role": "reps",
+  "order": 135
  },
  {
   "id": 86,
@@ -1462,7 +1598,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "reps"
+  "role": "reps",
+  "order": 136
  },
  {
   "id": 82,
@@ -1473,7 +1610,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "reps"
+  "role": "reps",
+  "order": 137
  },
  {
   "id": 328,
@@ -1484,7 +1622,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "reps"
+  "role": "reps",
+  "order": 138
  },
  {
   "id": 148,
@@ -1495,7 +1634,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "reps"
+  "role": "reps",
+  "order": 139
  },
  {
   "id": 380,
@@ -1506,7 +1646,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "reps"
+  "role": "reps",
+  "order": 140
  },
  {
   "id": 460,
@@ -1517,7 +1658,8 @@
   "week": 7,
   "block": "Linked lists, fast/slow pointers & design",
   "cue": "“in place, O(1) extra space, on a list” · “cycle” · “O(1) get and put”",
-  "role": "reps"
+  "role": "reps",
+  "order": 141
  },
  {
   "id": 102,
@@ -1528,7 +1670,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 142
  },
  {
   "id": 104,
@@ -1539,7 +1682,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 143
  },
  {
   "id": 543,
@@ -1550,7 +1694,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 144
  },
  {
   "id": 110,
@@ -1561,7 +1706,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 145
  },
  {
   "id": 124,
@@ -1572,7 +1718,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 146
  },
  {
   "id": 236,
@@ -1583,7 +1730,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 147
  },
  {
   "id": 199,
@@ -1594,7 +1742,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 148
  },
  {
   "id": 103,
@@ -1605,7 +1754,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "core"
+  "role": "core",
+  "order": 149
  },
  {
   "id": 437,
@@ -1616,7 +1766,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "reps"
+  "role": "reps",
+  "order": 150
  },
  {
   "id": 1372,
@@ -1627,7 +1778,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "reps"
+  "role": "reps",
+  "order": 151
  },
  {
   "id": 662,
@@ -1638,7 +1790,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "reps"
+  "role": "reps",
+  "order": 152
  },
  {
   "id": 1123,
@@ -1649,7 +1802,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "reps"
+  "role": "reps",
+  "order": 153
  },
  {
   "id": 337,
@@ -1660,7 +1814,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "reps"
+  "role": "reps",
+  "order": 154
  },
  {
   "id": 863,
@@ -1671,7 +1826,8 @@
   "week": 8,
   "block": "Trees I — traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
-  "role": "reps"
+  "role": "reps",
+  "order": 155
  },
  {
   "id": 98,
@@ -1682,7 +1838,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "core"
+  "role": "core",
+  "order": 156
  },
  {
   "id": 230,
@@ -1693,7 +1850,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "core"
+  "role": "core",
+  "order": 157
  },
  {
   "id": 235,
@@ -1704,7 +1862,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "core"
+  "role": "core",
+  "order": 158
  },
  {
   "id": 105,
@@ -1715,7 +1874,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "core"
+  "role": "core",
+  "order": 159
  },
  {
   "id": 114,
@@ -1726,7 +1886,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "core"
+  "role": "core",
+  "order": 160
  },
  {
   "id": 113,
@@ -1737,7 +1898,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "core"
+  "role": "core",
+  "order": 161
  },
  {
   "id": 297,
@@ -1748,7 +1910,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "core"
+  "role": "core",
+  "order": 162
  },
  {
   "id": 701,
@@ -1759,7 +1922,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "reps"
+  "role": "reps",
+  "order": 163
  },
  {
   "id": 450,
@@ -1770,7 +1934,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "reps"
+  "role": "reps",
+  "order": 164
  },
  {
   "id": 173,
@@ -1781,7 +1946,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "reps"
+  "role": "reps",
+  "order": 165
  },
  {
   "id": 106,
@@ -1792,7 +1958,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "reps"
+  "role": "reps",
+  "order": 166
  },
  {
   "id": 987,
@@ -1803,7 +1970,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "reps"
+  "role": "reps",
+  "order": 167
  },
  {
   "id": 99,
@@ -1814,7 +1982,8 @@
   "week": 9,
   "block": "Trees II — BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
-  "role": "reps"
+  "role": "reps",
+  "order": 168
  },
  {
   "id": 215,
@@ -1825,7 +1994,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 169
  },
  {
   "id": 347,
@@ -1836,7 +2006,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 170
  },
  {
   "id": 973,
@@ -1847,7 +2018,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 171
  },
  {
   "id": 621,
@@ -1858,7 +2030,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 172
  },
  {
   "id": 295,
@@ -1869,7 +2042,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 173
  },
  {
   "id": 56,
@@ -1880,7 +2054,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 174
  },
  {
   "id": 57,
@@ -1891,7 +2066,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 175
  },
  {
   "id": 435,
@@ -1902,7 +2078,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 176
  },
  {
   "id": 1094,
@@ -1913,7 +2090,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "core"
+  "role": "core",
+  "order": 177
  },
  {
   "id": 767,
@@ -1924,7 +2102,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 178
  },
  {
   "id": 1642,
@@ -1935,7 +2114,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 179
  },
  {
   "id": 502,
@@ -1946,7 +2126,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 180
  },
  {
   "id": 2402,
@@ -1957,7 +2138,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 181
  },
  {
   "id": 1834,
@@ -1968,7 +2150,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 182
  },
  {
   "id": 452,
@@ -1979,7 +2162,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 183
  },
  {
   "id": 986,
@@ -1990,7 +2174,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 184
  },
  {
   "id": 1288,
@@ -2001,7 +2186,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 185
  },
  {
   "id": 218,
@@ -2012,7 +2198,8 @@
   "week": 10,
   "block": "Heaps, top-K & intervals",
   "cue": "“kth largest” · “top k” · “running median” · “overlapping ranges” · “rooms / resources needed”",
-  "role": "reps"
+  "role": "reps",
+  "order": 186
  },
  {
   "id": 200,
@@ -2023,7 +2210,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 187
  },
  {
   "id": 133,
@@ -2034,7 +2222,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 188
  },
  {
   "id": 994,
@@ -2045,7 +2234,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 189
  },
  {
   "id": 1091,
@@ -2056,7 +2246,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 190
  },
  {
   "id": 130,
@@ -2067,7 +2258,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 191
  },
  {
   "id": 417,
@@ -2078,7 +2270,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 192
  },
  {
   "id": 210,
@@ -2089,7 +2282,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 193
  },
  {
   "id": 2115,
@@ -2100,7 +2294,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 194
  },
  {
   "id": 785,
@@ -2111,7 +2306,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "core"
+  "role": "core",
+  "order": 195
  },
  {
   "id": 695,
@@ -2122,7 +2318,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 196
  },
  {
   "id": 207,
@@ -2133,7 +2330,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 197
  },
  {
   "id": 547,
@@ -2144,7 +2342,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 198
  },
  {
   "id": 1020,
@@ -2155,7 +2354,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 199
  },
  {
   "id": 542,
@@ -2166,7 +2366,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 200
  },
  {
   "id": 1926,
@@ -2177,7 +2378,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 201
  },
  {
   "id": 310,
@@ -2188,7 +2390,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 202
  },
  {
   "id": 802,
@@ -2199,7 +2402,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 203
  },
  {
   "id": 886,
@@ -2210,7 +2414,8 @@
   "week": 11,
   "block": "Graphs I — grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
-  "role": "reps"
+  "role": "reps",
+  "order": 204
  },
  {
   "id": 684,
@@ -2221,7 +2426,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "core"
+  "role": "core",
+  "order": 205
  },
  {
   "id": 721,
@@ -2232,7 +2438,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "core"
+  "role": "core",
+  "order": 206
  },
  {
   "id": 399,
@@ -2243,7 +2450,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "core"
+  "role": "core",
+  "order": 207
  },
  {
   "id": 743,
@@ -2254,7 +2462,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "core"
+  "role": "core",
+  "order": 208
  },
  {
   "id": 1631,
@@ -2265,7 +2474,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "core"
+  "role": "core",
+  "order": 209
  },
  {
   "id": 787,
@@ -2276,7 +2486,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "core"
+  "role": "core",
+  "order": 210
  },
  {
   "id": 127,
@@ -2287,7 +2498,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "core"
+  "role": "core",
+  "order": 211
  },
  {
   "id": 990,
@@ -2298,7 +2510,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "reps"
+  "role": "reps",
+  "order": 212
  },
  {
   "id": 1319,
@@ -2309,7 +2522,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "reps"
+  "role": "reps",
+  "order": 213
  },
  {
   "id": 839,
@@ -2320,7 +2534,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "reps"
+  "role": "reps",
+  "order": 214
  },
  {
   "id": 1584,
@@ -2331,7 +2546,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "reps"
+  "role": "reps",
+  "order": 215
  },
  {
   "id": 1976,
@@ -2342,7 +2558,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "reps"
+  "role": "reps",
+  "order": 216
  },
  {
   "id": 126,
@@ -2353,7 +2570,8 @@
   "week": 12,
   "block": "Graphs II — union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
-  "role": "reps"
+  "role": "reps",
+  "order": 217
  },
  {
   "id": 70,
@@ -2364,7 +2582,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 218
  },
  {
   "id": 198,
@@ -2375,7 +2594,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 219
  },
  {
   "id": 213,
@@ -2386,7 +2606,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 220
  },
  {
   "id": 746,
@@ -2397,7 +2618,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 221
  },
  {
   "id": 322,
@@ -2408,7 +2630,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 222
  },
  {
   "id": 518,
@@ -2419,7 +2642,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 223
  },
  {
   "id": 139,
@@ -2430,7 +2654,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 224
  },
  {
   "id": 91,
@@ -2441,7 +2666,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 225
  },
  {
   "id": 300,
@@ -2452,7 +2678,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 226
  },
  {
   "id": 416,
@@ -2463,7 +2690,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "core"
+  "role": "core",
+  "order": 227
  },
  {
   "id": 1137,
@@ -2474,7 +2702,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 228
  },
  {
   "id": 122,
@@ -2485,7 +2714,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 229
  },
  {
   "id": 123,
@@ -2496,7 +2726,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 230
  },
  {
   "id": 188,
@@ -2507,7 +2738,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 231
  },
  {
   "id": 279,
@@ -2518,7 +2750,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 232
  },
  {
   "id": 377,
@@ -2529,7 +2762,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 233
  },
  {
   "id": 494,
@@ -2540,7 +2774,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 234
  },
  {
   "id": 1049,
@@ -2551,7 +2786,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 235
  },
  {
   "id": 343,
@@ -2562,7 +2798,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 236
  },
  {
   "id": 96,
@@ -2573,7 +2810,8 @@
   "week": 13,
   "block": "Dynamic programming I — one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
-  "role": "reps"
+  "role": "reps",
+  "order": 237
  },
  {
   "id": 62,
@@ -2584,7 +2822,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 238
  },
  {
   "id": 63,
@@ -2595,7 +2834,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 239
  },
  {
   "id": 64,
@@ -2606,7 +2846,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 240
  },
  {
   "id": 1143,
@@ -2617,7 +2858,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 241
  },
  {
   "id": 72,
@@ -2628,7 +2870,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 242
  },
  {
   "id": 5,
@@ -2639,7 +2882,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 243
  },
  {
   "id": 647,
@@ -2650,7 +2894,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 244
  },
  {
   "id": 152,
@@ -2661,7 +2906,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 245
  },
  {
   "id": 309,
@@ -2672,7 +2918,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 246
  },
  {
   "id": 312,
@@ -2683,7 +2930,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "core"
+  "role": "core",
+  "order": 247
  },
  {
   "id": 120,
@@ -2694,7 +2942,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 248
  },
  {
   "id": 931,
@@ -2705,7 +2954,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 249
  },
  {
   "id": 221,
@@ -2716,7 +2966,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 250
  },
  {
   "id": 516,
@@ -2727,7 +2978,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 251
  },
  {
   "id": 583,
@@ -2738,7 +2990,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 252
  },
  {
   "id": 97,
@@ -2749,7 +3002,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 253
  },
  {
   "id": 132,
@@ -2760,7 +3014,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 254
  },
  {
   "id": 10,
@@ -2771,7 +3026,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 255
  },
  {
   "id": 44,
@@ -2782,7 +3038,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 256
  },
  {
   "id": 174,
@@ -2793,7 +3050,8 @@
   "week": 14,
   "block": "Dynamic programming II — grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
-  "role": "reps"
+  "role": "reps",
+  "order": 257
  },
  {
   "id": 78,
@@ -2804,7 +3062,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 258
  },
  {
   "id": 90,
@@ -2815,7 +3074,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 259
  },
  {
   "id": 46,
@@ -2826,7 +3086,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 260
  },
  {
   "id": 47,
@@ -2837,7 +3098,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 261
  },
  {
   "id": 39,
@@ -2848,7 +3110,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 262
  },
  {
   "id": 40,
@@ -2859,7 +3122,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 263
  },
  {
   "id": 79,
@@ -2870,7 +3134,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 264
  },
  {
   "id": 51,
@@ -2881,7 +3146,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 265
  },
  {
   "id": 55,
@@ -2892,7 +3158,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 266
  },
  {
   "id": 45,
@@ -2903,7 +3170,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 267
  },
  {
   "id": 763,
@@ -2914,7 +3182,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 268
  },
  {
   "id": 134,
@@ -2925,7 +3194,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "core"
+  "role": "core",
+  "order": 269
  },
  {
   "id": 77,
@@ -2936,7 +3206,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 270
  },
  {
   "id": 216,
@@ -2947,7 +3218,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 271
  },
  {
   "id": 131,
@@ -2958,7 +3230,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 272
  },
  {
   "id": 93,
@@ -2969,7 +3242,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 273
  },
  {
   "id": 37,
@@ -2980,7 +3254,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 274
  },
  {
   "id": 1029,
@@ -2991,7 +3266,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 275
  },
  {
   "id": 881,
@@ -3002,7 +3278,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 276
  },
  {
   "id": 406,
@@ -3013,7 +3290,8 @@
   "week": 15,
   "block": "Backtracking & greedy",
   "cue": "“return all…” → backtracking · “return the best, and a local rule provably suffices” → greedy",
-  "role": "reps"
+  "role": "reps",
+  "order": 277
  },
  {
   "id": 208,
@@ -3024,7 +3302,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 278
  },
  {
   "id": 211,
@@ -3035,7 +3314,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 279
  },
  {
   "id": 212,
@@ -3046,7 +3326,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 280
  },
  {
   "id": 136,
@@ -3057,7 +3338,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 281
  },
  {
   "id": 260,
@@ -3068,7 +3350,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 282
  },
  {
   "id": 338,
@@ -3079,7 +3362,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 283
  },
  {
   "id": 287,
@@ -3090,7 +3374,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 284
  },
  {
   "id": 31,
@@ -3101,7 +3386,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 285
  },
  {
   "id": 48,
@@ -3112,7 +3398,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 286
  },
  {
   "id": 54,
@@ -3123,7 +3410,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 287
  },
  {
   "id": 73,
@@ -3134,7 +3422,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "core"
+  "role": "core",
+  "order": 288
  },
  {
   "id": 137,
@@ -3145,7 +3434,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 289
  },
  {
   "id": 201,
@@ -3156,7 +3446,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 290
  },
  {
   "id": 421,
@@ -3167,7 +3458,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 291
  },
  {
   "id": 648,
@@ -3178,7 +3470,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 292
  },
  {
   "id": 1268,
@@ -3189,7 +3482,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 293
  },
  {
   "id": 36,
@@ -3200,7 +3494,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 294
  },
  {
   "id": 59,
@@ -3211,7 +3506,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 295
  },
  {
   "id": 289,
@@ -3222,7 +3518,8 @@
   "week": 16,
   "block": "Tries, bit manipulation & matrix",
   "cue": "“prefix search over many words” → trie · “every element twice except…” → XOR",
-  "role": "reps"
+  "role": "reps",
+  "order": 296
  },
  {
   "id": 41,
@@ -3232,7 +3529,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 297
  },
  {
   "id": 32,
@@ -3242,7 +3540,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 298
  },
  {
   "id": 224,
@@ -3252,7 +3551,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 299
  },
  {
   "id": 227,
@@ -3262,7 +3562,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 300
  },
  {
   "id": 329,
@@ -3272,7 +3573,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 301
  },
  {
   "id": 847,
@@ -3282,7 +3584,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 302
  },
  {
   "id": 815,
@@ -3292,7 +3595,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 303
  },
  {
   "id": 315,
@@ -3302,7 +3606,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 304
  },
  {
   "id": 327,
@@ -3312,7 +3617,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 305
  },
  {
   "id": 493,
@@ -3322,7 +3628,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 306
  },
  {
   "id": 336,
@@ -3332,7 +3639,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 307
  },
  {
   "id": 214,
@@ -3342,7 +3650,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 308
  },
  {
   "id": 68,
@@ -3352,7 +3661,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 309
  },
  {
   "id": 273,
@@ -3362,7 +3672,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 310
  },
  {
   "id": 355,
@@ -3372,7 +3683,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 311
  },
  {
   "id": 685,
@@ -3382,7 +3694,8 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 312
  },
  {
   "id": 887,
@@ -3392,6 +3705,7 @@
   "tier": "stretch",
   "week": null,
   "block": "Stretch",
-  "role": "stretch"
+  "role": "stretch",
+  "order": 313
  }
 ]

@@ -1,0 +1,229 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lcsr</title>
+<style>
+:root{
+  --bg:#fbfaf8; --panel:#fff; --ink:#1a1a1a; --muted:#6b6b6b; --line:#e6e3dd;
+  --accent:#1f6f5c; --warn:#b45309; --danger:#b91c1c; --ok:#15803d;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 12px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#16161a; --panel:#1e1e23; --ink:#ececee; --muted:#9a9aa2; --line:#2e2e35;
+  --accent:#4db39a; --warn:#d18b2c; --danger:#e05a5a; --ok:#4ca86a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.5 ui-sans-serif,-apple-system,"SF Pro Text",Inter,system-ui,sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:28px 20px 80px}
+header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+h1{font-size:20px;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px}
+.metrics{display:flex;gap:22px;flex-wrap:wrap;margin:18px 0 26px;padding:14px 16px;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.metric b{display:block;font-size:19px;font-weight:600;letter-spacing:-.02em}
+.metric span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+  margin:26px 0 10px;font-weight:600}
+h2.due{color:var(--warn)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden}
+.card.late{border-color:var(--warn)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;flex-wrap:wrap}
+.pid{font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);min-width:44px}
+.title{font-weight:500;flex:1;min-width:200px}
+.title a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+.title a:hover{border-color:var(--accent);color:var(--accent)}
+.tag{font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;
+  border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.hard{color:var(--danger);border-color:var(--danger)}
+.tag.late{color:var(--warn);border-color:var(--warn)}
+.cue{padding:0 14px 12px;font-size:13px;color:var(--muted);font-style:italic}
+.acts{display:flex;gap:6px}
+button{font:inherit;font-size:13px;padding:6px 13px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--line);background:transparent;color:var(--ink);transition:.12s}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button.solved:hover{border-color:var(--ok);color:var(--ok)}
+button.stuck:hover{border-color:var(--warn);color:var(--warn)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.primary:hover{opacity:.9;color:#fff}
+.panel{border-top:1px solid var(--line);padding:12px 14px;background:rgba(127,127,127,.04)}
+.panel .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+  margin-bottom:7px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-size:12px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);
+  cursor:pointer;background:transparent;color:var(--muted)}
+.chip[aria-pressed=true]{border-color:var(--warn);color:var(--warn);font-weight:500}
+textarea,input,select{font:inherit;font-size:13px;width:100%;padding:8px 10px;
+  border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink)}
+textarea{resize:vertical;min-height:56px}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent)}
+.done{opacity:.5}
+.done .title{text-decoration:line-through}
+.result{font-size:13px;color:var(--ok);padding:0 14px 12px}
+.result.next{color:var(--warn)}
+.empty{color:var(--muted);font-size:14px;padding:18px 2px}
+details.add{margin-top:34px;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:14px;box-shadow:var(--shadow)}
+details.add summary{cursor:pointer;font-size:13px;font-weight:500}
+.grid{display:grid;grid-template-columns:110px 1fr;gap:9px;margin-top:14px;align-items:center}
+.grid label{font-size:12px;color:var(--muted)}
+.err{color:var(--danger);font-size:13px;margin-top:9px}
+.foot{margin-top:34px;font-size:12px;color:var(--muted);line-height:1.7}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>lcsr</h1>
+    <div class="sub" id="hdr">loading…</div>
+  </header>
+  <div class="metrics" id="metrics"></div>
+  <div id="app"></div>
+
+  <details class="add">
+    <summary>Add a problem</summary>
+    <div class="grid">
+      <label for="a-id">LeetCode #</label><input id="a-id" type="number" placeholder="1768">
+      <label for="a-title">Title</label><input id="a-title" placeholder="Merge Strings Alternately">
+      <label for="a-block">Block</label><input id="a-block" placeholder="Added">
+      <label for="a-cue">Cue</label><input id="a-cue" placeholder="what the problem says…">
+      <label for="a-week">Week</label><input id="a-week" type="number" placeholder="optional">
+      <label for="a-hard">Hard</label><input id="a-hard" type="checkbox" style="width:auto">
+    </div>
+    <div style="margin-top:12px"><button class="primary" id="a-save">Add</button></div>
+    <div class="err" id="a-err"></div>
+    <div class="foot">Saved to <code>~/.lcsr/custom.json</code>, separate from the packaged
+      curriculum — upgrades will not overwrite them. Custom problems appear under “Added”.</div>
+  </details>
+
+  <div class="foot">
+    Every attempt appends to <code>~/.lcsr/log.jsonl</code>. Due dates and metrics are
+    recomputed from that file on each load, so the CLI and this page can never disagree.<br>
+    Stuck → the problem returns in 3 days, then 10, then 30. Solved cold → it does not return.
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let plan = null, pending = {};   // id -> {mistake, note}
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+async function api(path, body) {
+  const r = await fetch(path, body ? {
+    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+  } : {});
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || 'request failed');
+  return j;
+}
+
+function card(p, late) {
+  const st = pending[p.id] || {};
+  const hard = p.hard ? '<span class="tag hard">hard</span>' : '';
+  const lateTag = late > 0 ? `<span class="tag late">${late}d late</span>`
+                : late === 0 ? '<span class="tag late">due today</span>' : '';
+  const meta = `<span class="tag">${esc(p.tier)}${p.week ? ' · W'+p.week : ''}</span>`;
+  return `
+  <div class="card${late >= 0 ? ' late' : ''}" data-id="${p.id}">
+    <div class="row">
+      <span class="pid">${p.id}</span>
+      <span class="title"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
+      ${hard}${lateTag}${meta}
+      <span class="acts">
+        <button class="solved" data-act="solved">Solved</button>
+        <button class="stuck"  data-act="stuck">Stuck</button>
+      </span>
+    </div>
+    ${p.cue ? `<div class="cue">cue: ${esc(p.cue)}</div>` : ''}
+    <div class="panel" data-panel hidden>
+      <div class="lbl">Mistake class</div>
+      <div class="chips">${plan.mistakes.map(m =>
+        `<button class="chip" data-mistake="${m}" aria-pressed="${st.mistake===m}">${m}</button>`
+      ).join('')}</div>
+      <div class="lbl">Note — the cue → the pattern</div>
+      <textarea data-note placeholder="one line">${esc(st.note||'')}</textarea>
+      <div style="margin-top:10px"><button class="primary" data-act="confirm">Log as stuck</button></div>
+    </div>
+  </div>`;
+}
+
+function render() {
+  const m = plan.metrics;
+  $('#hdr').textContent = `day ${plan.day} · week ${plan.week} · ${plan.date}`;
+  const rate = m.resolve_rate == null ? '—' : Math.round(m.resolve_rate*100)+'%';
+  const rateCol = m.resolve_rate == null ? '' :
+    `style="color:var(--${m.resolve_rate > .70 ? 'ok' : 'danger'})"`;
+  $('#metrics').innerHTML = `
+    <div class="metric"><b>${m.attempted}<span style="color:var(--muted);font-size:13px">/${m.total}</span></b><span>attempted</span></div>
+    <div class="metric"><b ${rateCol}>${rate}</b><span>cold re-solve · target &gt;70%</span></div>
+    <div class="metric"><b>${m.first_try ?? 0}</b><span>solved cold 1st try</span></div>
+    <div class="metric"><b>${Object.values(m.mistakes||{}).reduce((a,b)=>a+b,0)}</b><span>mistakes logged</span></div>`;
+
+  let html = '';
+  if (plan.due.length) {
+    html += '<h2 class="due">Due re-solves — these come first</h2>';
+    html += plan.due.map(p => card(p, p.days_late)).join('');
+  }
+  for (const s of plan.sections) {
+    html += `<h2>${esc(s.title)}</h2>` + s.problems.map(p => card(p, -1)).join('');
+  }
+  if (!html) html = '<div class="empty">Nothing queued. Everything for today is logged.</div>';
+  $('#app').innerHTML = html;
+}
+
+async function send(id, outcome) {
+  const st = pending[id] || {};
+  const r = await api('/api/log', {id, outcome, mistake: st.mistake, note: st.note});
+  const el = document.querySelector(`.card[data-id="${id}"]`);
+  el.classList.add('done');
+  el.querySelector('[data-panel]')?.setAttribute('hidden','');
+  el.querySelector('.acts').innerHTML = '';
+  const msg = document.createElement('div');
+  msg.className = 'result' + (r.due ? ' next' : '');
+  msg.textContent = r.due ? `logged stuck — returns ${r.due}` : 'logged solved — does not return';
+  el.appendChild(msg);
+  delete pending[id];
+  plan.metrics = (await api('/api/plan')).metrics;
+  const m = plan.metrics, rate = m.resolve_rate == null ? '—' : Math.round(m.resolve_rate*100)+'%';
+  $('#metrics').children[0].querySelector('b').innerHTML =
+    `${m.attempted}<span style="color:var(--muted);font-size:13px">/${m.total}</span>`;
+  $('#metrics').children[1].querySelector('b').textContent = rate;
+}
+
+$('#app').addEventListener('click', async e => {
+  const card = e.target.closest('.card'); if (!card) return;
+  const id = +card.dataset.id, act = e.target.dataset.act;
+  pending[id] = pending[id] || {};
+  const note = card.querySelector('[data-note]');
+  if (note) pending[id].note = note.value;
+
+  if (e.target.dataset.mistake) {
+    const m = e.target.dataset.mistake;
+    pending[id].mistake = pending[id].mistake === m ? null : m;
+    card.querySelectorAll('.chip').forEach(c =>
+      c.setAttribute('aria-pressed', c.dataset.mistake === pending[id].mistake));
+    return;
+  }
+  if (act === 'solved')  return send(id, 'solved');
+  if (act === 'stuck')   return card.querySelector('[data-panel]').hidden = false;
+  if (act === 'confirm') return send(id, 'stuck');
+});
+
+$('#a-save').addEventListener('click', async () => {
+  $('#a-err').textContent = '';
+  try {
+    await api('/api/add', {
+      id: $('#a-id').value, title: $('#a-title').value, block: $('#a-block').value,
+      cue: $('#a-cue').value, week: $('#a-week').value, hard: $('#a-hard').checked,
+    });
+    for (const s of ['#a-id','#a-title','#a-block','#a-cue','#a-week']) $(s).value = '';
+    $('#a-hard').checked = false;
+    plan = await api('/api/plan'); render();
+  } catch (err) { $('#a-err').textContent = err.message; }
+});
+
+(async () => { plan = await api('/api/plan'); render(); })();
+</script>

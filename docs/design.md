@@ -118,3 +118,30 @@ and silently corrupts the 30-day metric.
 Only one left: **does `lcsr start` actually run a 25-minute timer in the
 terminal** (blocking, with a bell), or just record the start time and let you use
 your own timer? The first is more useful and more annoying.
+
+---
+
+## Built: the web UI
+
+`lcsr serve` → `http://127.0.0.1:8765`, loopback only, no auth.
+
+The page holds **no state of its own**. It reads `/api/plan` and posts to
+`/api/log`, both of which call the same `plan.py` / `store.py` functions the CLI
+calls, so the two surfaces cannot disagree about what is due. Closing the tab
+loses nothing.
+
+Day-planning and metrics were moved out of `cli.py` into `plan.py` when the UI
+was added, precisely so "what is due today" has one implementation rather than
+one per front-end.
+
+### Adding problems later
+
+`~/.lcsr/custom.json`, merged over the packaged curriculum at read time:
+
+- packaged data stays read-only, so re-running the parser or upgrading never
+  clobbers your additions;
+- a custom entry reusing a packaged id **overrides** it, which is how to re-week
+  or retag a problem without editing extracted data;
+- custom problems sort after everything packaged (`order = 10000 + id`) and
+  surface in an "Added" section, so `lcsr add` can never write a row that
+  nothing displays.

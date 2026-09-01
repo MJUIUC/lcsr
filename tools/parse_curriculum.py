@@ -1,6 +1,26 @@
-import json, re, sys
+"""Extract the 314 problems and the cue table from the curriculum PDF.
 
-lines = open('curriculum.txt', encoding='utf-8').read().split('\n')
+Usage:  python tools/parse_curriculum.py [path/to/DSA-Curriculum-18-Week.pdf]
+
+Writes src/lcsr/data/{problems,cues}.json and asserts the tier counts match the
+figures the document states for itself -- if a future edition of the PDF shifts
+the layout, that assertion is what tells you, rather than a silently short list.
+"""
+
+import json, re, subprocess, sys, tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+OUT = ROOT / 'src' / 'lcsr' / 'data'
+PDF = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.home() / 'Desktop' / 'DSA-Curriculum-18-Week.pdf'
+
+if not PDF.exists():
+    raise SystemExit(f'PDF not found: {PDF}')
+
+with tempfile.NamedTemporaryFile(suffix='.txt') as tmp:
+    # -layout preserves the column spacing that entry parsing relies on
+    subprocess.run(['pdftotext', '-layout', str(PDF), tmp.name], check=True)
+    lines = Path(tmp.name).read_text(encoding='utf-8').split('\n')
 
 # A trailing '→' means "solve immediately after the previous problem", but the
 # arrow can wrap to the end of the prior line while its problem sits on the next
@@ -88,17 +108,29 @@ for e in parse_entries(lines[388:399]):
     e.update(tier='stretch', week=None, block='Stretch', role='stretch')
     problems.append(e)
 
+# Document order is load-bearing: the curriculum says the core is "never skipped,
+# never reordered" and several blocks say "solve in the listed order", so the
+# position in the PDF has to survive extraction. Dict key order is not enough --
+# anything that round-trips through JSON and back can lose it.
+for _i, _p in enumerate(problems):
+    _p['order'] = _i
+
 counts = {}
 for p in problems:
     counts[p['tier']] = counts.get(p['tier'], 0) + 1
 print('counts:', counts, 'total:', len(problems))
-print('expected: foundations 42, core 142, reps 113, stretch 17, total 314')
-
 ids = [p['id'] for p in problems]
 dupes = {i: ids.count(i) for i in set(ids) if ids.count(i) > 1}
 print('duplicate ids:', dupes or 'none')
 
-json.dump(problems, open('src/lcsr/data/problems.json', 'w'), indent=1, ensure_ascii=False)
+EXPECTED = {'foundations': 42, 'core': 142, 'reps': 113, 'stretch': 17}
+assert counts == EXPECTED, f'tier counts drifted: {counts} != {EXPECTED}'
+assert len(problems) == 314, f'expected 314 problems, got {len(problems)}'
+assert not dupes, f'duplicate ids: {dupes}'
+print('counts match the document')
+
+OUT.mkdir(parents=True, exist_ok=True)
+json.dump(problems, open(OUT / 'problems.json', 'w'), indent=1, ensure_ascii=False)
 
 # ---- Cue -> pattern table (the curriculum's stated "object of study").
 # Two columns split by 2+ spaces; the left cell wraps onto a continuation line
@@ -115,4 +147,4 @@ for ln in lines[start + 1:]:
     elif cues:
         cues[-1]['says'] += ' ' + parts[0].strip()   # wrapped left cell
 print('cue rows:', len(cues))
-json.dump(cues, open('src/lcsr/data/cues.json', 'w'), indent=1, ensure_ascii=False)
+json.dump(cues, open(OUT / 'cues.json', 'w'), indent=1, ensure_ascii=False)

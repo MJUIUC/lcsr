@@ -24,6 +24,30 @@ ln -s ~/leetcode-srs/.venv/bin/lcsr /opt/homebrew/bin/lcsr
 ## Use
 
 ```bash
+lcsr serve                       # the UI — opens http://127.0.0.1:8765
+```
+
+The page shows due re-solves first, then today's new problems. Each row links to
+LeetCode, and marks **Solved** or **Stuck**; stuck opens a mistake class and a
+note field. Nothing is stored in the browser — every action appends to the same
+log the CLI reads.
+
+### Adding problems
+
+In the UI, "Add a problem" at the bottom. Or:
+
+```bash
+lcsr add 1768 "Merge Strings Alternately" --block Warmup --cue "two strings, alternate"
+```
+
+Additions go to `~/.lcsr/custom.json`, kept separate from the packaged
+curriculum so upgrades never overwrite them, and appear under "Added". A custom
+entry reusing a packaged id overrides it — that is how you re-week or retag a
+problem without editing packaged data.
+
+### CLI
+
+```bash
 lcsr today                       # due re-solves first, then today's new problems
 lcsr show 42                     # the cue and the link — but not the pattern name
 lcsr log 42                      # solved it cold
@@ -42,12 +66,24 @@ Mistake classes: `off-by-one`, `invariant`, `edge-case`, `no-pattern`.
 every metric are recomputed from it on each run, so nothing can drift out of
 sync and the scheduling rule can change later without invalidating history.
 
+`lcsr serve` binds to loopback only and has no auth — it is a local tool.
+
 Scheduling is `src/lcsr/schedule.py` — one pure function, with an exhaustive
 truth table over all 8 states in `tests/test_schedule.py`.
 
 There is no streak counter and no problems-solved metric. The curriculum names
 that one as the weakest predictor of interview performance, and the easiest to
 inflate.
+
+## Regenerating the curriculum
+
+```bash
+python tools/parse_curriculum.py ~/Desktop/DSA-Curriculum-18-Week.pdf
+```
+
+Asserts the tier counts still match the figures the PDF states for itself
+(42/142/113/17), so a layout change in a future edition fails loudly instead of
+silently producing a short list.
 
 ## Docs
 
