@@ -20,6 +20,8 @@ def parse_day(s: str) -> date:
         return date.today()
     if s in ("yesterday", "y"):
         return date.today() - timedelta(days=1)
+    if s in ("tomorrow", "tm"):
+        return date.today() + timedelta(days=1)
     try:
         return date.fromisoformat(s)
     except ValueError:
@@ -39,8 +41,14 @@ def cmd_log(a):
     outcome = STUCK if a.stuck else SOLVED
     if a.mistake and outcome == SOLVED:
         raise SystemExit("--mistake only applies to a stuck attempt")
+    states = replay()
     for pid in a.ids:
         cur.get(pid)                       # validate all before writing any
+        st = states.get(pid)
+        if st is not None and st.done and not a.again:
+            raise SystemExit(
+                f"{pid} is already solved and schedules nothing — "
+                f"re-run with --again to re-open it")
     for pid in a.ids:
         append(make_entry(pid, outcome, on, a.mistake, a.approach_min, a.note))
     states = replay()
@@ -53,7 +61,10 @@ def cmd_log(a):
 
 
 def cmd_today(a):
-    p = todays_plan()
+    on = parse_day(a.date)
+    p = todays_plan(on)
+    if on != date.today():
+        print(f"\n{Y}preview of {on} — nothing can be logged for another day{X}")
     print(f"\n{B}Day {p['day']} · Week {p['week']}{X} {D}·{X} {p['date']}\n")
     if p["due"]:
         print(f"{B}{Y}Due re-solves{X} {D}(these come first){X}")
@@ -168,9 +179,13 @@ def main(argv=None):
     p.add_argument("--mistake", choices=MISTAKES)
     p.add_argument("--approach-min", type=float)
     p.add_argument("--note")
+    p.add_argument("--again", action="store_true",
+                   help="re-open a problem that is already solved")
     p.set_defaults(fn=cmd_log)
 
     p = sub.add_parser("today", help="what to solve now")
+    p.add_argument("--date", default="today",
+                   help="preview another day: tomorrow | YYYY-MM-DD")
     p.set_defaults(fn=cmd_today)
 
     p = sub.add_parser("stats", help="the three metrics")

@@ -161,6 +161,8 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .cuen{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted);flex:none}
 .cuel{flex:1;font-size:14.5px}
 .cuer{flex:1;font-size:14px;color:var(--accent);font-weight:500}
+.cuewhy{flex:1 1 100%;font-size:13px;color:var(--mid);line-height:1.6;
+  border-top:1px solid var(--line2);padding-top:11px;margin-top:2px}
 .cuer.hidden{color:var(--muted);font-weight:400;font-style:italic;opacity:.55}
 @media(max-width:640px){
   .cue{flex-wrap:wrap} .cuel,.cuer{flex:1 1 100%}
@@ -190,6 +192,19 @@ details.add[open] summary::before{content:"− "}
 .grid label{font-size:12.5px;color:var(--muted)}
 .err{color:var(--danger);font-size:13px;margin-top:10px}
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.phead2{font-size:13px;color:var(--mid);margin-bottom:13px;padding-bottom:11px;
+  border-bottom:1px solid var(--line)}
+.phead2 b{color:var(--ink);font-weight:600}
+.btn[aria-expanded=true]{border-color:var(--warn);color:var(--warn);background:var(--warn-soft);
+  font-weight:550}
+.stepper{display:flex;align-items:center;gap:9px;margin-bottom:18px}
+.stepper .btn{min-width:34px;text-align:center}
+.stepper .btn[disabled]{opacity:.35;cursor:default}
+.stepper .btn[disabled]:hover{border-color:var(--line);color:var(--mid);background:none}
+.stepdate{font-family:ui-serif,Georgia,serif;font-size:15px;font-weight:600}
+.stepdate em{font-style:normal;font-weight:400;color:var(--muted);font-size:13px}
+.preview{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);
+  color:var(--warn);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:20px}
 .doneday{display:flex;align-items:center;gap:16px;background:var(--panel);
   border:1px solid color-mix(in srgb,var(--ok) 32%,var(--line));border-radius:12px;
   padding:20px 22px;box-shadow:var(--shadow)}
@@ -237,6 +252,7 @@ let plan=null, curric=null, hist=null, cues=null;
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
 let showAhead = false;
+let preview = null;   // plan for a future day, null when viewing today
 
 async function api(p, body){
   const r = await fetch(p, body ? {method:'POST',
@@ -265,10 +281,10 @@ function pRow(p, o={}){
     late!=null ? `<span class="badge late">${late>0?late+'d late':'due today'}</span>` : '',
     o.showTier ? `<span class="badge">${esc(p.tier)}${p.week?' · W'+p.week:''}</span>` : '',
   ].join('');
-  const acts = st.status==='done' && !o.alwaysAct ? '' : `
+  const acts = (o.readonly || (st.status==='done' && !o.alwaysAct)) ? '' : `
       <span class="pacts">
         <button class="btn" data-act="solved">Solved</button>
-        <button class="btn warn" data-act="stuck">Stuck</button>
+        <button class="btn warn" data-act="stuck" aria-expanded="false">Stuck</button>
         <button class="btn" data-act="note" title="add a note before logging">Note</button>
       </span>`;
   let meta = '';
@@ -286,6 +302,8 @@ function pRow(p, o={}){
     ${o.cue && p.cue ? `<div class="pcue">cue: ${esc(p.cue)}</div>` : ''}
     ${meta}
     <div class="panel" data-panel hidden>
+      <div class="phead2">Logging <b>${p.id}</b> as <b>stuck</b> — it returns in 3 days,
+        then 10, then 30. Failing again resets it to 3.</div>
       <div class="lbl">Note — the cue → the pattern</div>
       <textarea data-note placeholder="one line, in your own words"></textarea>
       <div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">— only recorded when logged as stuck</span></div>
@@ -302,18 +320,28 @@ function pRow(p, o={}){
 
 /* ---------------- views ---------------- */
 function vToday(){
-  const p = plan; let h='';
+  const p = preview || plan;
+  const ro = !p.is_today;
+  let h = `<div class="stepper">
+      <button class="btn" id="d-prev" ${ro?'':'disabled'}>‹</button>
+      <span class="stepdate">${ro?'':'Today · '}${p.date}${
+        ro?` <em>· ${relDay(p.date)}</em>`:''}</span>
+      <button class="btn" id="d-next">›</button>
+      ${ro?`<button class="btn" id="d-today">Back to today</button>`:''}
+    </div>`;
+  if(ro) h += `<div class="preview">Preview — you cannot log an attempt for another
+    day. Due re-solves shown are everything outstanding by then.</div>`;
 
   if(p.due.length){
     h += `<div class="sec due"><h2>Due re-solves</h2><span class="hint">these come first</span></div>
-          <div class="stack">${p.due.map(x=>pRow(x,{late:x.days_late,cue:true,showTier:true})).join('')}</div>`;
+          <div class="stack">${p.due.map(x=>pRow(x,{late:x.days_late,cue:true,showTier:true,readonly:ro})).join('')}</div>`;
   }
   for(const s of p.sections){
     h += `<div class="sec"><h2>${esc(s.title)}</h2></div>
-          <div class="stack">${s.problems.map(x=>pRow(x,{cue:true})).join('')}</div>`;
+          <div class="stack">${s.problems.map(x=>pRow(x,{cue:true,readonly:ro})).join('')}</div>`;
   }
 
-  if(p.caught_up){
+  if(p.caught_up && !ro){
     const over = p.done_today > p.target_today;
     h += `<div class="doneday">
       <div class="tick">✓</div>
@@ -332,12 +360,14 @@ function vToday(){
               <span class="hint">counts toward tomorrow, not today</span></div>`;
       for(const s of p.ahead){
         h += `<div class="sec"><h2 style="font-size:13px;color:var(--muted)">${esc(s.title)}</h2></div>
-              <div class="stack">${s.problems.map(x=>pRow(x,{cue:true})).join('')}</div>`;
+              <div class="stack">${s.problems.map(x=>pRow(x,{cue:true,readonly:ro})).join('')}</div>`;
       }
     }
   }
 
-  if(!h) h = `<div class="empty"><b>Nothing queued</b>Check the Curriculum tab to work ahead.</div>`;
+  if(ro && !p.due.length && !p.sections.length)
+    h += `<div class="empty"><b>Nothing scheduled</b>No re-solves fall due, and the
+          curriculum has no new problems left to hand you that day.</div>`;
   return h;
 }
 
@@ -356,7 +386,7 @@ function vCurriculum(){
       : g.blocks.map(b=>
           `${b.title?`<div class="rolelbl">${esc(b.title)}</div>`:''}
            <div class="stack" style="margin-bottom:0;gap:6px">
-             ${b.problems.map(x=>pRow(x,{alwaysAct:true})).join('')}</div>`).join('');
+             ${b.problems.map(x=>pRow(x,{})).join('')}</div>`).join('');
     return `<details class="grp" ${isNow?'open':''} data-key="${g.key}">
       <summary>
         <span class="wk">${wk}</span>
@@ -400,18 +430,30 @@ function vHistory(){
 }
 
 function vCues(){
+  const groups = [];
+  cues.forEach((c,i)=>{
+    const g = groups.find(x=>x.name===c.group);
+    (g || (groups[groups.push({name:c.group, rows:[]})-1])).rows.push({...c, i});
+  });
+  const n = cues.length;
   return `<div class="sec"><h2>Cue → pattern</h2>
     <span class="hint">the curriculum calls this the object of study — reconstruct it, don't read it</span></div>
-    <div class="prow" style="margin:0 0 14px">
+    <div class="prow" style="margin:0 0 18px">
       <button class="btn" id="cue-all">Reveal all</button>
       <button class="btn" id="cue-none">Hide all</button>
+      <span class="hint" style="margin-left:4px">${revealed.size}/${n} revealed</span>
     </div>` +
-    cues.map((c,i)=>`
-      <div class="cue" data-cue="${i}">
-        <span class="cuen">${String(i+1).padStart(2,'0')}</span>
-        <span class="cuel">${esc(c.says)}</span>
-        <span class="cuer ${revealed.has(i)?'':'hidden'}">${revealed.has(i)?esc(c.reach_for):'tap to reveal'}</span>
-      </div>`).join('');
+    groups.map(g=>`
+      <div class="rolelbl" style="margin:22px 0 9px">${esc(g.name)}</div>` +
+      g.rows.map(c=>{
+        const open = revealed.has(c.i);
+        return `<div class="cue" data-cue="${c.i}">
+          <span class="cuen">${String(c.i+1).padStart(2,'0')}</span>
+          <span class="cuel">${esc(c.says)}</span>
+          <span class="cuer ${open?'':'hidden'}">${open?esc(c.reach_for):'tap to reveal'}</span>
+          ${open && c.because ? `<span class="cuewhy">${esc(c.because)}</span>` : ''}
+        </div>`;
+      }).join('')).join('');
 }
 
 function vStats(){
@@ -477,6 +519,13 @@ function render(){
   window.scrollTo({top:0});
 }
 
+async function setDate(iso){
+  if(iso === plan.date){ preview = null; return render(); }
+  preview = await api('/api/plan?date=' + iso);
+  showAhead = false;
+  render();
+}
+
 async function go(t){
   tab = t; location.hash = t;
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
@@ -494,6 +543,13 @@ document.addEventListener('click', async e=>{
   // cue reveal
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  if(e.target.id==='d-next' || e.target.id==='d-prev'){
+    const cur = (preview || plan).date;
+    const d = new Date(cur+'T00:00:00');
+    d.setDate(d.getDate() + (e.target.id==='d-next' ? 1 : -1));
+    return setDate(d.toISOString().slice(0,10));
+  }
+  if(e.target.id==='d-today'){ preview=null; return render(); }
   if(e.target.id==='ahead-toggle'){ showAhead = !showAhead; return render(); }
   if(e.target.id==='cue-all'){ cues.forEach((_,i)=>revealed.add(i)); return render(); }
   if(e.target.id==='cue-none'){ revealed.clear(); return render(); }
@@ -513,9 +569,17 @@ document.addEventListener('click', async e=>{
   // 'stuck' and 'note' both just open the panel; nothing is written until a
   // Log button in it is pressed, so a mistyped note is never committed.
   if(act==='stuck' || act==='note'){
-    panel.hidden=false; panel.querySelector('textarea').focus(); return;
+    panel.hidden = false;
+    card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','true');
+    panel.scrollIntoView({block:'nearest', behavior:'smooth'});
+    panel.querySelector('textarea').focus();
+    return;
   }
-  if(act==='cancel'){ panel.hidden=true; delete draft[id]; return; }
+  if(act==='cancel'){
+    panel.hidden = true;
+    card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','false');
+    delete draft[id]; return;
+  }
   if(act==='solved' || act==='confirm'){
     const note = panel.querySelector('[data-note]').value.trim();
     try{

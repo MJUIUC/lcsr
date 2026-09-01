@@ -79,3 +79,14 @@ def test_custom_can_override_a_packaged_problem():
 def test_unknown_id_is_rejected():
     with pytest.raises(KeyError, match="not in the curriculum"):
         cur.get(999999)
+
+
+def test_cues_merge_curriculum_and_added():
+    from lcsr.curriculum import cues
+    cues.cache_clear()
+    rows = cues()
+    assert len(rows) == 41                       # 20 from the PDF + 21 added
+    assert all(c.get("group") for c in rows)     # every row is grouped
+    assert {c["source"] for c in rows} == {"curriculum", "added"}
+    # added rows must explain the discrimination, that is their whole point
+    assert all(c.get("because") for c in rows if c["source"] == "added")

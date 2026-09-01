@@ -108,3 +108,32 @@ def test_curriculum_covers_every_problem(client):
     _, c = client("/api/curriculum")
     seen = {p["id"] for g in c["groups"] for b in g["blocks"] for p in b["problems"]}
     assert len(seen) == 314
+
+
+def test_cannot_log_an_already_solved_problem(client):
+    client("/api/log", {"id": 1, "outcome": "solved"})
+    code, r = client("/api/log", {"id": 1, "outcome": "solved"})
+    assert code == 400 and "already solved" in r["error"]
+
+
+def test_again_reopens_a_solved_problem(client):
+    client("/api/log", {"id": 1, "outcome": "solved"})
+    code, r = client("/api/log", {"id": 1, "outcome": "stuck", "again": True})
+    assert code == 200 and r["due"] is not None
+
+
+def test_a_problem_still_in_the_ladder_can_be_logged(client):
+    """Guard must block only cleared problems, never one mid-ladder."""
+    client("/api/log", {"id": 1, "outcome": "stuck"})
+    code, _ = client("/api/log", {"id": 1, "outcome": "solved"})
+    assert code == 200
+
+
+def test_plan_accepts_a_future_date(client):
+    code, p = client("/api/plan?date=2027-01-01")
+    assert code == 200 and p["date"] == "2027-01-01" and p["is_today"] is False
+
+
+def test_plan_rejects_a_bad_date(client):
+    code, r = client("/api/plan?date=nonsense")
+    assert code == 400 and "YYYY-MM-DD" in r["error"]

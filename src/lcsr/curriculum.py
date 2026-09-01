@@ -25,7 +25,20 @@ def _packaged() -> list[dict]:
 
 @cache
 def cues() -> list[dict]:
-    return json.loads((DATA / "cues.json").read_text(encoding="utf-8"))
+    """The PDF's 20 rows, then added contrasts for the confusable pairs.
+
+    Kept in two files so provenance stays clear: cues.json is regenerated from
+    the PDF by tools/parse_curriculum.py and must not be hand-edited, while
+    cues_extra.json is ours and survives regeneration.
+    """
+    base = json.loads((DATA / "cues.json").read_text(encoding="utf-8"))
+    for c in base:
+        c.setdefault("group", "From the curriculum")
+        c["source"] = "curriculum"
+    extra = json.loads((DATA / "cues_extra.json").read_text(encoding="utf-8"))
+    for c in extra:
+        c["source"] = "added"
+    return [*base, *extra]
 
 
 def custom() -> list[dict]:

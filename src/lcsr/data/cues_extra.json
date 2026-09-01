@@ -1,0 +1,106 @@
+[
+ {"group":"Window vs prefix sum vs two pointers",
+  "says":"sorted array — find a pair or triple with a given sum",
+  "reach_for":"Two pointers from both ends",
+  "because":"Sortedness is the enabling property: moving left can only raise the sum, moving right can only lower it, so each step eliminates a whole row of the search space. Unsorted, this is a hashmap problem instead."},
+
+ {"group":"Window vs prefix sum vs two pointers",
+  "says":"subarray or substring of a size that is given to you",
+  "reach_for":"Fixed window",
+  "because":"The size is not being searched for, so there is no shrink condition — add the entering element, drop the leaving one."},
+
+ {"group":"Window vs prefix sum vs two pointers",
+  "says":"longest or shortest subarray such that…, all values non-negative",
+  "reach_for":"Variable window, shrink while invalid",
+  "because":"Non-negativity is what makes shrinking sound: extending can only push the sum up, so once the window is invalid, growing it further can never fix it."},
+
+ {"group":"Window vs prefix sum vs two pointers",
+  "says":"count subarrays summing to exactly k, and negatives are possible",
+  "reach_for":"Prefix sum + hashmap — a window cannot work",
+  "because":"Negatives destroy the monotonicity a window needs; extending can lower the sum again, so shrink-while-invalid is unsound. Prefix sums turn “this subarray sums to k” into “have I seen prefix − k before”."},
+
+ {"group":"Window vs prefix sum vs two pointers",
+  "says":"exactly K distinct / exactly K odd numbers",
+  "reach_for":"atMost(K) − atMost(K−1)",
+  "because":"“Exactly” is not directly windowable, but “at most” is monotone in window length, so two at-most passes subtract to exactly."},
+
+ {"group":"Window vs prefix sum vs two pointers",
+  "says":"max or min over every window of a fixed size k",
+  "reach_for":"Monotonic deque, not a heap",
+  "because":"A heap gives you the max but cannot evict the element that just left the window; a deque kept monotone can drop it in O(1)."},
+
+ {"group":"Window vs prefix sum vs two pointers",
+  "says":"in-place removal, partition, or reversal over one array",
+  "reach_for":"Two pointers in the same direction — a slow write index behind a fast read index",
+  "because":"There is no interval invariant here, so it is not a window at all; nothing is being summed or constrained over a range."},
+
+ {"group":"DP vs greedy",
+  "says":"return the best value, and you can say why a local choice is safe",
+  "reach_for":"Greedy",
+  "because":"The test is the exchange argument: can any optimal solution be transformed to agree with your local choice without getting worse? If you cannot state it, you have an answer, not a method — and it will not transfer."},
+
+ {"group":"DP vs greedy",
+  "says":"a locally worse choice can pay off later",
+  "reach_for":"DP — and the state must carry whatever the choice affects",
+  "because":"Greedy fails exactly when choices interact across steps. That interaction is the thing the DP state exists to remember."},
+
+ {"group":"DP vs greedy",
+  "says":"how many ways / count the arrangements",
+  "reach_for":"DP, never greedy",
+  "because":"Greedy returns one solution. Counting needs every branch aggregated, which is what a recurrence does."},
+
+ {"group":"DP vs greedy",
+  "says":"fewest coins or steps to reach a target, denominations arbitrary",
+  "reach_for":"DP over the target",
+  "because":"Largest-first is only safe for canonical coin systems. With arbitrary denominations the greedy choice can strand you short of the target."},
+
+ {"group":"DP vs greedy",
+  "says":"intervals — keep the most non-overlapping ones",
+  "reach_for":"Greedy, sorting by END",
+  "because":"Earliest finishing time leaves the most room for everything after it, and that exchange argument is provable. Sorting by start is the merge problem, which is a different question."},
+
+ {"group":"DP vs greedy",
+  "says":"“with a cooldown”, “at most k transactions”",
+  "reach_for":"DP as a state machine",
+  "because":"The constraint is a mode you are in rather than a quantity you accumulate — so the states are the modes and the transitions are the actions."},
+
+ {"group":"DP vs backtracking",
+  "says":"return ALL subsets / permutations / valid paths",
+  "reach_for":"Backtracking",
+  "because":"You need the objects themselves, so the output is exponential and no table can compress it."},
+
+ {"group":"DP vs backtracking",
+  "says":"return the COUNT, or the BEST, of those same objects",
+  "reach_for":"DP",
+  "because":"You need only an aggregate, so overlapping subproblems can be collapsed rather than enumerated. Same objects, different question, different technique."},
+
+ {"group":"Which search",
+  "says":"shortest path, every edge costs 1",
+  "reach_for":"BFS — multi-source if there are several origins",
+  "because":"Uniform cost makes layer order the same as distance order, so first arrival is optimal and no priority queue is needed."},
+
+ {"group":"Which search",
+  "says":"shortest path with weights, but at most k hops",
+  "reach_for":"Bellman–Ford / DP over hop count — NOT Dijkstra",
+  "because":"Dijkstra finalises a node the first time it is popped, which is wrong once a longer path with fewer hops can still win. The hop limit is a second dimension of state."},
+
+ {"group":"Which search",
+  "says":"“minimise the maximum”, “maximise the minimum”, “largest k that still works”",
+  "reach_for":"Binary search on the answer + a feasibility check",
+  "because":"The answer is monotone — if k is feasible then everything easier is too — so you search the answer space, not the input."},
+
+ {"group":"Which structure",
+  "says":"top k from a stream, or n is huge and k is small",
+  "reach_for":"Heap of size k",
+  "because":"Sorting is n log n and needs all the data at once; a k-heap is n log k and works on a stream that never fits in memory."},
+
+ {"group":"Which structure",
+  "says":"prefix matching across many words",
+  "reach_for":"Trie",
+  "because":"A hashset answers exact membership only. Prefixes need the shared structure a trie makes explicit."},
+
+ {"group":"Which structure",
+  "says":"“are these connected”, “merge these groups” — and no path is asked for",
+  "reach_for":"Union-find",
+  "because":"It answers connectivity without producing a path, which is why it beats BFS/DFS when the merges arrive incrementally."}
+]

@@ -6,6 +6,7 @@ holds no state of its own, so the two can never disagree about what is due.
 
 import json
 import webbrowser
+from urllib.parse import parse_qs, urlparse
 from datetime import date
 from functools import partial
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -36,21 +37,28 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(raw)
 
     def do_GET(self):
-        if self.path in ("/", "/index.html"):
+        route = urlparse(self.path)
+        if route.path in ("/", "/index.html"):
             return self._send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
-        if self.path == "/api/plan":
-            plan = todays_plan()
+        if route.path == "/api/plan":
+            q = parse_qs(route.query)
+            try:
+                on = date.fromisoformat(q["date"][0]) if q.get("date") else date.today()
+            except ValueError:
+                return self._send(400, {"error": "date must be YYYY-MM-DD"})
+            plan = todays_plan(on)
+            plan["is_today"] = on == date.today()
             plan["due"] = [enrich(p) for p in plan["due"]]
             for key in ("sections", "ahead"):
                 for s in plan[key]:
                     s["problems"] = [enrich(p) for p in s["problems"]]
             plan["mistakes"] = list(MISTAKES)
             return self._send(200, plan)
-        if self.path == "/api/curriculum":
+        if route.path == "/api/curriculum":
             return self._send(200, curriculum_view())
-        if self.path == "/api/history":
+        if route.path == "/api/history":
             return self._send(200, history_view())
-        if self.path == "/api/cues":
+        if route.path == "/api/cues":
             return self._send(200, cur.cues())
         return self._send(404, {"error": "not found"})
 
@@ -72,6 +80,12 @@ class Handler(BaseHTTPRequestHandler):
     def _log(self, body):
         pid = int(body["id"])
         cur.get(pid)                                  # validate before writing
+        # A problem that has cleared the ladder schedules nothing, so logging it
+        # again only inflates the attempt counts and the cold re-solve rate.
+        # Guarded here rather than only in the UI so the CLI cannot do it either.
+        prior = replay().get(pid)
+        if prior is not None and prior.done and not body.get("again"):
+            raise ValueError(f"{pid} is already solved — pass again to re-open it")
         outcome = STUCK if body.get("outcome") == STUCK else SOLVED
         mistake = body.get("mistake") or None
         if mistake and mistake not in MISTAKES:
