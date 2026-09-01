@@ -41,8 +41,9 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/api/plan":
             plan = todays_plan()
             plan["due"] = [enrich(p) for p in plan["due"]]
-            for s in plan["sections"]:
-                s["problems"] = [enrich(p) for p in s["problems"]]
+            for key in ("sections", "ahead"):
+                for s in plan[key]:
+                    s["problems"] = [enrich(p) for p in s["problems"]]
             plan["mistakes"] = list(MISTAKES)
             return self._send(200, plan)
         if self.path == "/api/curriculum":

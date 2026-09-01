@@ -190,6 +190,15 @@ details.add[open] summary::before{content:"− "}
 .grid label{font-size:12.5px;color:var(--muted)}
 .err{color:var(--danger);font-size:13px;margin-top:10px}
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.doneday{display:flex;align-items:center;gap:16px;background:var(--panel);
+  border:1px solid color-mix(in srgb,var(--ok) 32%,var(--line));border-radius:12px;
+  padding:20px 22px;box-shadow:var(--shadow)}
+.doneday .tick{width:34px;height:34px;border-radius:99px;background:var(--accent-soft);
+  color:var(--ok);display:grid;place-items:center;font-size:17px;flex:none}
+.doneday b{display:block;font-family:ui-serif,Georgia,serif;font-size:16.5px;margin-bottom:3px}
+.doneday span{display:block;font-size:13px;color:var(--mid)}
+.doneday .quiet{font-size:12.5px;color:var(--muted);margin-top:5px;max-width:52ch}
+.doneday button{margin-left:auto;flex:none}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
   background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:99px;font-size:13.5px;
   box-shadow:0 6px 24px rgba(0,0,0,.22);opacity:0;transition:.25s;pointer-events:none;z-index:60}
@@ -227,6 +236,7 @@ let tab = location.hash.slice(1) || 'today';
 let plan=null, curric=null, hist=null, cues=null;
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
+let showAhead = false;
 
 async function api(p, body){
   const r = await fetch(p, body ? {method:'POST',
@@ -293,6 +303,7 @@ function pRow(p, o={}){
 /* ---------------- views ---------------- */
 function vToday(){
   const p = plan; let h='';
+
   if(p.due.length){
     h += `<div class="sec due"><h2>Due re-solves</h2><span class="hint">these come first</span></div>
           <div class="stack">${p.due.map(x=>pRow(x,{late:x.days_late,cue:true,showTier:true})).join('')}</div>`;
@@ -301,7 +312,32 @@ function vToday(){
     h += `<div class="sec"><h2>${esc(s.title)}</h2></div>
           <div class="stack">${s.problems.map(x=>pRow(x,{cue:true})).join('')}</div>`;
   }
-  if(!h) h = `<div class="empty"><b>Nothing queued</b>Everything for today is logged. Check the Curriculum tab to work ahead.</div>`;
+
+  if(p.caught_up){
+    const over = p.done_today > p.target_today;
+    h += `<div class="doneday">
+      <div class="tick">✓</div>
+      <div>
+        <b>Done for today</b>
+        <span>${p.done_today} new problem${p.done_today===1?'':'s'}${
+          p.resolves_today?` · ${p.resolves_today} re-solve${p.resolves_today===1?'':'s'}`:''
+        } · today's target is ${p.target_today}${over?' — you went over':''}</span>
+        <span class="quiet">The curriculum's load is deliberate. Working further ahead
+          trades tomorrow's spacing for today's volume.</span>
+      </div>
+      ${p.ahead.length?`<button class="btn" id="ahead-toggle">Work ahead</button>`:''}
+    </div>`;
+    if(showAhead && p.ahead.length){
+      h += `<div class="sec" style="margin-top:26px"><h2>Working ahead</h2>
+              <span class="hint">counts toward tomorrow, not today</span></div>`;
+      for(const s of p.ahead){
+        h += `<div class="sec"><h2 style="font-size:13px;color:var(--muted)">${esc(s.title)}</h2></div>
+              <div class="stack">${s.problems.map(x=>pRow(x,{cue:true})).join('')}</div>`;
+      }
+    }
+  }
+
+  if(!h) h = `<div class="empty"><b>Nothing queued</b>Check the Curriculum tab to work ahead.</div>`;
   return h;
 }
 
@@ -420,7 +456,9 @@ function vStats(){
 
 /* ---------------- render ---------------- */
 function renderChrome(){
-  $('#daychip').textContent = `day ${plan.day} · week ${plan.week} · ${plan.date}`;
+  $('#daychip').innerHTML = `day ${plan.day} · week ${plan.week} · `
+    + `<strong style="color:${plan.caught_up?'var(--ok)':'var(--ink)'}">`
+    + `${plan.done_today}/${plan.target_today}</strong> today`;
   const o = curric?.overall;
   if(o) $('#overall').innerHTML =
     `<span class="obar"><i style="width:${o.done/o.total*100}%"></i></span>
@@ -456,6 +494,7 @@ document.addEventListener('click', async e=>{
   // cue reveal
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  if(e.target.id==='ahead-toggle'){ showAhead = !showAhead; return render(); }
   if(e.target.id==='cue-all'){ cues.forEach((_,i)=>revealed.add(i)); return render(); }
   if(e.target.id==='cue-none'){ revealed.clear(); return render(); }
 

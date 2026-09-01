@@ -11,8 +11,20 @@ from . import curriculum as cur
 from .schedule import SOLVED
 from .store import entries, replay
 
-# per-day intake, from the curriculum's stated load
-DAILY = {"foundations": 3, "core": 2, "reps": 2, "custom": 3, "stretch": 1}
+# Per-day intake of NEW problems, from the load the curriculum states for itself:
+# "~4-5/day in weeks 1-3 (the foundations are quick), ~3/day in weeks 4-11,
+# ~3-4/day in weeks 12-16, plus the spaced re-solves." Reps start in week 3.
+#
+# Due re-solves are deliberately NOT counted against this. They are mandatory and
+# the curriculum lists them as additional to the daily intake.
+def allowance(week: int) -> dict[str, int]:
+    if week <= 2:
+        return {"foundations": 3, "core": 2, "reps": 0, "custom": 2}
+    if week == 3:
+        return {"foundations": 3, "core": 2, "reps": 1, "custom": 2}
+    if week <= 11:
+        return {"foundations": 0, "core": 2, "reps": 1, "custom": 2}
+    return {"foundations": 0, "core": 2, "reps": 2, "custom": 2}
 
 
 def day_one() -> date | None:
@@ -30,6 +42,7 @@ def current_week(on: date | None = None) -> int:
 def todays_plan(on: date | None = None) -> dict:
     on = on or date.today()
     states = replay()
+    rows = entries()
     wk = current_week(on)
     attempted = set(states)
 
@@ -43,28 +56,81 @@ def todays_plan(on: date | None = None) -> dict:
                         key=lambda s: s.due)
     ]
 
-    def fresh(tier, week=None):
-        rows = [p for p in cur.problems().values()
-                if p["id"] not in attempted and p["tier"] == tier
-                and (week is None or p["week"] == week)]
-        rows.sort(key=lambda p: (p["week"] or 0, p["order"]))
-        return rows[:DAILY[tier]]
+    # What today's intake has already used up. Only a problem's FIRST attempt
+    # counts: a re-solve is a due review, which is tracked separately and does
+    # not eat the day's quota for new material.
+    first_seen: dict[int, str] = {}
+    for r in rows:
+        first_seen.setdefault(r["id"], r["date"])
+    started_today: Counter[str] = Counter(
+        cur.problems()[pid]["tier"]
+        for pid, d in first_seen.items()
+        if d == on.isoformat() and pid in cur.problems()
+    )
 
-    sections = []
-    if wk <= 3:
-        sections.append({"title": "Foundations", "problems": fresh("foundations")})
-    sections.append({"title": f"Week {wk} core", "problems": fresh("core", wk)})
-    sections.append({"title": f"Week {wk} reps", "problems": fresh("reps", wk)})
-    # Problems you added yourself are not tied to a week, so they surface here
-    # rather than never -- otherwise `lcsr add` would write a row nothing reads.
-    sections.append({"title": "Added", "problems": fresh("custom")})
+    quota = allowance(wk)
+    remaining = {t: max(0, n - started_today.get(t, 0)) for t, n in quota.items()}
+
+    def pool(tier, week=None):
+        """week=None means any; week='<=' means every week up to the current one.
+
+        Reps use '<=' on purpose. The curriculum runs them weeks 3-16 and says
+        they are "spread across the schedule by the interleave rule, not massed
+        into their own week" -- so drawing only from the current week would
+        strand weeks 1-2's reps permanently, and would mass each week's reps
+        into that week, which is the blocked practice the whole tier exists to
+        avoid. Oldest-first, so the backlog drains rather than growing.
+        """
+        def wanted(p):
+            if week is None:
+                return True
+            if week == "<=":
+                return p["week"] is not None and p["week"] <= wk
+            return p["week"] == week
+
+        rows_ = [p for p in cur.problems().values()
+                 if p["id"] not in attempted and p["tier"] == tier and wanted(p)]
+        rows_.sort(key=lambda p: (p["week"] or 0, p["order"]))
+        return rows_
+
+    def build(limit_by):
+        out = []
+        for title, tier, week in (
+            ("Foundations", "foundations", None),
+            (f"Week {wk} core", "core", wk),
+            ("Reps — interleaved across weeks 1–%d" % wk, "reps", "<="),
+            ("Added", "custom", None),
+        ):
+            n = limit_by(tier)
+            if n <= 0:
+                continue
+            got = [p for p in pool(tier, week) if p["id"] not in taken][:n]
+            taken.update(p["id"] for p in got)
+            if got:
+                out.append({"title": title, "problems": got})
+        return out
+
+    taken: set[int] = set()
+    sections = build(lambda t: remaining.get(t, 0))
+    # The next batch, offered behind a toggle once the day's intake is met, so
+    # working ahead is a deliberate choice rather than an endlessly refilling list.
+    ahead = build(lambda t: quota.get(t, 0))
+
+    done_today = sum(started_today.values())
+    target_today = sum(quota.values()) - quota.get("custom", 0)
 
     return {
         "date": on.isoformat(),
         "week": wk,
         "day": ((on - day_one()).days + 1) if day_one() else 1,
         "due": due,
-        "sections": [s for s in sections if s["problems"]],
+        "sections": sections,
+        "ahead": ahead,
+        "done_today": done_today,
+        "target_today": target_today,
+        "resolves_today": sum(1 for r in rows if r["date"] == on.isoformat()
+                              and first_seen.get(r["id"]) != on.isoformat()),
+        "caught_up": not sections and not due,
         "metrics": metrics(on),
     }
 
