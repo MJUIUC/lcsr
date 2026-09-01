@@ -275,7 +275,7 @@ const TABS = [
 let tab = location.hash.slice(1) || 'today';
 let plan=null, curric=null, hist=null, cues=null, freq=null;
 let drawn = null;
-const FILT = {lists:new Set(), diff:new Set(), noPaid:true, noSolved:true, noCurric:false};
+const FILT = {diff:new Set(), noPaid:false, noSolved:true, noCurric:true};
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
 let showAhead = false;
@@ -513,7 +513,6 @@ function freqPool(){
     if(FILT.noSolved && p.solved) return false;
     if(FILT.noCurric && p.in_curriculum) return false;
     if(FILT.diff.size && !FILT.diff.has(p.difficulty)) return false;
-    if(FILT.lists.size && !p.lists.some(l=>FILT.lists.has(l))) return false;
     return true;
   });
 }
@@ -581,9 +580,6 @@ function vFrequent(){
   </div>
 
   <div class="filters">
-    <div class="lbl">Lists</div>
-    <div class="chips">${Object.entries(freq.labels).map(([k,v])=>
-      chip(FILT.lists.has(k),'list:'+k,esc(v))).join('')}</div>
     <div class="lbl">Difficulty</div>
     <div class="chips">${['Easy','Medium','Hard'].map(x=>chip(FILT.diff.has(x),'diff:'+x,x)).join('')}</div>
     <div class="lbl">Exclude</div>
@@ -705,7 +701,6 @@ document.addEventListener('click', async e=>{
   if(e.target.id==='f-draw'){ draw(); return render(); }
   if(e.target.dataset.f){
     const [kind,val] = e.target.dataset.f.split(':');
-    if(kind==='list') FILT.lists.has(val)?FILT.lists.delete(val):FILT.lists.add(val);
     if(kind==='diff') FILT.diff.has(val)?FILT.diff.delete(val):FILT.diff.add(val);
     if(kind==='x')    FILT[val] = !FILT[val];
     if(drawn && !freqPool().some(p=>p.id===drawn.id)) drawn = null;

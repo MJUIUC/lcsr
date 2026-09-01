@@ -33,6 +33,13 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(raw)))
+        # The page is read fresh from disk on every request, but the browser was
+        # free to cache it, so editing index.html and reloading showed the old
+        # UI. Nothing here is worth caching -- it is localhost and every response
+        # is derived from a log that changes as you use it.
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
         self.end_headers()
         self.wfile.write(raw)
 
