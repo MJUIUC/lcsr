@@ -1,0 +1,5518 @@
+{
+ "labels": {
+  "top150": "Top Interview 150",
+  "lc75": "LeetCode 75",
+  "top100": "Top 100 Liked",
+  "striver": "Striver A2Z"
+ },
+ "problems": [
+  {
+   "id": 17,
+   "title": "Letter Combinations of a Phone Number",
+   "slug": "letter-combinations-of-a-phone-number",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Backtracking",
+    "lc75": "Backtracking",
+    "top100": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 72,
+   "title": "Edit Distance",
+   "slug": "edit-distance",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP",
+    "lc75": "DP - Multidimensional",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 104,
+   "title": "Maximum Depth of Binary Tree",
+   "slug": "maximum-depth-of-binary-tree",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "lc75": "Binary Tree - DFS",
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 136,
+   "title": "Single Number",
+   "slug": "single-number",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Bit Manipulation",
+    "lc75": "Bit Manipulation",
+    "top100": "Misc",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 1 : Easy"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 198,
+   "title": "House Robber",
+   "slug": "house-robber",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "1D DP",
+    "lc75": "DP - 1D",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 2 : 1D DP"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 199,
+   "title": "Binary Tree Right Side View",
+   "slug": "binary-tree-right-side-view",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree BFS",
+    "lc75": "Binary Tree - BFS",
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 208,
+   "title": "Implement Trie (Prefix Tree)",
+   "slug": "implement-trie-prefix-tree",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Trie",
+    "lc75": "Trie",
+    "top100": "Trie",
+    "striver": "Step 17 : Tries · Lec 1 : Theory"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 215,
+   "title": "Kth Largest Element in an Array",
+   "slug": "kth-largest-element-in-an-array",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Heap",
+    "lc75": "Heap / Priority Queue",
+    "top100": "Heap",
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 236,
+   "title": "Lowest Common Ancestor of a Binary Tree",
+   "slug": "lowest-common-ancestor-of-a-binary-tree",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "lc75": "Binary Tree - DFS",
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 4
+  },
+  {
+   "id": 1,
+   "title": "Two Sum",
+   "slug": "two-sum",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Hashmap",
+    "top100": "Hashing",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 2,
+   "title": "Add Two Numbers",
+   "slug": "add-two-numbers",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 3,
+   "title": "Longest Substring Without Repeating Characters",
+   "slug": "longest-substring-without-repeating-characters",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Sliding Window",
+    "top100": "Sliding Window",
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 1 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 4,
+   "title": "Median of Two Sorted Arrays",
+   "slug": "median-of-two-sorted-arrays",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search",
+    "top100": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 5,
+   "title": "Longest Palindromic Substring",
+   "slug": "longest-palindromic-substring",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP",
+    "top100": "Dynamic Programming",
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 2 : Medium String Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 11,
+   "title": "Container With Most Water",
+   "slug": "container-with-most-water",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Two Pointers",
+    "lc75": "Two Pointers",
+    "top100": "Two Pointers"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 15,
+   "title": "3Sum",
+   "slug": "3sum",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Two Pointers",
+    "top100": "Two Pointers",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 19,
+   "title": "Remove Nth Node From End of List",
+   "slug": "remove-nth-node-from-end-of-list",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 20,
+   "title": "Valid Parentheses",
+   "slug": "valid-parentheses",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Stack",
+    "top100": "Stack",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 1 : Learning"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 22,
+   "title": "Generate Parentheses",
+   "slug": "generate-parentheses",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Backtracking",
+    "top100": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 23,
+   "title": "Merge k Sorted Lists",
+   "slug": "merge-k-sorted-lists",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Divide & Conquer",
+    "top100": "Linked Lists",
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 25,
+   "title": "Reverse Nodes in k-Group",
+   "slug": "reverse-nodes-in-k-group",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 5 : Hard Problems of LL"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 33,
+   "title": "Search in Rotated Sorted Array",
+   "slug": "search-in-rotated-sorted-array",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search",
+    "top100": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 34,
+   "title": "Find First and Last Position of Element in Sorted Array",
+   "slug": "find-first-and-last-position-of-element-in-sorted-array",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search",
+    "top100": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 35,
+   "title": "Search Insert Position",
+   "slug": "search-insert-position",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search",
+    "top100": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 39,
+   "title": "Combination Sum",
+   "slug": "combination-sum",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Backtracking",
+    "top100": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 42,
+   "title": "Trapping Rain Water",
+   "slug": "trapping-rain-water",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "top100": "Two Pointers",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 45,
+   "title": "Jump Game II",
+   "slug": "jump-game-ii",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "top100": "Greedy",
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 2 : Medium/Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 48,
+   "title": "Rotate Image",
+   "slug": "rotate-image",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Matrix",
+    "top100": "Matrix",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 53,
+   "title": "Maximum Subarray",
+   "slug": "maximum-subarray",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Kadane's Algorithm",
+    "top100": "Misc",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 54,
+   "title": "Spiral Matrix",
+   "slug": "spiral-matrix",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Matrix",
+    "top100": "Matrix",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 55,
+   "title": "Jump Game",
+   "slug": "jump-game",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "top100": "Greedy",
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 2 : Medium/Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 56,
+   "title": "Merge Intervals",
+   "slug": "merge-intervals",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Intervals",
+    "top100": "Misc",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 62,
+   "title": "Unique Paths",
+   "slug": "unique-paths",
+   "lists": [
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "DP - Multidimensional",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 3 : 2D/3D DP and DP on Grids"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 64,
+   "title": "Minimum Path Sum",
+   "slug": "minimum-path-sum",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 3 : 2D/3D DP and DP on Grids"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 70,
+   "title": "Climbing Stairs",
+   "slug": "climbing-stairs",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "1D DP",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 2 : 1D DP"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 73,
+   "title": "Set Matrix Zeroes",
+   "slug": "set-matrix-zeroes",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Matrix",
+    "top100": "Matrix",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 74,
+   "title": "Search a 2D Matrix",
+   "slug": "search-a-2d-matrix",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search",
+    "top100": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 3 : BS on 2D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 76,
+   "title": "Minimum Window Substring",
+   "slug": "minimum-window-substring",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Sliding Window",
+    "top100": "Sliding Window",
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 2 : Hard Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 79,
+   "title": "Word Search",
+   "slug": "word-search",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Backtracking",
+    "top100": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 3 : Trying out all Combos / Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 98,
+   "title": "Validate Binary Search Tree",
+   "slug": "validate-binary-search-tree",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search Tree",
+    "top100": "Binary Tree",
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 101,
+   "title": "Symmetric Tree",
+   "slug": "symmetric-tree",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 102,
+   "title": "Binary Tree Level Order Traversal",
+   "slug": "binary-tree-level-order-traversal",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree BFS",
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 1 : Traversals"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 105,
+   "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+   "slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 114,
+   "title": "Flatten Binary Tree to Linked List",
+   "slug": "flatten-binary-tree-to-linked-list",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 121,
+   "title": "Best Time to Buy and Sell Stock",
+   "slug": "best-time-to-buy-and-sell-stock",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "top100": "Greedy",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 124,
+   "title": "Binary Tree Maximum Path Sum",
+   "slug": "binary-tree-maximum-path-sum",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "top100": "Binary Search",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 128,
+   "title": "Longest Consecutive Sequence",
+   "slug": "longest-consecutive-sequence",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Hashmap",
+    "top100": "Hashing",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 138,
+   "title": "Copy List with Random Pointer",
+   "slug": "copy-list-with-random-pointer",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 5 : Hard Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 139,
+   "title": "Word Break",
+   "slug": "word-break",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "1D DP",
+    "top100": "Dynamic Programming",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 3 : Trying out all Combos / Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 141,
+   "title": "Linked List Cycle",
+   "slug": "linked-list-cycle",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 146,
+   "title": "LRU Cache",
+   "slug": "lru-cache",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "top100": "Linked Lists",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 4 : Implementation Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 148,
+   "title": "Sort List",
+   "slug": "sort-list",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Divide & Conquer",
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 151,
+   "title": "Reverse Words in a String",
+   "slug": "reverse-words-in-a-string",
+   "lists": [
+    "top150",
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "lc75": "Array / String",
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 1 : Basic and Easy String Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 153,
+   "title": "Find Minimum in Rotated Sorted Array",
+   "slug": "find-minimum-in-rotated-sorted-array",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search",
+    "top100": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 155,
+   "title": "Min Stack",
+   "slug": "min-stack",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Stack",
+    "top100": "Stack",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 1 : Learning"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 162,
+   "title": "Find Peak Element",
+   "slug": "find-peak-element",
+   "lists": [
+    "top150",
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search",
+    "lc75": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 169,
+   "title": "Majority Element",
+   "slug": "majority-element",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "top100": "Misc",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 189,
+   "title": "Rotate Array",
+   "slug": "rotate-array",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "top100": "Misc",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 1 : Easy"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 206,
+   "title": "Reverse Linked List",
+   "slug": "reverse-linked-list",
+   "lists": [
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Linked List",
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 207,
+   "title": "Course Schedule",
+   "slug": "course-schedule",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Graph General",
+    "top100": "Graph",
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 3 : Topo Sort and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 230,
+   "title": "Kth Smallest Element in a BST",
+   "slug": "kth-smallest-element-in-a-bst",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Search Tree",
+    "top100": "Binary Tree",
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 238,
+   "title": "Product of Array Except Self",
+   "slug": "product-of-array-except-self",
+   "lists": [
+    "top150",
+    "lc75",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "lc75": "Array / String",
+    "top100": "Misc"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 283,
+   "title": "Move Zeroes",
+   "slug": "move-zeroes",
+   "lists": [
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Two Pointers",
+    "top100": "Two Pointers",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 1 : Easy"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 295,
+   "title": "Find Median from Data Stream",
+   "slug": "find-median-from-data-stream",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Heap",
+    "top100": "Heap",
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 3 : Hard Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 300,
+   "title": "Longest Increasing Subsequence",
+   "slug": "longest-increasing-subsequence",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "1D DP",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 7 : DP on LIS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 322,
+   "title": "Coin Change",
+   "slug": "coin-change",
+   "lists": [
+    "top150",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top150": "1D DP",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 4 : DP on Subsequences"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 994,
+   "title": "Rotting Oranges",
+   "slug": "rotting-oranges",
+   "lists": [
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Graphs - BFS",
+    "top100": "Graph",
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 1143,
+   "title": "Longest Common Subsequence",
+   "slug": "longest-common-subsequence",
+   "lists": [
+    "lc75",
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "DP - Multidimensional",
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 3
+  },
+  {
+   "id": 9,
+   "title": "Palindrome Number",
+   "slug": "palindrome-number",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Math",
+    "striver": "Step 1 : Learn the basics · Lec 4 : Know Basic Maths"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 13,
+   "title": "Roman to Integer",
+   "slug": "roman-to-integer",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 2 : Medium String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 14,
+   "title": "Longest Common Prefix",
+   "slug": "longest-common-prefix",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 1 : Basic and Easy String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 21,
+   "title": "Merge Two Sorted Lists",
+   "slug": "merge-two-sorted-lists",
+   "lists": [
+    "top150",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "top100": "Linked Lists"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 26,
+   "title": "Remove Duplicates from Sorted Array",
+   "slug": "remove-duplicates-from-sorted-array",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 1 : Easy"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 28,
+   "title": "Find the Index of the First Occurrence in a String",
+   "slug": "find-the-index-of-the-first-occurrence-in-a-string",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "striver": "Step 18 : Strings · Lec 1 : Hard Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 31,
+   "title": "Next Permutation",
+   "slug": "next-permutation",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Misc",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 46,
+   "title": "Permutations",
+   "slug": "permutations",
+   "lists": [
+    "top150",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Backtracking",
+    "top100": "Backtracking"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 49,
+   "title": "Group Anagrams",
+   "slug": "group-anagrams",
+   "lists": [
+    "top150",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Hashmap",
+    "top100": "Hashing"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 50,
+   "title": "Pow(x, n)",
+   "slug": "powx-n",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Math",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 1 : Get a Strong Hold"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 51,
+   "title": "N-Queens",
+   "slug": "n-queens",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 3 : Trying out all Combos / Hard"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 57,
+   "title": "Insert Interval",
+   "slug": "insert-interval",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Intervals",
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 2 : Medium/Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 61,
+   "title": "Rotate List",
+   "slug": "rotate-list",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Linked List",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 5 : Hard Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 63,
+   "title": "Unique Paths II",
+   "slug": "unique-paths-ii",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 3 : 2D/3D DP and DP on Grids"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 75,
+   "title": "Sort Colors",
+   "slug": "sort-colors",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Misc",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 78,
+   "title": "Subsets",
+   "slug": "subsets",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 84,
+   "title": "Largest Rectangle in Histogram",
+   "slug": "largest-rectangle-in-histogram",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Stack",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 88,
+   "title": "Merge Sorted Array",
+   "slug": "merge-sorted-array",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 94,
+   "title": "Binary Tree Inorder Traversal",
+   "slug": "binary-tree-inorder-traversal",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 1 : Traversals"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 100,
+   "title": "Same Tree",
+   "slug": "same-tree",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 103,
+   "title": "Binary Tree Zigzag Level Order Traversal",
+   "slug": "binary-tree-zigzag-level-order-traversal",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree BFS",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 106,
+   "title": "Construct Binary Tree from Inorder and Postorder Traversal",
+   "slug": "construct-binary-tree-from-inorder-and-postorder-traversal",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 108,
+   "title": "Convert Sorted Array to Binary Search Tree",
+   "slug": "convert-sorted-array-to-binary-search-tree",
+   "lists": [
+    "top150",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Divide & Conquer",
+    "top100": "Binary Tree"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 118,
+   "title": "Pascal's Triangle",
+   "slug": "pascals-triangle",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Dynamic Programming",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 120,
+   "title": "Triangle",
+   "slug": "triangle",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 3 : 2D/3D DP and DP on Grids"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 122,
+   "title": "Best Time to Buy and Sell Stock II",
+   "slug": "best-time-to-buy-and-sell-stock-ii",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 6 : DP on Stocks"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 123,
+   "title": "Best Time to Buy and Sell Stock III",
+   "slug": "best-time-to-buy-and-sell-stock-iii",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 6 : DP on Stocks"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 125,
+   "title": "Valid Palindrome",
+   "slug": "valid-palindrome",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Two Pointers",
+    "striver": "Step 1 : Learn the basics · Lec 5 : Learn Basic Recursion"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 127,
+   "title": "Word Ladder",
+   "slug": "word-ladder",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Graph BFS",
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 130,
+   "title": "Surrounded Regions",
+   "slug": "surrounded-regions",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Graph General",
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 131,
+   "title": "Palindrome Partitioning",
+   "slug": "palindrome-partitioning",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 3 : Trying out all Combos / Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 135,
+   "title": "Candy",
+   "slug": "candy",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Array / String",
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 2 : Medium/Hard"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 142,
+   "title": "Linked List Cycle II",
+   "slug": "linked-list-cycle-ii",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 152,
+   "title": "Maximum Product Subarray",
+   "slug": "maximum-product-subarray",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Dynamic Programming",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 160,
+   "title": "Intersection of Two Linked Lists",
+   "slug": "intersection-of-two-linked-lists",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 173,
+   "title": "Binary Search Tree Iterator",
+   "slug": "binary-search-tree-iterator",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 188,
+   "title": "Best Time to Buy and Sell Stock IV",
+   "slug": "best-time-to-buy-and-sell-stock-iv",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 6 : DP on Stocks"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 200,
+   "title": "Number of Islands",
+   "slug": "number-of-islands",
+   "lists": [
+    "top150",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Graph General",
+    "top100": "Graph"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 205,
+   "title": "Isomorphic Strings",
+   "slug": "isomorphic-strings",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Hashmap",
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 1 : Basic and Easy String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 210,
+   "title": "Course Schedule II",
+   "slug": "course-schedule-ii",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Graph General",
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 216,
+   "title": "Combination Sum III",
+   "slug": "combination-sum-iii",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Backtracking",
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 222,
+   "title": "Count Complete Tree Nodes",
+   "slug": "count-complete-tree-nodes",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 226,
+   "title": "Invert Binary Tree",
+   "slug": "invert-binary-tree",
+   "lists": [
+    "top150",
+    "top100"
+   ],
+   "sections": {
+    "top150": "Binary Tree General",
+    "top100": "Binary Tree"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 234,
+   "title": "Palindrome Linked List",
+   "slug": "palindrome-linked-list",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Linked Lists",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 239,
+   "title": "Sliding Window Maximum",
+   "slug": "sliding-window-maximum",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Sliding Window",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 4 : Implementation Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 240,
+   "title": "Search a 2D Matrix II",
+   "slug": "search-a-2d-matrix-ii",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Matrix",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 3 : BS on 2D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 242,
+   "title": "Valid Anagram",
+   "slug": "valid-anagram",
+   "lists": [
+    "top150",
+    "striver"
+   ],
+   "sections": {
+    "top150": "Hashmap",
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 1 : Basic and Easy String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 328,
+   "title": "Odd Even Linked List",
+   "slug": "odd-even-linked-list",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Linked List",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 347,
+   "title": "Top K Frequent Elements",
+   "slug": "top-k-frequent-elements",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Heap",
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 3 : Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 392,
+   "title": "Is Subsequence",
+   "slug": "is-subsequence",
+   "lists": [
+    "top150",
+    "lc75"
+   ],
+   "sections": {
+    "top150": "Two Pointers",
+    "lc75": "Two Pointers"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 394,
+   "title": "Decode String",
+   "slug": "decode-string",
+   "lists": [
+    "lc75",
+    "top100"
+   ],
+   "sections": {
+    "lc75": "Stack",
+    "top100": "Stack"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 399,
+   "title": "Evaluate Division",
+   "slug": "evaluate-division",
+   "lists": [
+    "top150",
+    "lc75"
+   ],
+   "sections": {
+    "top150": "Graph General",
+    "lc75": "Graphs - DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 416,
+   "title": "Partition Equal Subset Sum",
+   "slug": "partition-equal-subset-sum",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Dynamic Programming",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 4 : DP on Subsequences"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 435,
+   "title": "Non-overlapping Intervals",
+   "slug": "non-overlapping-intervals",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Intervals",
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 2 : Medium/Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 437,
+   "title": "Path Sum III",
+   "slug": "path-sum-iii",
+   "lists": [
+    "lc75",
+    "top100"
+   ],
+   "sections": {
+    "lc75": "Binary Tree - DFS",
+    "top100": "Binary Tree"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 450,
+   "title": "Delete Node in a BST",
+   "slug": "delete-node-in-a-bst",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Binary Search Tree",
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 452,
+   "title": "Minimum Number of Arrows to Burst Balloons",
+   "slug": "minimum-number-of-arrows-to-burst-balloons",
+   "lists": [
+    "top150",
+    "lc75"
+   ],
+   "sections": {
+    "top150": "Intervals",
+    "lc75": "Intervals"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 543,
+   "title": "Diameter of Binary Tree",
+   "slug": "diameter-of-binary-tree",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Binary Tree",
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 547,
+   "title": "Number of Provinces",
+   "slug": "number-of-provinces",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Graphs - DFS",
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 560,
+   "title": "Subarray Sum Equals K",
+   "slug": "subarray-sum-equals-k",
+   "lists": [
+    "top100",
+    "striver"
+   ],
+   "sections": {
+    "top100": "Hashing",
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 700,
+   "title": "Search in a Binary Search Tree",
+   "slug": "search-in-a-binary-search-tree",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Binary Search Tree",
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 1 : Concepts"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 714,
+   "title": "Best Time to Buy and Sell Stock with Transaction Fee",
+   "slug": "best-time-to-buy-and-sell-stock-with-transaction-fee",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "DP - Multidimensional",
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 6 : DP on Stocks"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 735,
+   "title": "Asteroid Collision",
+   "slug": "asteroid-collision",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Stack",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 739,
+   "title": "Daily Temperatures",
+   "slug": "daily-temperatures",
+   "lists": [
+    "lc75",
+    "top100"
+   ],
+   "sections": {
+    "lc75": "Monotonic Stack",
+    "top100": "Stack"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 875,
+   "title": "Koko Eating Bananas",
+   "slug": "koko-eating-bananas",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Binary Search",
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 901,
+   "title": "Online Stock Span",
+   "slug": "online-stock-span",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Monotonic Stack",
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 4 : Implementation Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 1004,
+   "title": "Max Consecutive Ones III",
+   "slug": "max-consecutive-ones-iii",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Sliding Window",
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 1 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 2095,
+   "title": "Delete the Middle Node of a Linked List",
+   "slug": "delete-the-middle-node-of-a-linked-list",
+   "lists": [
+    "lc75",
+    "striver"
+   ],
+   "sections": {
+    "lc75": "Linked List",
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 2
+  },
+  {
+   "id": 6,
+   "title": "Zigzag Conversion",
+   "slug": "zigzag-conversion",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 7,
+   "title": "Reverse Integer",
+   "slug": "reverse-integer",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 1 : Learn the basics · Lec 4 : Know Basic Maths"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 8,
+   "title": "String to Integer (atoi)",
+   "slug": "string-to-integer-atoi",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 2 : Medium String Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 12,
+   "title": "Integer to Roman",
+   "slug": "integer-to-roman",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 18,
+   "title": "4Sum",
+   "slug": "4sum",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 24,
+   "title": "Swap Nodes in Pairs",
+   "slug": "swap-nodes-in-pairs",
+   "lists": [
+    "top100"
+   ],
+   "sections": {
+    "top100": "Linked Lists"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 27,
+   "title": "Remove Element",
+   "slug": "remove-element",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 29,
+   "title": "Divide Two Integers",
+   "slug": "divide-two-integers",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 8 : Bit Manipulation [Concepts & Problems] · Lec 1 : Learn Bit Manipulation"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 30,
+   "title": "Substring with Concatenation of All Words",
+   "slug": "substring-with-concatenation-of-all-words",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Sliding Window"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 32,
+   "title": "Longest Valid Parentheses",
+   "slug": "longest-valid-parentheses",
+   "lists": [
+    "top100"
+   ],
+   "sections": {
+    "top100": "Dynamic Programming"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 36,
+   "title": "Valid Sudoku",
+   "slug": "valid-sudoku",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Matrix"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 37,
+   "title": "Sudoku Solver",
+   "slug": "sudoku-solver",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 3 : Trying out all Combos / Hard"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 38,
+   "title": "Count and Say",
+   "slug": "count-and-say",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 18 : Strings · Lec 1 : Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 40,
+   "title": "Combination Sum II",
+   "slug": "combination-sum-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 41,
+   "title": "First Missing Positive",
+   "slug": "first-missing-positive",
+   "lists": [
+    "top100"
+   ],
+   "sections": {
+    "top100": "Misc"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 44,
+   "title": "Wildcard Matching",
+   "slug": "wildcard-matching",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 52,
+   "title": "N-Queens II",
+   "slug": "n-queens-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Backtracking"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 58,
+   "title": "Length of Last Word",
+   "slug": "length-of-last-word",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 66,
+   "title": "Plus One",
+   "slug": "plus-one",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Math"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 67,
+   "title": "Add Binary",
+   "slug": "add-binary",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Bit Manipulation"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 68,
+   "title": "Text Justification",
+   "slug": "text-justification",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 69,
+   "title": "Sqrt(x)",
+   "slug": "sqrtx",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Math"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 71,
+   "title": "Simplify Path",
+   "slug": "simplify-path",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Stack"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 77,
+   "title": "Combinations",
+   "slug": "combinations",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Backtracking"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 80,
+   "title": "Remove Duplicates from Sorted Array II",
+   "slug": "remove-duplicates-from-sorted-array-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 81,
+   "title": "Search in Rotated Sorted Array II",
+   "slug": "search-in-rotated-sorted-array-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 82,
+   "title": "Remove Duplicates from Sorted List II",
+   "slug": "remove-duplicates-from-sorted-list-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Linked List"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 85,
+   "title": "Maximal Rectangle",
+   "slug": "maximal-rectangle",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 86,
+   "title": "Partition List",
+   "slug": "partition-list",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Linked List"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 90,
+   "title": "Subsets II",
+   "slug": "subsets-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 92,
+   "title": "Reverse Linked List II",
+   "slug": "reverse-linked-list-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Linked List"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 97,
+   "title": "Interleaving String",
+   "slug": "interleaving-string",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 99,
+   "title": "Recover Binary Search Tree",
+   "slug": "recover-binary-search-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 110,
+   "title": "Balanced Binary Tree",
+   "slug": "balanced-binary-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 112,
+   "title": "Path Sum",
+   "slug": "path-sum",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Binary Tree General"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 115,
+   "title": "Distinct Subsequences",
+   "slug": "distinct-subsequences",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 117,
+   "title": "Populating Next Right Pointers in Each Node II",
+   "slug": "populating-next-right-pointers-in-each-node-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Binary Tree General"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 126,
+   "title": "Word Ladder II",
+   "slug": "word-ladder-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 129,
+   "title": "Sum Root to Leaf Numbers",
+   "slug": "sum-root-to-leaf-numbers",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Binary Tree General"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 132,
+   "title": "Palindrome Partitioning II",
+   "slug": "palindrome-partitioning-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 8 : MCM DP | Partition DP"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 133,
+   "title": "Clone Graph",
+   "slug": "clone-graph",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Graph General"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 134,
+   "title": "Gas Station",
+   "slug": "gas-station",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 137,
+   "title": "Single Number II",
+   "slug": "single-number-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Bit Manipulation"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 144,
+   "title": "Binary Tree Preorder Traversal",
+   "slug": "binary-tree-preorder-traversal",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 1 : Traversals"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 145,
+   "title": "Binary Tree Postorder Traversal",
+   "slug": "binary-tree-postorder-traversal",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 1 : Traversals"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 149,
+   "title": "Max Points on a Line",
+   "slug": "max-points-on-a-line",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Math"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 150,
+   "title": "Evaluate Reverse Polish Notation",
+   "slug": "evaluate-reverse-polish-notation",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Stack"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 167,
+   "title": "Two Sum II - Input Array Is Sorted",
+   "slug": "two-sum-ii-input-array-is-sorted",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Two Pointers"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 172,
+   "title": "Factorial Trailing Zeroes",
+   "slug": "factorial-trailing-zeroes",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Math"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 190,
+   "title": "Reverse Bits",
+   "slug": "reverse-bits",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Bit Manipulation"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 191,
+   "title": "Number of 1 Bits",
+   "slug": "number-of-1-bits",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Bit Manipulation"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 201,
+   "title": "Bitwise AND of Numbers Range",
+   "slug": "bitwise-and-of-numbers-range",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Bit Manipulation"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 202,
+   "title": "Happy Number",
+   "slug": "happy-number",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Hashmap"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 204,
+   "title": "Count Primes",
+   "slug": "count-primes",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 8 : Bit Manipulation [Concepts & Problems] · Lec 3 : Advanced Maths"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 209,
+   "title": "Minimum Size Subarray Sum",
+   "slug": "minimum-size-subarray-sum",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Sliding Window"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 211,
+   "title": "Design Add and Search Words Data Structure",
+   "slug": "design-add-and-search-words-data-structure",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Trie"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 212,
+   "title": "Word Search II",
+   "slug": "word-search-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Trie"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 213,
+   "title": "House Robber II",
+   "slug": "house-robber-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 2 : 1D DP"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 214,
+   "title": "Shortest Palindrome",
+   "slug": "shortest-palindrome",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 18 : Strings · Lec 1 : Hard Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 219,
+   "title": "Contains Duplicate II",
+   "slug": "contains-duplicate-ii",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Hashmap"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 221,
+   "title": "Maximal Square",
+   "slug": "maximal-square",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Multidimensional DP"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 224,
+   "title": "Basic Calculator",
+   "slug": "basic-calculator",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Stack"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 225,
+   "title": "Implement Stack using Queues",
+   "slug": "implement-stack-using-queues",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 1 : Learning"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 228,
+   "title": "Summary Ranges",
+   "slug": "summary-ranges",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Intervals"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 229,
+   "title": "Majority Element II",
+   "slug": "majority-element-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 231,
+   "title": "Power of Two",
+   "slug": "power-of-two",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 8 : Bit Manipulation [Concepts & Problems] · Lec 1 : Learn Bit Manipulation"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 232,
+   "title": "Implement Queue using Stacks",
+   "slug": "implement-queue-using-stacks",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 1 : Learning"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 235,
+   "title": "Lowest Common Ancestor of a Binary Search Tree",
+   "slug": "lowest-common-ancestor-of-a-binary-search-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 237,
+   "title": "Delete Node in a Linked List",
+   "slug": "delete-node-in-a-linked-list",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 1 : Learn 1D LinkedList"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 268,
+   "title": "Missing Number",
+   "slug": "missing-number",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 1 : Easy"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 269,
+   "title": "Alien Dictionary",
+   "slug": "alien-dictionary",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 3 : Topo Sort and Problems"
+   },
+   "difficulty": "Hard",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 274,
+   "title": "H-Index",
+   "slug": "h-index",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 279,
+   "title": "Perfect Squares",
+   "slug": "perfect-squares",
+   "lists": [
+    "top100"
+   ],
+   "sections": {
+    "top100": "Dynamic Programming"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 282,
+   "title": "Expression Add Operators",
+   "slug": "expression-add-operators",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 3 : Trying out all Combos / Hard"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 285,
+   "title": "Inorder Successor in BST",
+   "slug": "inorder-successor-in-bst",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 287,
+   "title": "Find the Duplicate Number",
+   "slug": "find-the-duplicate-number",
+   "lists": [
+    "top100"
+   ],
+   "sections": {
+    "top100": "Misc"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 289,
+   "title": "Game of Life",
+   "slug": "game-of-life",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Matrix"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 290,
+   "title": "Word Pattern",
+   "slug": "word-pattern",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Hashmap"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 297,
+   "title": "Serialize and Deserialize Binary Tree",
+   "slug": "serialize-and-deserialize-binary-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 305,
+   "title": "Number of Islands II",
+   "slug": "number-of-islands-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 5 : MinimumSpanningTree/Disjoint Set and Problems"
+   },
+   "difficulty": "Hard",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 309,
+   "title": "Best Time to Buy and Sell Stock with Cooldown",
+   "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 6 : DP on Stocks"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 312,
+   "title": "Burst Balloons",
+   "slug": "burst-balloons",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 8 : MCM DP | Partition DP"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 323,
+   "title": "Number of Connected Components in an Undirected Graph",
+   "slug": "number-of-connected-components-in-an-undirected-graph",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 1 : Learning"
+   },
+   "difficulty": "Medium",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 334,
+   "title": "Increasing Triplet Subsequence",
+   "slug": "increasing-triplet-subsequence",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 338,
+   "title": "Counting Bits",
+   "slug": "counting-bits",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Bit Manipulation"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 340,
+   "title": "Longest Substring with At Most K Distinct Characters",
+   "slug": "longest-substring-with-at-most-k-distinct-characters",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 2 : Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 344,
+   "title": "Reverse String",
+   "slug": "reverse-string",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 1 : Learn the basics · Lec 5 : Learn Basic Recursion"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 345,
+   "title": "Reverse Vowels of a String",
+   "slug": "reverse-vowels-of-a-string",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Array / String"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 355,
+   "title": "Design Twitter",
+   "slug": "design-twitter",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 3 : Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 368,
+   "title": "Largest Divisible Subset",
+   "slug": "largest-divisible-subset",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 7 : DP on LIS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 373,
+   "title": "Find K Pairs with Smallest Sums",
+   "slug": "find-k-pairs-with-smallest-sums",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Heap"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 374,
+   "title": "Guess Number Higher or Lower",
+   "slug": "guess-number-higher-or-lower",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Binary Search"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 380,
+   "title": "Insert Delete GetRandom O(1)",
+   "slug": "insert-delete-getrandom-o1",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 383,
+   "title": "Ransom Note",
+   "slug": "ransom-note",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Hashmap"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 402,
+   "title": "Remove K Digits",
+   "slug": "remove-k-digits",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 410,
+   "title": "Split Array Largest Sum",
+   "slug": "split-array-largest-sum",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 421,
+   "title": "Maximum XOR of Two Numbers in an Array",
+   "slug": "maximum-xor-of-two-numbers-in-an-array",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 17 : Tries · Lec 2: Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 424,
+   "title": "Longest Repeating Character Replacement",
+   "slug": "longest-repeating-character-replacement",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 1 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 427,
+   "title": "Construct Quad Tree",
+   "slug": "construct-quad-tree",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Divide & Conquer"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 433,
+   "title": "Minimum Genetic Mutation",
+   "slug": "minimum-genetic-mutation",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Graph BFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 438,
+   "title": "Find All Anagrams in a String",
+   "slug": "find-all-anagrams-in-a-string",
+   "lists": [
+    "top100"
+   ],
+   "sections": {
+    "top100": "Sliding Window"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 443,
+   "title": "String Compression",
+   "slug": "string-compression",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Array / String"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 451,
+   "title": "Sort Characters By Frequency",
+   "slug": "sort-characters-by-frequency",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 2 : Medium String Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 455,
+   "title": "Assign Cookies",
+   "slug": "assign-cookies",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 1 : Easy Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 460,
+   "title": "LFU Cache",
+   "slug": "lfu-cache",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 4 : Implementation Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 485,
+   "title": "Max Consecutive Ones",
+   "slug": "max-consecutive-ones",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 1 : Easy"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 493,
+   "title": "Reverse Pairs",
+   "slug": "reverse-pairs",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 3 : Hard"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 494,
+   "title": "Target Sum",
+   "slug": "target-sum",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 4 : DP on Subsequences"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 496,
+   "title": "Next Greater Element I",
+   "slug": "next-greater-element-i",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 502,
+   "title": "IPO",
+   "slug": "ipo",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Heap"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 503,
+   "title": "Next Greater Element II",
+   "slug": "next-greater-element-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 509,
+   "title": "Fibonacci Number",
+   "slug": "fibonacci-number",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 1 : Learn the basics · Lec 5 : Learn Basic Recursion"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 516,
+   "title": "Longest Palindromic Subsequence",
+   "slug": "longest-palindromic-subsequence",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 518,
+   "title": "Coin Change II",
+   "slug": "coin-change-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 4 : DP on Subsequences"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 530,
+   "title": "Minimum Absolute Difference in BST",
+   "slug": "minimum-absolute-difference-in-bst",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Binary Search Tree"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 540,
+   "title": "Single Element in a Sorted Array",
+   "slug": "single-element-in-a-sorted-array",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 542,
+   "title": "01 Matrix",
+   "slug": "01-matrix",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 545,
+   "title": "Boundary of Binary Tree",
+   "slug": "boundary-of-binary-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 583,
+   "title": "Delete Operation for Two Strings",
+   "slug": "delete-operation-for-two-strings",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 605,
+   "title": "Can Place Flowers",
+   "slug": "can-place-flowers",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Array / String"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 621,
+   "title": "Task Scheduler",
+   "slug": "task-scheduler",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 637,
+   "title": "Average of Levels in Binary Tree",
+   "slug": "average-of-levels-in-binary-tree",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Binary Tree BFS"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 643,
+   "title": "Maximum Average Subarray I",
+   "slug": "maximum-average-subarray-i",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Sliding Window"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 649,
+   "title": "Dota2 Senate",
+   "slug": "dota2-senate",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Queue"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 653,
+   "title": "Two Sum IV - Input is a BST",
+   "slug": "two-sum-iv-input-is-a-bst",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 662,
+   "title": "Maximum Width of Binary Tree",
+   "slug": "maximum-width-of-binary-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 673,
+   "title": "Number of Longest Increasing Subsequence",
+   "slug": "number-of-longest-increasing-subsequence",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 7 : DP on LIS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 678,
+   "title": "Valid Parenthesis String",
+   "slug": "valid-parenthesis-string",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 1 : Easy Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 686,
+   "title": "Repeated String Match",
+   "slug": "repeated-string-match",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 18 : Strings · Lec 1 : Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 701,
+   "title": "Insert into a Binary Search Tree",
+   "slug": "insert-into-a-binary-search-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 703,
+   "title": "Kth Largest Element in a Stream",
+   "slug": "kth-largest-element-in-a-stream",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 3 : Hard Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 704,
+   "title": "Binary Search",
+   "slug": "binary-search",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 1 : BS on 1D Arrays"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 711,
+   "title": "Number of Distinct Islands II",
+   "slug": "number-of-distinct-islands-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Hard",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 721,
+   "title": "Accounts Merge",
+   "slug": "accounts-merge",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 5 : MinimumSpanningTree/Disjoint Set and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 724,
+   "title": "Find Pivot Index",
+   "slug": "find-pivot-index",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Prefix Sum"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 727,
+   "title": "Minimum Window Subsequence",
+   "slug": "minimum-window-subsequence",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 2 : Hard Problems"
+   },
+   "difficulty": "Hard",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 733,
+   "title": "Flood Fill",
+   "slug": "flood-fill",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 743,
+   "title": "Network Delay Time",
+   "slug": "network-delay-time",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 4 : Shortest Path Algorithms and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 746,
+   "title": "Min Cost Climbing Stairs",
+   "slug": "min-cost-climbing-stairs",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "DP - 1D"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 763,
+   "title": "Partition Labels",
+   "slug": "partition-labels",
+   "lists": [
+    "top100"
+   ],
+   "sections": {
+    "top100": "Greedy"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 774,
+   "title": "Minimize Max Distance to Gas Station",
+   "slug": "minimize-max-distance-to-gas-station",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Hard",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 778,
+   "title": "Swim in Rising Water",
+   "slug": "swim-in-rising-water",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 5 : MinimumSpanningTree/Disjoint Set and Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 785,
+   "title": "Is Graph Bipartite?",
+   "slug": "is-graph-bipartite",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 787,
+   "title": "Cheapest Flights Within K Stops",
+   "slug": "cheapest-flights-within-k-stops",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 4 : Shortest Path Algorithms and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 790,
+   "title": "Domino and Tromino Tiling",
+   "slug": "domino-and-tromino-tiling",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "DP - 1D"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 796,
+   "title": "Rotate String",
+   "slug": "rotate-string",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 1 : Basic and Easy String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 802,
+   "title": "Find Eventual Safe States",
+   "slug": "find-eventual-safe-states",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 3 : Topo Sort and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 827,
+   "title": "Making A Large Island",
+   "slug": "making-a-large-island",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 5 : MinimumSpanningTree/Disjoint Set and Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 841,
+   "title": "Keys and Rooms",
+   "slug": "keys-and-rooms",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Graphs - DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 846,
+   "title": "Hand of Straights",
+   "slug": "hand-of-straights",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 11 : Heaps [Learning, Medium, Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 860,
+   "title": "Lemonade Change",
+   "slug": "lemonade-change",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 12 : Greedy Algorithms [Easy, Medium/Hard] · Lec 1 : Easy Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 863,
+   "title": "All Nodes Distance K in Binary Tree",
+   "slug": "all-nodes-distance-k-in-binary-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 3: Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 872,
+   "title": "Leaf-Similar Trees",
+   "slug": "leaf-similar-trees",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Binary Tree - DFS"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 876,
+   "title": "Middle of the Linked List",
+   "slug": "middle-of-the-linked-list",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 6 : Learn LinkedList [Single LL, Double LL, Medium, Hard Problems] · Lec 3 : Medium Problems of LL"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 907,
+   "title": "Sum of Subarray Minimums",
+   "slug": "sum-of-subarray-minimums",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 909,
+   "title": "Snakes and Ladders",
+   "slug": "snakes-and-ladders",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Graph BFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 918,
+   "title": "Maximum Sum Circular Subarray",
+   "slug": "maximum-sum-circular-subarray",
+   "lists": [
+    "top150"
+   ],
+   "sections": {
+    "top150": "Kadane's Algorithm"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 921,
+   "title": "Minimum Add to Make Parentheses Valid",
+   "slug": "minimum-add-to-make-parentheses-valid",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 18 : Strings · Lec 1 : Hard Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 930,
+   "title": "Binary Subarrays With Sum",
+   "slug": "binary-subarrays-with-sum",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 1 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 931,
+   "title": "Minimum Falling Path Sum",
+   "slug": "minimum-falling-path-sum",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 3 : 2D/3D DP and DP on Grids"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 933,
+   "title": "Number of Recent Calls",
+   "slug": "number-of-recent-calls",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Queue"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 940,
+   "title": "Distinct Subsequences II",
+   "slug": "distinct-subsequences-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 2 : Subsequences Pattern"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 947,
+   "title": "Most Stones Removed with Same Row or Column",
+   "slug": "most-stones-removed-with-same-row-or-column",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 5 : MinimumSpanningTree/Disjoint Set and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 987,
+   "title": "Vertical Order Traversal of a Binary Tree",
+   "slug": "vertical-order-traversal-of-a-binary-tree",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 13 : Binary Trees [Traversals, Medium and Hard Problems] · Lec 2 : Medium Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 992,
+   "title": "Subarrays with K Different Integers",
+   "slug": "subarrays-with-k-different-integers",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 2 : Medium String Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1008,
+   "title": "Construct Binary Search Tree from Preorder Traversal",
+   "slug": "construct-binary-search-tree-from-preorder-traversal",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 14 : Binary Search Trees [Concept and Problems] · Lec 2 : Practice Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1011,
+   "title": "Capacity To Ship Packages Within D Days",
+   "slug": "capacity-to-ship-packages-within-d-days",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1020,
+   "title": "Number of Enclaves",
+   "slug": "number-of-enclaves",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 2 : Problems on BFS/DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1021,
+   "title": "Remove Outermost Parentheses",
+   "slug": "remove-outermost-parentheses",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 1 : Basic and Easy String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1043,
+   "title": "Partition Array for Maximum Sum",
+   "slug": "partition-array-for-maximum-sum",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 8 : MCM DP | Partition DP"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1048,
+   "title": "Longest String Chain",
+   "slug": "longest-string-chain",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 7 : DP on LIS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1071,
+   "title": "Greatest Common Divisor of Strings",
+   "slug": "greatest-common-divisor-of-strings",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Array / String"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1091,
+   "title": "Shortest Path in Binary Matrix",
+   "slug": "shortest-path-in-binary-matrix",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 4 : Shortest Path Algorithms and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1092,
+   "title": "Shortest Common Supersequence ",
+   "slug": "shortest-common-supersequence",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1106,
+   "title": "Parsing A Boolean Expression",
+   "slug": "parsing-a-boolean-expression",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 8 : MCM DP | Partition DP"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1134,
+   "title": "Armstrong Number",
+   "slug": "armstrong-number",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 1 : Learn the basics · Lec 4 : Know Basic Maths"
+   },
+   "difficulty": "Easy",
+   "paid": true,
+   "count": 1
+  },
+  {
+   "id": 1137,
+   "title": "N-th Tribonacci Number",
+   "slug": "n-th-tribonacci-number",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "DP - 1D"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1161,
+   "title": "Maximum Level Sum of a Binary Tree",
+   "slug": "maximum-level-sum-of-a-binary-tree",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Binary Tree - BFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1192,
+   "title": "Critical Connections in a Network",
+   "slug": "critical-connections-in-a-network",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 6 : Other Algorithms"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1207,
+   "title": "Unique Number of Occurrences",
+   "slug": "unique-number-of-occurrences",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Hash Map / Set"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1248,
+   "title": "Count Number of Nice Subarrays",
+   "slug": "count-number-of-nice-subarrays",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 1 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1268,
+   "title": "Search Suggestions System",
+   "slug": "search-suggestions-system",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Trie"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1277,
+   "title": "Count Square Submatrices with All Ones",
+   "slug": "count-square-submatrices-with-all-ones",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 9 : DP on Squares"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1283,
+   "title": "Find the Smallest Divisor Given a Threshold",
+   "slug": "find-the-smallest-divisor-given-a-threshold",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1312,
+   "title": "Minimum Insertion Steps to Make a String Palindrome",
+   "slug": "minimum-insertion-steps-to-make-a-string-palindrome",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 5 : DP on Strings"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1318,
+   "title": "Minimum Flips to Make a OR b Equal to c",
+   "slug": "minimum-flips-to-make-a-or-b-equal-to-c",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Bit Manipulation"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1319,
+   "title": "Number of Operations to Make Network Connected",
+   "slug": "number-of-operations-to-make-network-connected",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 5 : MinimumSpanningTree/Disjoint Set and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1334,
+   "title": "Find the City With the Smallest Number of Neighbors at a Threshold Distance",
+   "slug": "find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 4 : Shortest Path Algorithms and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1358,
+   "title": "Number of Substrings Containing All Three Characters",
+   "slug": "number-of-substrings-containing-all-three-characters",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 1 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1372,
+   "title": "Longest ZigZag Path in a Binary Tree",
+   "slug": "longest-zigzag-path-in-a-binary-tree",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Binary Tree - DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1392,
+   "title": "Longest Happy Prefix",
+   "slug": "longest-happy-prefix",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 18 : Strings · Lec 1 : Hard Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1423,
+   "title": "Maximum Points You Can Obtain from Cards",
+   "slug": "maximum-points-you-can-obtain-from-cards",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 10 : Sliding Window & Two Pointer Combined Problems · Lec 1 : Medium Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1431,
+   "title": "Kids With the Greatest Number of Candies",
+   "slug": "kids-with-the-greatest-number-of-candies",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Array / String"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1448,
+   "title": "Count Good Nodes in Binary Tree",
+   "slug": "count-good-nodes-in-binary-tree",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Binary Tree - DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1456,
+   "title": "Maximum Number of Vowels in a Substring of Given Length",
+   "slug": "maximum-number-of-vowels-in-a-substring-of-given-length",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Sliding Window"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1466,
+   "title": "Reorder Routes to Make All Paths Lead to the City Zero",
+   "slug": "reorder-routes-to-make-all-paths-lead-to-the-city-zero",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Graphs - DFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1482,
+   "title": "Minimum Number of Days to Make m Bouquets",
+   "slug": "minimum-number-of-days-to-make-m-bouquets",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1493,
+   "title": "Longest Subarray of 1's After Deleting One Element",
+   "slug": "longest-subarray-of-1s-after-deleting-one-element",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Sliding Window"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1539,
+   "title": "Kth Missing Positive Number",
+   "slug": "kth-missing-positive-number",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 2 : BS on Answers"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1547,
+   "title": "Minimum Cost to Cut a Stick",
+   "slug": "minimum-cost-to-cut-a-stick",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 8 : MCM DP | Partition DP"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1614,
+   "title": "Maximum Nesting Depth of the Parentheses",
+   "slug": "maximum-nesting-depth-of-the-parentheses",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 2 : Medium String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1631,
+   "title": "Path With Minimum Effort",
+   "slug": "path-with-minimum-effort",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 4 : Shortest Path Algorithms and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1657,
+   "title": "Determine if Two Strings Are Close",
+   "slug": "determine-if-two-strings-are-close",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Hash Map / Set"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1679,
+   "title": "Max Number of K-Sum Pairs",
+   "slug": "max-number-of-k-sum-pairs",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Two Pointers"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1707,
+   "title": "Maximum XOR With an Element From Array",
+   "slug": "maximum-xor-with-an-element-from-array",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 17 : Tries · Lec 2: Problems"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1732,
+   "title": "Find the Highest Altitude",
+   "slug": "find-the-highest-altitude",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Prefix Sum"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1752,
+   "title": "Check if Array Is Sorted and Rotated",
+   "slug": "check-if-array-is-sorted-and-rotated",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 1 : Easy"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1768,
+   "title": "Merge Strings Alternately",
+   "slug": "merge-strings-alternately",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Array / String"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1781,
+   "title": "Sum of Beauty of All Substrings",
+   "slug": "sum-of-beauty-of-all-substrings",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 2 : Medium String Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1838,
+   "title": "Frequency of the Most Frequent Element",
+   "slug": "frequency-of-the-most-frequent-element",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 1 : Learn the basics · Lec 6 : Learn Basic Hashing"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1901,
+   "title": "Find a Peak Element II",
+   "slug": "find-a-peak-element-ii",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 4 : Binary Search [1D, 2D Arrays, Search Space] · Lec 3 : BS on 2D Arrays"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1903,
+   "title": "Largest Odd Number in String",
+   "slug": "largest-odd-number-in-string",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 5 : Strings [Basic and Medium] · Lec 1 : Basic and Easy String Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1922,
+   "title": "Count Good Numbers",
+   "slug": "count-good-numbers",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 7 : Recursion [PatternWise] · Lec 1 : Get a Strong Hold"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1926,
+   "title": "Nearest Exit from Entrance in Maze",
+   "slug": "nearest-exit-from-entrance-in-maze",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Graphs - BFS"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 1976,
+   "title": "Number of Ways to Arrive at Destination",
+   "slug": "number-of-ways-to-arrive-at-destination",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 15 : Graphs [Concepts & Problems] · Lec 4 : Shortest Path Algorithms and Problems"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2035,
+   "title": "Partition Array Into Two Arrays to Minimize Sum Difference",
+   "slug": "partition-array-into-two-arrays-to-minimize-sum-difference",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 16 : Dynamic Programming [Patterns and Problems] · Lec 4 : DP on Subsequences"
+   },
+   "difficulty": "Hard",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2104,
+   "title": "Sum of Subarray Ranges",
+   "slug": "sum-of-subarray-ranges",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 9 : Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation] · Lec 3 : Monotonic Stack/Queue Problems [VVV. Imp]"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2130,
+   "title": "Maximum Twin Sum of a Linked List",
+   "slug": "maximum-twin-sum-of-a-linked-list",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Linked List"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2149,
+   "title": "Rearrange Array Elements by Sign",
+   "slug": "rearrange-array-elements-by-sign",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 3 : Solve Problems on Arrays [Easy -> Medium -> Hard] · Lec 2 : Medium"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2215,
+   "title": "Find the Difference of Two Arrays",
+   "slug": "find-the-difference-of-two-arrays",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Hash Map / Set"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2220,
+   "title": "Minimum Bit Flips to Convert Number",
+   "slug": "minimum-bit-flips-to-convert-number",
+   "lists": [
+    "striver"
+   ],
+   "sections": {
+    "striver": "Step 8 : Bit Manipulation [Concepts & Problems] · Lec 2 : Interview Problems"
+   },
+   "difficulty": "Easy",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2300,
+   "title": "Successful Pairs of Spells and Potions",
+   "slug": "successful-pairs-of-spells-and-potions",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Binary Search"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2336,
+   "title": "Smallest Number in Infinite Set",
+   "slug": "smallest-number-in-infinite-set",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Heap / Priority Queue"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2352,
+   "title": "Equal Row and Column Pairs",
+   "slug": "equal-row-and-column-pairs",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Hash Map / Set"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2390,
+   "title": "Removing Stars From a String",
+   "slug": "removing-stars-from-a-string",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Stack"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2462,
+   "title": "Total Cost to Hire K Workers",
+   "slug": "total-cost-to-hire-k-workers",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Heap / Priority Queue"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  },
+  {
+   "id": 2542,
+   "title": "Maximum Subsequence Score",
+   "slug": "maximum-subsequence-score",
+   "lists": [
+    "lc75"
+   ],
+   "sections": {
+    "lc75": "Heap / Priority Queue"
+   },
+   "difficulty": "Medium",
+   "paid": false,
+   "count": 1
+  }
+ ]
+}

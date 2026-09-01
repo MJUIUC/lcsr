@@ -102,3 +102,19 @@ def url(pid: int) -> str:
         return p["url"]
     slug = "".join(c if c.isalnum() or c.isspace() or c == "-" else "" for c in p["title"].lower())
     return "https://leetcode.com/problems/" + "-".join(slug.split()) + "/"
+
+
+@cache
+def frequent() -> dict:
+    """The frequently-asked pool, merged from four public lists.
+
+    Built by tools/build_frequent.py and deduplicated there by LeetCode frontend
+    id. Deliberately NOT merged into problems(): these are a browsing and draw
+    surface, and folding them in would change the curriculum's totals and its
+    metrics. Overlap with the curriculum is reported per problem instead.
+    """
+    return json.loads((DATA / "frequent.json").read_text(encoding="utf-8"))
+
+
+def leetcode_url(slug: str) -> str:
+    return f"https://leetcode.com/problems/{slug}/"

@@ -13,7 +13,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from . import curriculum as cur
-from .plan import curriculum_view, history_view, todays_plan
+from .plan import curriculum_view, frequent_view, history_view, todays_plan
 from .schedule import SOLVED, STUCK
 from .store import MISTAKES, append, make_entry, replay, undo
 
@@ -58,6 +58,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, curriculum_view())
         if route.path == "/api/history":
             return self._send(200, history_view())
+        if route.path == "/api/frequent":
+            return self._send(200, frequent_view())
         if route.path == "/api/cues":
             return self._send(200, cur.cues())
         return self._send(404, {"error": "not found"})

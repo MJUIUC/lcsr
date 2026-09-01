@@ -321,3 +321,44 @@ def history_view() -> dict:
             "stuck": sum(1 for e in es if e["outcome"] != SOLVED),
         })
     return {"days": out, "total": len(rows)}
+
+
+def frequent_view() -> dict:
+    """The frequently-asked pool, annotated against the curriculum and the log.
+
+    Kept separate from the curriculum on purpose. The only crossing point is
+    read-only: each problem says whether it is already in the curriculum and
+    whether you have logged it, so a draw can skip what you have covered.
+    """
+    data = cur.frequent()
+    curric = cur.problems()
+    states = replay()
+
+    rows = []
+    for r in data["problems"]:
+        pid = r["id"]
+        in_cur = curric.get(pid)
+        st = states.get(pid)
+        rows.append({
+            **r,
+            "url": cur.leetcode_url(r["slug"]),
+            "in_curriculum": bool(in_cur),
+            "curriculum": ({"tier": in_cur["tier"], "week": in_cur["week"],
+                            "block": in_cur["block"]} if in_cur else None),
+            "attempted": st is not None,
+            "solved": bool(st and st.done),
+        })
+
+    return {
+        "labels": data["labels"],
+        "problems": rows,
+        "stats": {
+            "total": len(rows),
+            "in_curriculum": sum(r["in_curriculum"] for r in rows),
+            "only_here": sum(not r["in_curriculum"] for r in rows),
+            "solved": sum(r["solved"] for r in rows),
+            "paid": sum(r["paid"] for r in rows),
+            "by_count": dict(sorted(Counter(r["count"] for r in rows).items())),
+            "by_difficulty": dict(Counter(r["difficulty"] for r in rows)),
+        },
+    }

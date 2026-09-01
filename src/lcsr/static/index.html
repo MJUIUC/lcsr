@@ -194,6 +194,25 @@ details.add[open] summary::before{content:"− "}
 .grid label{font-size:12.5px;color:var(--muted)}
 .err{color:var(--danger);font-size:13px;margin-top:10px}
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.drawbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
+.drawmeta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.drawtitle{font-family:ui-serif,Georgia,serif;font-size:23px;font-weight:600;
+  letter-spacing:-.02em;display:flex;gap:11px;align-items:baseline;flex-wrap:wrap}
+.drawtitle a{text-decoration:none;border-bottom:2px solid var(--accent-soft)}
+.drawtitle a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.drawtitle .pid{font-size:14px;min-width:auto}
+.drawsub{font-size:13px;color:var(--muted);margin-top:6px}
+.filters{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:15px;box-shadow:var(--shadow)}
+.filters .chips{margin-bottom:14px}
+.filters .chips:last-child{margin-bottom:0}
+.badge.src{border-color:color-mix(in srgb,var(--accent) 30%,transparent);color:var(--accent)}
+.badge.dEasy{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.badge.dMedium{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,transparent)}
+.badge.dHard{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
+.badge.n4{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.badge.n3{border-color:var(--accent);color:var(--accent)}
 .phead2{font-size:13px;color:var(--mid);margin-bottom:13px;padding-bottom:11px;
   border-bottom:1px solid var(--line)}
 .phead2 b{color:var(--ink);font-weight:600}
@@ -246,11 +265,14 @@ const TABS = [
   {k:'today',      label:'Today'},
   {k:'curriculum', label:'Curriculum'},
   {k:'history',    label:'History'},
+  {k:'frequent',   label:'Frequent'},
   {k:'cues',       label:'Cue table'},
   {k:'stats',      label:'Stats'},
 ];
 let tab = location.hash.slice(1) || 'today';
-let plan=null, curric=null, hist=null, cues=null;
+let plan=null, curric=null, hist=null, cues=null, freq=null;
+let drawn = null;
+const FILT = {lists:new Set(), diff:new Set(), noPaid:true, noSolved:true, noCurric:false};
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
 let showAhead = false;
@@ -470,6 +492,98 @@ function vCues(){
       }).join('')).join('');
 }
 
+function freqPool(){
+  return freq.problems.filter(p=>{
+    if(FILT.noPaid && p.paid) return false;
+    if(FILT.noSolved && p.solved) return false;
+    if(FILT.noCurric && p.in_curriculum) return false;
+    if(FILT.diff.size && !FILT.diff.has(p.difficulty)) return false;
+    if(FILT.lists.size && !p.lists.some(l=>FILT.lists.has(l))) return false;
+    return true;
+  });
+}
+
+function draw(){
+  const pool = freqPool();
+  if(!pool.length){ drawn = null; return; }
+  // Weighted by how many of the four lists a problem appears in: something on
+  // all four is asked far more often than something on one, and a flat random
+  // draw over 363 would bury the nine that matter most.
+  const total = pool.reduce((a,p)=>a+p.count,0);
+  let r = Math.random()*total;
+  for(const p of pool){ r -= p.count; if(r<=0){ drawn = p; return; } }
+  drawn = pool[pool.length-1];
+}
+
+function listBadges(p){
+  return p.lists.map(l=>`<span class="badge src ${l}">${esc(freq.labels[l])}</span>`).join('');
+}
+
+function freqRow(p){
+  const c = p.curriculum;
+  return `<div class="p"><div class="phead">
+    <span class="dot ${p.solved?'done':(p.attempted?'learning':'')}"></span>
+    <span class="pid">${p.id}</span>
+    <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
+    <span class="badge d${p.difficulty}">${esc(p.difficulty)}</span>
+    ${p.paid?'<span class="badge hard">premium</span>':''}
+    <span class="badge n${p.count}">${p.count}/4 lists</span>
+    ${c?`<span class="badge ok">curriculum${c.week?' W'+c.week:''}</span>`
+       :'<span class="badge">not in curriculum</span>'}
+    ${p.solved?'<span class="badge ok">solved</span>':''}
+  </div><div class="pcue">${listBadges(p)}</div></div>`;
+}
+
+function vFrequent(){
+  const st = freq.stats, pool = freqPool();
+  const chip = (on,k,label) => `<button class="chip" aria-pressed="${on}" data-f="${k}">${label}</button>`;
+  const d = drawn;
+  return `
+  <div class="sec"><h2>Frequently asked</h2>
+    <span class="hint">${st.total} unique problems merged from four lists · separate from the curriculum</span></div>
+
+  <div class="drawbox">
+    ${d ? `
+      <div class="drawmeta">${listBadges(d)}
+        <span class="badge d${d.difficulty}">${esc(d.difficulty)}</span>
+        <span class="badge n${d.count}">${d.count}/4 lists</span>
+        ${d.curriculum?`<span class="badge ok">in curriculum${d.curriculum.week?' · W'+d.curriculum.week:''}</span>`
+                      :'<span class="badge">not in curriculum</span>'}</div>
+      <div class="drawtitle"><span class="pid">${d.id}</span>
+        <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
+      ${d.curriculum?`<div class="drawsub">${esc(d.curriculum.block)}</div>`:''}
+    ` : `<div class="drawtitle" style="opacity:.6">${pool.length?'Press draw':'No problems match these filters'}</div>`}
+    <div class="prow">
+      <button class="btn primary" id="f-draw">${d?'Draw again':'Draw'}</button>
+      <span class="hint">${pool.length} in the pool · weighted by how many lists a problem appears on</span>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="lbl">Lists</div>
+    <div class="chips">${Object.entries(freq.labels).map(([k,v])=>
+      chip(FILT.lists.has(k),'list:'+k,esc(v))).join('')}</div>
+    <div class="lbl">Difficulty</div>
+    <div class="chips">${['Easy','Medium','Hard'].map(x=>chip(FILT.diff.has(x),'diff:'+x,x)).join('')}</div>
+    <div class="lbl">Exclude</div>
+    <div class="chips">
+      ${chip(FILT.noPaid,'x:noPaid','premium')}
+      ${chip(FILT.noSolved,'x:noSolved','already solved')}
+      ${chip(FILT.noCurric,'x:noCurric','already in curriculum')}
+    </div>
+  </div>
+
+  <div class="cards" style="margin-top:22px">
+    <div class="card"><b>${st.total}</b><span>unique problems</span></div>
+    <div class="card"><b>${st.in_curriculum}</b><span>also in your curriculum</span></div>
+    <div class="card"><b>${st.only_here}</b><span>only here</span></div>
+    <div class="card"><b>${st.by_count[4]||0}</b><span>on all four lists</span></div>
+  </div>
+
+  <div class="sec"><h2>All ${pool.length}</h2><span class="hint">most-overlapping first</span></div>
+  <div class="stack">${pool.map(freqRow).join('')}</div>`;
+}
+
 function vStats(){
   const m = plan.metrics;
   const rate = m.resolve_rate==null ? '—' : Math.round(m.resolve_rate*100)+'%';
@@ -532,7 +646,7 @@ function render(opts={}){
   const y = window.scrollY;
   renderChrome();
   const v = {today:vToday, curriculum:vCurriculum, history:vHistory,
-             cues:vCues, stats:vStats}[tab] || vToday;
+             frequent:vFrequent, cues:vCues, stats:vStats}[tab] || vToday;
   $('#view').innerHTML = v();
   window.scrollTo({top: opts.top ? 0 : y});
 }
@@ -548,6 +662,7 @@ async function go(t){
   tab = t; location.hash = t;
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
   if(t==='history') hist = await api('/api/history');
+  if(t==='frequent' && !freq){ freq = await api('/api/frequent'); if(!drawn) draw(); }
   if(t==='cues' && !cues) cues = await api('/api/cues');
   render({top:true});
 }
@@ -566,6 +681,15 @@ document.addEventListener('click', async e=>{
   }
   if(e.target.id==='d-today'){ preview=null; return render(); }
   if(e.target.id==='ahead-toggle'){ showAhead = !showAhead; return render(); }
+  if(e.target.id==='f-draw'){ draw(); return render(); }
+  if(e.target.dataset.f){
+    const [kind,val] = e.target.dataset.f.split(':');
+    if(kind==='list') FILT.lists.has(val)?FILT.lists.delete(val):FILT.lists.add(val);
+    if(kind==='diff') FILT.diff.has(val)?FILT.diff.delete(val):FILT.diff.add(val);
+    if(kind==='x')    FILT[val] = !FILT[val];
+    if(drawn && !freqPool().some(p=>p.id===drawn.id)) drawn = null;
+    return render();
+  }
   if(e.target.id==='cue-all'){ cues.forEach((_,i)=>revealed.add(i)); return render(); }
   if(e.target.id==='cue-none'){ revealed.clear(); return render(); }
 

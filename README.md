@@ -78,6 +78,24 @@ There is no streak counter and no problems-solved metric. The curriculum names
 that one as the weakest predictor of interview performance, and the easiest to
 inflate.
 
+## The frequently-asked pool
+
+A separate **Frequent** tab: 363 unique problems merged from Top Interview 150,
+LeetCode 75, Top 100 Liked and Striver's A2Z, with a weighted lucky draw.
+
+It is deliberately *not* merged into the curriculum — it does not change the
+322 totals or any metric. The only crossing point is read-only: each problem
+shows whether it is already in your curriculum and whether you have logged it,
+so a draw can skip what you have covered.
+
+Deduplication is by LeetCode frontend id, the only stable key (titles repeat,
+slugs change). 599 raw entries collapse to 363: A2Z alone lists 18 problems
+under two topics, and the four lists overlap heavily.
+
+```bash
+python tools/build_frequent.py     # refetch and rebuild the pool
+```
+
 ## Regenerating the curriculum
 
 ```bash
