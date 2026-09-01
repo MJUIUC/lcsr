@@ -1,0 +1,82 @@
+[
+ {
+  "says": "“subarray / substring of size k”",
+  "reach_for": "Fixed window"
+ },
+ {
+  "says": "“longest or shortest subarray such that…”, all values non- negative",
+  "reach_for": "Variable window, shrink while invalid"
+ },
+ {
+  "says": "“count subarrays with sum = k”, or negatives are present",
+  "reach_for": "Prefix sum + hashmap — a window cannot work"
+ },
+ {
+  "says": "“exactly K distinct / odd / sum”",
+  "reach_for": "atMost(K) − atMost(K−1)"
+ },
+ {
+  "says": "“next greater”, “next smaller”, “span”, “largest rectangle”",
+  "reach_for": "Monotonic stack"
+ },
+ {
+  "says": "“max or min of every window of size k”",
+  "reach_for": "Monotonic deque"
+ },
+ {
+  "says": "“minimise the maximum”, “largest k that still works”",
+  "reach_for": "Binary search on the answer + a feasibility check"
+ },
+ {
+  "says": "“kth largest”, “top k”, “median of a stream”",
+  "reach_for": "Heap — one, or two facing each other"
+ },
+ {
+  "says": "“overlapping ranges”, “rooms needed”",
+  "reach_for": "Sort by start (merge) or by end (greedy count)"
+ },
+ {
+  "says": "The answer is not what the recursion must return",
+  "reach_for": "DFS returning one value, side variable tracking another"
+ },
+ {
+  "says": "“shortest path”, every edge costs 1",
+  "reach_for": "BFS — multi-source if there are several origins"
+ },
+ {
+  "says": "“shortest path” with weights",
+  "reach_for": "Dijkstra — unless a hop limit is imposed"
+ },
+ {
+  "says": "“are these connected”, “merge these groups”",
+  "reach_for": "Union-find"
+ },
+ {
+  "says": "“valid order given prerequisites”",
+  "reach_for": "Topological sort (Kahn's, which detects cycles for free)"
+ },
+ {
+  "says": "States and transitions, but no explicit edge list",
+  "reach_for": "It is still a graph — search over generated neighbours"
+ },
+ {
+  "says": "“return all subsets / permutations / combinations”",
+  "reach_for": "Backtracking; sort first if duplicates exist"
+ },
+ {
+  "says": "“how many ways”, “minimum cost to reach”",
+  "reach_for": "DP — define the state before writing anything"
+ },
+ {
+  "says": "Two sequences compared",
+  "reach_for": "2-D DP table"
+ },
+ {
+  "says": "“prefix matching across many words”",
+  "reach_for": "Trie"
+ },
+ {
+  "says": "“everything appears twice except…”",
+  "reach_for": "XOR"
+ }
+]
