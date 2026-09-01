@@ -265,6 +265,17 @@ function toast(msg){
   const t=$('#toast'); t.textContent=msg; t.classList.add('show');
   clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400);
 }
+// Step a YYYY-MM-DD entirely in UTC. Parsing "2026-09-01T00:00:00" gives LOCAL
+// midnight, and toISOString() then converts to UTC -- which in any zone at or
+// east of Greenwich lands back on the PREVIOUS day, so "+1 day" returned the
+// same date and the stepper silently did nothing. Parse with the Z and use the
+// setUTC* setters so the arithmetic never crosses a local/UTC boundary.
+function addDays(iso, n){
+  const d = new Date(iso + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0,10);
+}
+
 function relDay(iso){
   const d=new Date(iso+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0);
   const n=Math.round((now-d)/864e5);
@@ -511,19 +522,23 @@ function renderChrome(){
       t.k==='today'&&dueN?`<span class="count">${dueN}</span>`:''}${
       t.k==='history'&&hist?`<span class="count">${hist.total}</span>`:''}</button>`).join('');
 }
-function render(){
+// Re-rendering replaces the whole view, so scroll position has to be restored
+// deliberately. Only a tab change should jump to the top -- revealing a cue,
+// toggling work-ahead or logging an attempt must leave you where you were.
+function render(opts={}){
+  const y = window.scrollY;
   renderChrome();
   const v = {today:vToday, curriculum:vCurriculum, history:vHistory,
              cues:vCues, stats:vStats}[tab] || vToday;
   $('#view').innerHTML = v();
-  window.scrollTo({top:0});
+  window.scrollTo({top: opts.top ? 0 : y});
 }
 
 async function setDate(iso){
   if(iso === plan.date){ preview = null; return render(); }
   preview = await api('/api/plan?date=' + iso);
   showAhead = false;
-  render();
+  render({top:true});
 }
 
 async function go(t){
@@ -531,7 +546,7 @@ async function go(t){
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
   if(t==='history') hist = await api('/api/history');
   if(t==='cues' && !cues) cues = await api('/api/cues');
-  render();
+  render({top:true});
 }
 
 /* ---------------- events ---------------- */
@@ -544,10 +559,7 @@ document.addEventListener('click', async e=>{
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
   if(e.target.id==='d-next' || e.target.id==='d-prev'){
-    const cur = (preview || plan).date;
-    const d = new Date(cur+'T00:00:00');
-    d.setDate(d.getDate() + (e.target.id==='d-next' ? 1 : -1));
-    return setDate(d.toISOString().slice(0,10));
+    return setDate(addDays((preview || plan).date, e.target.id==='d-next' ? 1 : -1));
   }
   if(e.target.id==='d-today'){ preview=null; return render(); }
   if(e.target.id==='ahead-toggle'){ showAhead = !showAhead; return render(); }
