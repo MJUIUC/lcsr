@@ -98,3 +98,113 @@ def metrics(on: date | None = None) -> dict:
         "day": ((on or date.today()) - day_one()).days + 1,
         "week": current_week(on),
     }
+
+
+def state_of(states: dict, pid: int) -> dict:
+    """One problem's status, in the shape the UI wants.
+
+    'learning' means it is in the +3/+10/+30 ladder -- attempted and not yet
+    cleared. It is deliberately distinct from 'new': a problem you failed once
+    and a problem you have never opened are not the same thing to look at.
+    """
+    st = states.get(pid)
+    if st is None:
+        return {"status": "new", "attempts": 0}
+    return {
+        "status": "done" if st.done else "learning",
+        "attempts": st.attempts,
+        "box": st.box,
+        "due": st.due.isoformat() if st.due else None,
+        "last": st.last.isoformat() if st.last else None,
+        "outcomes": st.outcomes,
+    }
+
+
+def curriculum_view() -> dict:
+    """Every problem in the curriculum, grouped the way the PDF groups them."""
+    states = replay()
+    allp = sorted(cur.problems().values(), key=lambda p: p["order"])
+
+    def deco(p):
+        return {**p, "url": cur.url(p["id"]), "state": state_of(states, p["id"])}
+
+    def progress(rows):
+        done = sum(1 for r in rows if r["state"]["status"] == "done")
+        return {"done": done, "total": len(rows)}
+
+    groups = []
+
+    found = [deco(p) for p in allp if p["tier"] == "foundations"]
+    blocks = {}
+    for p in found:
+        blocks.setdefault(p["block"], []).append(p)
+    groups.append({
+        "key": "foundations", "title": "Tier 0 · Foundations",
+        "subtitle": "weeks 1–3 · prerequisite fluency, not curriculum",
+        "progress": progress(found),
+        "blocks": [{"title": k, "problems": v} for k, v in blocks.items()],
+    })
+
+    for wk in range(1, 17):
+        rows = [deco(p) for p in allp if p["week"] == wk and p["tier"] in ("core", "reps")]
+        if not rows:
+            continue
+        groups.append({
+            "key": f"week-{wk}", "week": wk, "title": rows[0]["block"],
+            "subtitle": rows[0].get("cue") or "",
+            "progress": progress(rows),
+            "blocks": [{"title": role.upper(),
+                        "problems": [r for r in rows if r["role"] == role]}
+                       for role in ("core", "reps")
+                       if any(r["role"] == role for r in rows)],
+        })
+
+    groups.append({
+        "key": "consolidation", "title": "Weeks 17–18 · Consolidation",
+        "subtitle": "no new problems · random draw across all sixteen blocks, "
+                    "the failed-problem queue, two timed mocks per week",
+        "progress": {"done": 0, "total": 0}, "blocks": [], "note": True,
+    })
+
+    stretch = [deco(p) for p in allp if p["tier"] == "stretch"]
+    groups.append({
+        "key": "stretch", "title": "Tier 3 · Stretch",
+        "subtitle": "weeks 12–18 · only for a hard bar · cut this first",
+        "progress": progress(stretch),
+        "blocks": [{"title": "", "problems": stretch}],
+    })
+
+    extra = [deco(p) for p in allp if p["tier"] == "custom"]
+    if extra:
+        groups.append({
+            "key": "added", "title": "Added", "subtitle": "your own problems",
+            "progress": progress(extra),
+            "blocks": [{"title": "", "problems": extra}],
+        })
+
+    return {"groups": groups, "overall": progress([deco(p) for p in allp])}
+
+
+def history_view() -> dict:
+    """Every attempt, newest day first."""
+    rows = entries()
+    days: dict[str, list] = {}
+    for r in rows:
+        p = cur.problems().get(r["id"], {"title": f"#{r['id']}", "hard": False,
+                                         "tier": "?", "week": None})
+        days.setdefault(r["date"], []).append({
+            "id": r["id"], "title": p["title"], "hard": p.get("hard", False),
+            "tier": p.get("tier"), "week": p.get("week"),
+            "url": cur.url(r["id"]) if r["id"] in cur.problems() else None,
+            "outcome": r["outcome"], "mistake": r.get("mistake"),
+            "note": r.get("note"), "ts": r.get("ts"),
+        })
+    out = []
+    for d in sorted(days, reverse=True):
+        es = days[d]
+        out.append({
+            "date": d, "entries": es,
+            "solved": sum(1 for e in es if e["outcome"] == SOLVED),
+            "stuck": sum(1 for e in es if e["outcome"] != SOLVED),
+        })
+    return {"days": out, "total": len(rows)}

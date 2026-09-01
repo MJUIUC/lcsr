@@ -12,7 +12,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from . import curriculum as cur
-from .plan import todays_plan
+from .plan import curriculum_view, history_view, todays_plan
 from .schedule import SOLVED, STUCK
 from .store import MISTAKES, append, make_entry, replay
 
@@ -45,6 +45,10 @@ class Handler(BaseHTTPRequestHandler):
                 s["problems"] = [enrich(p) for p in s["problems"]]
             plan["mistakes"] = list(MISTAKES)
             return self._send(200, plan)
+        if self.path == "/api/curriculum":
+            return self._send(200, curriculum_view())
+        if self.path == "/api/history":
+            return self._send(200, history_view())
         if self.path == "/api/cues":
             return self._send(200, cur.cues())
         return self._send(404, {"error": "not found"})
