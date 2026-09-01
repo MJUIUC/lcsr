@@ -145,3 +145,39 @@ one per front-end.
 - custom problems sort after everything packaged (`order = 10000 + id`) and
   surface in an "Added" section, so `lcsr add` can never write a row that
   nothing displays.
+
+
+---
+
+## Additions to the curriculum
+
+Eight problems added in `src/lcsr/data/problems_extra.json`, merged over the
+PDF's 314 (322 total). Kept in a second file for the same reason the cue table
+is: `problems.json` is regenerated from the PDF and its parser asserts the tier
+counts the document states for itself, so hand-edits there would be wiped or
+would break the assertion. Neither file is user state — that is `custom.json`.
+
+The finding behind them: in three places the curriculum includes the **advanced**
+member of a pattern family while the base exemplar is missing, which inverts its
+own Tier 1 rule of "one exemplar per distinct cue".
+
+| Pattern | Was present | Added |
+|---|---|---|
+| Kadane / max subarray | 152 Max Product Subarray (W14 core) | **53** (W13 core, before 198), **918** (W13 rep) |
+| Index-as-hash | 287 Find the Duplicate (W16 core), 41 (stretch) | **448** (W3 core), **442**, **645** (W3 reps) |
+| Fast exponentiation | nothing | **50** (W16 core), **29** (W16 rep) |
+| Binary search in a design problem | 704 etc. (W6) | **981** (W6 core) |
+
+152's difficulty is that you track the running min alongside the max — an
+insight that only lands if you already own the max-sum version. Likewise 287 has
+both a Floyd's-cycle and an index-marking solution, and without the base pattern
+only the first door is visible.
+
+`add()` takes an explicit fractional `order` so an addition slots into the real
+sequence rather than the end. This matters: the curriculum is "never reordered",
+and a base exemplar appended after its own hard variant would teach backwards.
+
+Not added, deliberately: everything in the PDF's own exclusions section (segment
+trees/Fenwick, network flow, computational geometry, string automata, heavy
+number theory, bitmask DP), and the LeetCode Premium problems 253 Meeting Rooms
+II and 269 Alien Dictionary.

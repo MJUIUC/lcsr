@@ -73,7 +73,7 @@ def test_custom_problem_merges_and_overrides():
 def test_custom_can_override_a_packaged_problem():
     cur.add(1, "Two Sum", week=4, block="Moved")
     assert cur.get(1)["week"] == 4
-    assert len(cur.problems()) == 314          # override, not an extra row
+    assert len(cur.problems()) == 322          # override, not an extra row
 
 
 def test_unknown_id_is_rejected():
@@ -85,7 +85,7 @@ def test_cues_merge_curriculum_and_added():
     from lcsr.curriculum import cues
     cues.cache_clear()
     rows = cues()
-    assert len(rows) == 41                       # 20 from the PDF + 21 added
+    assert len(rows) == 43                       # 20 from the PDF + 23 added
     assert all(c.get("group") for c in rows)     # every row is grouped
     assert {c["source"] for c in rows} == {"curriculum", "added"}
     # added rows must explain the discrimination, that is their whole point

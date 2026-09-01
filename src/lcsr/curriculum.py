@@ -20,7 +20,17 @@ TIERS = ("foundations", "core", "reps", "stretch", "custom")
 
 @cache
 def _packaged() -> list[dict]:
-    return json.loads((DATA / "problems.json").read_text(encoding="utf-8"))
+    """The PDF's 314, then our additions to the curriculum itself.
+
+    Two files for the same reason the cue table has two: problems.json is
+    regenerated from the PDF by tools/parse_curriculum.py and must not be
+    hand-edited, and that script asserts the tier counts against the figures the
+    document states for itself. problems_extra.json is ours and survives
+    regeneration. Neither is user state -- that is custom.json.
+    """
+    base = json.loads((DATA / "problems.json").read_text(encoding="utf-8"))
+    extra = json.loads((DATA / "problems_extra.json").read_text(encoding="utf-8"))
+    return [*base, *extra]
 
 
 @cache
@@ -56,7 +66,7 @@ def problems() -> dict[int, dict]:
 
 def add(pid: int, title: str, *, tier: str = "custom", week: int | None = None,
         block: str = "Added", cue: str | None = None, hard: bool = False,
-        url_override: str | None = None) -> dict:
+        url_override: str | None = None, order: float | None = None) -> dict:
     if tier not in TIERS:
         raise ValueError(f"tier must be one of {TIERS}")
     rows = custom()
@@ -65,8 +75,12 @@ def add(pid: int, title: str, *, tier: str = "custom", week: int | None = None,
         "id": int(pid), "title": title.strip(), "hard": bool(hard),
         "immediately_after_prev": False, "tier": tier, "week": week,
         "block": block, "cue": cue, "role": tier,
-        # sort after everything packaged; ties broken by id
-        "order": 10_000 + int(pid),
+        # Default: sort after everything packaged, ties broken by id. An explicit
+        # order slots a problem into its real place in the sequence instead --
+        # fractional values sit between two packaged problems without renumbering
+        # them, which matters because the curriculum is "never reordered" and a
+        # base exemplar added after its own hard variant would teach backwards.
+        "order": 10_000 + int(pid) if order is None else float(order),
         "url": url_override,
     }
     rows.append(entry)

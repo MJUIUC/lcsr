@@ -14,6 +14,10 @@ from lcsr import curriculum as cur
 from lcsr import server as srv
 from lcsr import store
 
+# 314 from the PDF + 8 added to the curriculum in problems_extra.json. Explicit
+# rather than computed, so silently dropping a problem fails here.
+TOTAL = 322
+
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
@@ -94,7 +98,7 @@ def test_added_problem_appears_in_curriculum(client):
     _, c = client("/api/curriculum")
     added = [g for g in c["groups"] if g["key"] == "added"]
     assert added and added[0]["blocks"][0]["problems"][0]["id"] == 1768
-    assert c["overall"]["total"] == 315
+    assert c["overall"]["total"] == TOTAL + 1
 
 
 def test_history_is_newest_day_first(client):
@@ -107,7 +111,7 @@ def test_history_is_newest_day_first(client):
 def test_curriculum_covers_every_problem(client):
     _, c = client("/api/curriculum")
     seen = {p["id"] for g in c["groups"] for b in g["blocks"] for p in b["problems"]}
-    assert len(seen) == 314
+    assert len(seen) == TOTAL
 
 
 def test_cannot_log_an_already_solved_problem(client):
