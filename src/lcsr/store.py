@@ -46,7 +46,18 @@ def raw_entries() -> list[dict]:
     """
     if not LOG.exists():
         return []
-    rows = [json.loads(ln) for ln in LOG.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    rows = []
+    for n, ln in enumerate(LOG.read_text(encoding="utf-8").splitlines(), 1):
+        if not ln.strip():
+            continue
+        try:
+            rows.append(json.loads(ln))
+        except json.JSONDecodeError as e:
+            # Name the line. Skipping it silently would drop real attempts and
+            # quietly change every metric; a raw JSONDecodeError names nothing.
+            raise ValueError(
+                f"{LOG}:{n} is not valid JSON ({e.msg}). Fix or delete that line."
+            ) from None
     return sorted(rows, key=lambda r: (r["date"], r.get("ts", "")))
 
 

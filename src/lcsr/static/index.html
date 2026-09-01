@@ -221,6 +221,16 @@ details.add[open] summary::before{content:"− "}
 .phead2 b{color:var(--ink);font-weight:600}
 .btn[aria-expanded=true]{border-color:var(--warn);color:var(--warn);background:var(--warn-soft);
   font-weight:550}
+.drift{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 28%,transparent);
+  color:var(--warn);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:14px}
+.drift b{color:inherit}
+.paused{background:var(--panel);border:1px solid var(--danger);border-radius:12px;
+  padding:17px 19px;margin-bottom:18px;box-shadow:var(--shadow)}
+.paused b{display:block;font-family:ui-serif,Georgia,serif;font-size:16px;color:var(--danger);
+  margin-bottom:6px}
+.paused span{font-size:13px;color:var(--mid);line-height:1.6}
+.morehint{font-size:12.5px;color:var(--muted);padding:4px 2px 0;margin-top:-20px;
+  margin-bottom:26px}
 .stepper{display:flex;align-items:center;gap:9px;margin-bottom:18px}
 .stepper .btn{min-width:34px;text-align:center}
 .stepper .btn[disabled]{opacity:.35;cursor:default}
@@ -389,9 +399,27 @@ function vToday(){
   if(ro) h += `<div class="preview">Preview — you cannot log an attempt for another
     day. Due re-solves shown are everything outstanding by then.</div>`;
 
+  if(p.drift_weeks > 0 && !ro)
+    h += `<div class="drift">The calendar says <b>week ${p.week}</b>, your progress is at
+      <b>week ${p.intake_week}</b> — ${p.drift_weeks} week${p.drift_weeks>1?'s':''} behind.
+      The daily mix follows your progress, not the date, so nothing gets skipped.</div>`;
+
+  if(p.paused)
+    h += `<div class="paused">
+      <b>${p.backlog} re-solves outstanding — new problems paused</b>
+      <span>The curriculum's rule when the cold re-solve rate slips is that you are moving
+      too fast. Stacking new material on an unworked backlog is what makes that number
+      worse, so nothing new is issued until the backlog is under ${p.pause_at}.</span></div>`;
+
   if(p.due.length){
-    h += `<div class="sec due"><h2>Due re-solves</h2><span class="hint">these come first</span></div>
+    h += `<div class="sec due"><h2>Due re-solves</h2><span class="hint">${
+      p.backlog > p.due.length
+        ? `showing the ${p.due.length} most overdue of ${p.backlog}`
+        : 'these come first'}</span></div>
           <div class="stack">${p.due.map(x=>pRow(x,{late:x.days_late,cue:true,showTier:true,readonly:ro})).join('')}</div>`;
+    if(p.due_hidden)
+      h += `<div class="morehint">+ ${p.due_hidden} more overdue, held back so the day stays
+        finishable. They surface as these clear.</div>`;
   }
   for(const s of p.sections){
     h += `<div class="sec"><h2>${esc(s.title)}</h2></div>

@@ -181,3 +181,36 @@ Not added, deliberately: everything in the PDF's own exclusions section (segment
 trees/Fenwick, network flow, computational geometry, string automata, heavy
 number theory, bitmask DP), and the LeetCode Premium problems 253 Meeting Rooms
 II and 269 Alien Dictionary.
+
+---
+
+## Neglect: missed days, carry-forward, backlog
+
+The daily path never exercises these; they appear only after you stop using the
+tool for a while, which is exactly when a silently wrong queue does most damage.
+
+**The daily mix follows progress, not the calendar.** `current_week()` counts
+elapsed days — right for reporting, wrong for choosing what to hand you. It
+reported week 6 after a five-week absence, and `allowance(6)` sets foundations to
+0, so 42 unattempted foundations became **permanently unreachable**: weeks only
+ever advance. `intake_week()` now derives the mix from the next unattempted core
+problem, so falling behind slows the schedule rather than skipping material. The
+gap between the two is reported as drift.
+
+**New problems never stack.** A skipped day is skipped, not banked — the intake
+is per-day, so three days away does not produce a quadruple-size day.
+
+**Re-solves do carry forward, capped.** They stay due and age, ordered most
+overdue first (furthest decayed, and what the schedule is most wrong about). At
+most `MAX_DUE_SHOWN = 8` surface at once; the rest are counted and held back so
+the day stays finishable, appearing as those clear.
+
+**Past `BACKLOG_PAUSE = 12` outstanding, new problems stop being issued.** The
+curriculum's own rule when the cold re-solve rate slips is "you are moving too
+fast — cut Reps and Stretch before you cut Core, and raise the number of spaced
+re-solves". Stacking new material on an unworked backlog is what makes that
+number worse. A paused day is explicitly *not* a finished day.
+
+Also closed: attempts cannot be logged for a future date, and a corrupt log line
+raises an error naming the file and line rather than a bare `JSONDecodeError` —
+skipping it silently would drop real attempts and change every metric.

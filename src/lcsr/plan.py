@@ -39,6 +39,36 @@ def current_week(on: date | None = None) -> int:
     return ((on or date.today()) - start).days // 7 + 1
 
 
+# --- neglect handling -------------------------------------------------------
+# Re-solves surfaced in one day. They carry forward indefinitely when missed, so
+# without a cap a fortnight away returns a wall of fifty and the day reads as
+# hopeless. Most-overdue first; the rest stay due and surface as these clear.
+MAX_DUE_SHOWN = 8
+
+# When this many re-solves are outstanding, new problems stop being issued. The
+# curriculum's own rule when the cold re-solve rate misses is "you are moving too
+# fast -- cut Reps and Stretch before you cut Core, and raise the number of
+# spaced re-solves". Piling new material on top of an unworked backlog is the
+# fastest way to make that number worse.
+BACKLOG_PAUSE = 12
+
+
+def intake_week(attempted: set[int]) -> int:
+    """The week whose material you are actually on, from progress not calendar.
+
+    current_week() counts elapsed days, which is right for reporting and wrong
+    for choosing the daily mix: after a five-week absence it reported week 6, and
+    allowance(6) sets foundations to 0 -- so 42 unattempted foundations became
+    permanently unreachable, because weeks only ever advance. Keying the mix to
+    the next unattempted core problem means falling behind slows the schedule
+    down instead of skipping material.
+    """
+    core = sorted((p for p in cur.problems().values() if p["tier"] == "core"),
+                  key=lambda p: p["order"])
+    nxt = next((p for p in core if p["id"] not in attempted), None)
+    return max(1, nxt["week"] or 1) if nxt else 16
+
+
 def _started_on(first_seen: dict[int, str], day: date) -> Counter:
     """New problems whose FIRST attempt fell on `day`, by tier."""
     probs = cur.problems()
@@ -53,6 +83,7 @@ def todays_plan(on: date | None = None) -> dict:
     rows = entries()
     wk = current_week(on)
     attempted = set(states)
+    iwk = intake_week(attempted)          # drives the tier mix; wk drives reporting
     is_future = on > today
 
     first_seen: dict[int, str] = {}
@@ -65,12 +96,12 @@ def todays_plan(on: date | None = None) -> dict:
         # shows the same list -- day+2 repeats day+1 forever.
         skip: Counter = Counter()
         skip.update({t: max(0, n - _started_on(first_seen, today).get(t, 0))
-                     for t, n in allowance(current_week(today)).items()})
+                     for t, n in allowance(iwk).items()})
         d = today + timedelta(days=1)
         while d < on:
-            skip.update(allowance(current_week(d)))
+            skip.update(allowance(iwk))
             d += timedelta(days=1)
-        quota = allowance(wk)
+        quota = allowance(iwk)
         remaining = dict(quota)
         started_today = Counter()
         # Only re-solves falling due on that exact day: anything due earlier is
@@ -78,16 +109,23 @@ def todays_plan(on: date | None = None) -> dict:
         due_states = [s for s in states.values() if s.due and s.due == on]
     else:
         skip = Counter()
-        quota = allowance(wk)
+        quota = allowance(iwk)
         started_today = _started_on(first_seen, on)
         remaining = {t: max(0, n - started_today.get(t, 0)) for t, n in quota.items()}
         due_states = [s for s in states.values() if s.due and s.due <= on]
 
+    # Most overdue first: a re-solve 30 days late has decayed furthest and is the
+    # one the schedule is most wrong about.
+    due_sorted = sorted(due_states, key=lambda s: (s.due, s.pid))
+    backlog = len(due_sorted)
     due = [
-        {**cur.get(s.pid), "due": s.due.isoformat(), "days_late": (on - s.due).days,
-         "box": s.box, "attempts": s.attempts}
-        for s in sorted(due_states, key=lambda s: s.due)
+        {**cur.loggable(s.pid), "due": s.due.isoformat(),
+         "days_late": (on - s.due).days, "box": s.box, "attempts": s.attempts}
+        for s in due_sorted[:MAX_DUE_SHOWN]
     ]
+    due_hidden = max(0, backlog - MAX_DUE_SHOWN)
+    # Past the threshold, new material is withheld rather than stacked on top.
+    paused = backlog >= BACKLOG_PAUSE and not is_future
 
     def pool(tier, week=None):
         """week=None means any; week='<=' means every week up to the current one.
@@ -148,10 +186,10 @@ def todays_plan(on: date | None = None) -> dict:
         return out
 
     taken: set[int] = set()
-    sections = build(lambda t: remaining.get(t, 0))
+    sections = [] if paused else build(lambda t: remaining.get(t, 0))
     # The next batch, offered behind a toggle once the day's intake is met, so
     # working ahead is a deliberate choice rather than an endlessly refilling list.
-    ahead = [] if is_future else build(lambda t: quota.get(t, 0))
+    ahead = [] if (is_future or paused) else build(lambda t: quota.get(t, 0))
 
     done_today = sum(started_today.values())
     target_today = sum(quota.values()) - quota.get("custom", 0)
@@ -161,13 +199,20 @@ def todays_plan(on: date | None = None) -> dict:
         "week": wk,
         "day": ((on - day_one()).days + 1) if day_one() else 1,
         "due": due,
+        "due_hidden": due_hidden,
+        "backlog": backlog,
+        "paused": paused,
+        "pause_at": BACKLOG_PAUSE,
+        "intake_week": iwk,
+        # Positive means the calendar has run ahead of your progress.
+        "drift_weeks": wk - iwk,
         "sections": sections,
         "ahead": ahead,
         "done_today": done_today,
         "target_today": target_today,
         "resolves_today": sum(1 for r in rows if r["date"] == on.isoformat()
                               and first_seen.get(r["id"]) != on.isoformat()),
-        "caught_up": (not sections and not due) and not is_future,
+        "caught_up": (not sections and not due) and not is_future and not paused,
         "metrics": metrics(on),
     }
 

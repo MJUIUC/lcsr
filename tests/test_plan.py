@@ -101,12 +101,20 @@ def test_allowance_matches_the_documented_load():
 
 def test_reps_interleave_back_across_earlier_weeks():
     """Reps must not be massed into their own week -- week 1's reps have to stay
-    reachable in week 5, or they are stranded forever."""
-    log(1, on=TODAY - timedelta(days=29))    # puts us in week 5
+    reachable once you reach week 5, or they are stranded forever.
+
+    Reaching week 5 means finishing weeks 1-4's core, not merely letting four
+    weeks elapse: the daily mix follows progress rather than the calendar, so
+    that falling behind slows the schedule instead of skipping material.
+    """
+    from lcsr import curriculum as c
+    for q in c.problems().values():
+        if q["tier"] == "core" and q["week"] and q["week"] <= 4:
+            log(q["id"])
     p = todays_plan()
-    assert p["week"] == 5
+    assert p["intake_week"] == 5
     reps = [s for s in p["sections"] if s["title"].startswith("Reps")]
-    assert reps, "no reps section in week 5"
+    assert reps, "no reps section at week 5"
     assert any(q["week"] < 5 for q in reps[0]["problems"]), "reps did not reach back"
 
 

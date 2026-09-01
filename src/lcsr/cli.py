@@ -38,6 +38,8 @@ def label(p: dict) -> str:
 
 def cmd_log(a):
     on = parse_day(a.date)
+    if on > date.today():
+        raise SystemExit(f"cannot log an attempt for {on}: it is in the future")
     outcome = STUCK if a.stuck else SOLVED
     if a.mistake and outcome == SOLVED:
         raise SystemExit("--mistake only applies to a stuck attempt")

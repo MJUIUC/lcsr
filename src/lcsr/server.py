@@ -125,6 +125,8 @@ class Handler(BaseHTTPRequestHandler):
         if outcome == SOLVED:
             mistake = None                            # only meaningful on a failure
         on = date.fromisoformat(body["date"]) if body.get("date") else date.today()
+        if on > date.today():
+            raise ValueError("cannot log an attempt for a future date")
         append(make_entry(pid, outcome, on, mistake, note=(body.get("note") or None)))
         st = replay()[pid]
         return {"ok": True, "id": pid, "done": st.done,
