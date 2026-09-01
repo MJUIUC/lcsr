@@ -53,6 +53,7 @@ lcsr show 42                     # the cue and the link — but not the pattern 
 lcsr log 42                      # solved it cold
 lcsr log 42 --stuck --mistake invariant
 lcsr log 1 217 242 --date yesterday
+lcsr amend 15 --stuck --mistake no-pattern   # it was not actually solved
 lcsr undo 209                    # retract the most recent attempt
 lcsr stats                       # the three metrics the curriculum names
 lcsr cues                        # self-test the cue table; --answers to check
@@ -63,9 +64,12 @@ Mistake classes: `off-by-one`, `invariant`, `edge-case`, `no-pattern`.
 
 ## How it works
 
-`~/.lcsr/log.jsonl` is append-only and is the only record. Undo appends a
+`~/.lcsr/log.jsonl` is append-only and is the only record. Undo and amend append a
 retraction rather than deleting a line, so a mis-logged attempt is recoverable
-and the record of what happened is never rewritten underneath you. Due dates, boxes and
+and the record of what happened is never rewritten underneath you. An amend
+keeps the original attempt's date: correcting a button-press is not the same as
+working the problem again today, and re-logging would shift the due date and
+consume the day's quota. Due dates, boxes and
 every metric are recomputed from it on each run, so nothing can drift out of
 sync and the scheduling rule can change later without invalidating history.
 

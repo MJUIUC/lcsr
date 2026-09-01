@@ -165,3 +165,27 @@ def test_only_the_latest_attempt_is_undoable(client):
     _, h = client("/api/history")
     flags = {(d["date"], e["can_undo"]) for d in h["days"] for e in d["entries"]}
     assert ("2026-09-01", True) in flags and ("2026-08-30", False) in flags
+
+
+def test_amend_endpoint_flips_a_solved_problem(client):
+    client("/api/log", {"id": 1, "outcome": "solved", "date": "2026-08-30"})
+    code, r = client("/api/amend", {"id": 1, "outcome": "stuck", "mistake": "invariant"})
+    assert code == 200 and r["was"] == "solved" and r["now"] == "stuck"
+    assert r["date"] == "2026-08-30"
+    assert r["due"] == "2026-09-02"          # +3 from the original date, not today
+    _, h = client("/api/history")
+    assert h["total"] == 1                   # replaced, not a second attempt
+    assert h["days"][0]["entries"][0]["mistake"] == "invariant"
+
+
+def test_amend_then_the_solved_guard_no_longer_blocks(client):
+    client("/api/log", {"id": 1, "outcome": "solved"})
+    client("/api/amend", {"id": 1, "outcome": "stuck"})
+    code, _ = client("/api/log", {"id": 1, "outcome": "solved"})
+    assert code == 200, "re-solve of a now-unsolved problem should be allowed"
+
+
+def test_amend_rejects_a_bad_mistake(client):
+    client("/api/log", {"id": 1, "outcome": "solved"})
+    code, r = client("/api/amend", {"id": 1, "outcome": "stuck", "mistake": "nope"})
+    assert code == 400 and "mistake must be one of" in r["error"]

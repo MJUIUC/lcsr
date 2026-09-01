@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from . import curriculum as cur
 from .plan import metrics, todays_plan
 from .schedule import SOLVED, STUCK
-from .store import MISTAKES, append, make_entry, replay, undo
+from .store import MISTAKES, amend, append, make_entry, replay, undo
 
 B, D, R, G, Y, X = "\033[1m", "\033[2m", "\033[31m", "\033[32m", "\033[33m", "\033[0m"
 if not sys.stdout.isatty():
@@ -157,6 +157,18 @@ def cmd_add(a):
     print(f"\nadded {label(p)}\n{D}{cur.url(p['id'])}{X}\n")
 
 
+def cmd_amend(a):
+    outcome = STUCK if a.stuck else SOLVED
+    for pid in a.ids:
+        cur.loggable(pid)
+    for pid in a.ids:
+        was = amend(pid, outcome, a.mistake if a.stuck else None, a.note)
+        st = replay()[pid]
+        where = f"{G}done{X}" if st.done else f"{Y}returns {st.due}{X}"
+        print(f"\n{was['outcome']} -> {B}{outcome}{X} on {was['date']} for "
+              f"{label(cur.loggable(pid))}\n  now: {where}\n")
+
+
 def cmd_undo(a):
     for pid in a.ids:
         was = undo(pid)
@@ -192,6 +204,13 @@ def main(argv=None):
     p.add_argument("--again", action="store_true",
                    help="re-open a problem that is already solved")
     p.set_defaults(fn=cmd_log)
+
+    p = sub.add_parser("amend", help="change the most recent attempt's outcome")
+    p.add_argument("ids", nargs="+", type=int)
+    p.add_argument("--stuck", action="store_true", help="change it to stuck")
+    p.add_argument("--mistake", choices=MISTAKES)
+    p.add_argument("--note")
+    p.set_defaults(fn=cmd_amend)
 
     p = sub.add_parser("undo", help="retract the most recent attempt")
     p.add_argument("ids", nargs="+", type=int)

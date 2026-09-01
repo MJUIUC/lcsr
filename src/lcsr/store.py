@@ -77,6 +77,26 @@ def make_undo(pid: int, on: date) -> dict:
             "date": on.isoformat(), "id": pid, "undo": True}
 
 
+def amend(pid: int, outcome: str, mistake: str | None = None,
+          note: str | None = None) -> dict:
+    """Replace the most recent attempt's outcome, keeping its original date.
+
+    This is the "I pressed the wrong button" path, which is different from
+    logging a fresh attempt: re-logging today would claim you worked the problem
+    today, shifting its next due date and consuming today's quota. Implemented as
+    a retraction plus a replacement at the same date, so the log stays
+    append-only and the correction is visible rather than silent.
+    """
+    live = [r for r in entries() if r["id"] == pid]
+    if not live:
+        raise ValueError(f"{pid} has no logged attempt to change")
+    last = live[-1]
+    on = date.fromisoformat(last["date"])
+    append(make_undo(pid, on))
+    append(make_entry(pid, outcome, on, mistake, note=note))
+    return last
+
+
 def undo(pid: int) -> dict:
     live = [r for r in entries() if r["id"] == pid]
     if not live:

@@ -310,25 +310,37 @@ function relDay(iso){
 }
 
 /* ---------------- problem row ---------------- */
-function logPanel(p){
+function logPanel(p, solved){
+  const chips = `<div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">— only recorded when logged as stuck</span></div>
+      <div class="chips">${(plan?.mistakes||[]).map(m=>
+        `<button class="chip" data-mistake="${m}" aria-pressed="false">${m}</button>`).join('')}</div>`;
+  const head = solved
+    ? `<div class="phead2">This is logged as <b>solved</b>. Changing it rewrites that
+        attempt in place, keeping its original date — it does not count as working
+        the problem again today.</div>`
+    : `<div class="phead2">Logging <b>${p.id}</b> — stuck means it returns in 3 days,
+        then 10, then 30. Failing again resets it to 3.</div>`;
+  const foot = solved
+    ? `<button class="btn warn" data-act="amend-stuck">Change to stuck</button>
+       <button class="btn" data-act="amend-clear">Remove the attempt</button>
+       <button class="btn" data-act="cancel">Cancel</button>`
+    : `<button class="btn primary" data-act="solved">Log as solved</button>
+       <button class="btn warn" data-act="confirm">Log as stuck</button>
+       <button class="btn" data-act="cancel">Cancel</button>`;
   return `<div class="panel" data-panel hidden>
-      <div class="phead2">Logging <b>${p.id}</b> — stuck means it returns in 3 days,
-        then 10, then 30. Failing again resets it to 3.</div>
+      ${head}
       <div class="lbl">Note — the cue → the pattern</div>
       <textarea data-note placeholder="one line, in your own words"></textarea>
-      <div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">— only recorded when logged as stuck</span></div>
-      <div class="chips">${(plan?.mistakes||[]).map(m=>
-        `<button class="chip" data-mistake="${m}" aria-pressed="false">${m}</button>`).join('')}</div>
-      <div class="prow">
-        <button class="btn primary" data-act="solved">Log as solved</button>
-        <button class="btn warn" data-act="confirm">Log as stuck</button>
-        <button class="btn" data-act="cancel">Cancel</button>
-      </div>
+      ${chips}
+      <div class="prow">${foot}</div>
     </div>`;
 }
 
 function logActions(solved){
-  return solved ? '' : `<span class="pacts">
+  if(solved) return `<span class="pacts">
+      <button class="btn" data-act="change">Change</button>
+    </span>`;
+  return `<span class="pacts">
       <button class="btn" data-act="solved">Solved</button>
       <button class="btn warn" data-act="stuck" aria-expanded="false">Stuck</button>
       <button class="btn" data-act="note">Note</button>
@@ -344,12 +356,7 @@ function pRow(p, o={}){
     late!=null ? `<span class="badge late">${late>0?late+'d late':'due today'}</span>` : '',
     o.showTier ? `<span class="badge">${esc(p.tier)}${p.week?' · W'+p.week:''}</span>` : '',
   ].join('');
-  const acts = (o.readonly || (st.status==='done' && !o.alwaysAct)) ? '' : `
-      <span class="pacts">
-        <button class="btn" data-act="solved">Solved</button>
-        <button class="btn warn" data-act="stuck" aria-expanded="false">Stuck</button>
-        <button class="btn" data-act="note" title="add a note before logging">Note</button>
-      </span>`;
+  const acts = o.readonly ? '' : logActions(st.status === 'done');
   let meta = '';
   if(st.status==='done')      meta = `<div class="pmeta"><span class="ok">✓ solved</span> · ${st.attempts} attempt${st.attempts>1?'s':''}${st.last?' · last '+relDay(st.last):''}</div>`;
   else if(st.status==='learning' && st.due) meta = `<div class="pmeta"><span class="w">returns ${st.due}</span> · ${relDay(st.due)} · ${st.attempts} attempt${st.attempts>1?'s':''}</div>`;
@@ -364,7 +371,7 @@ function pRow(p, o={}){
     </div>
     ${o.cue && p.cue ? `<div class="pcue">cue: ${esc(p.cue)}</div>` : ''}
     ${meta}
-    ${logPanel(p)}
+    ${o.readonly ? '' : logPanel(p, st.status === 'done')}
   </div>`;
 }
 
@@ -547,7 +554,7 @@ function freqRow(p){
     ${c?`<span class="badge ok">curriculum${c.week?' W'+c.week:''}</span>`
        :'<span class="badge">not in curriculum</span>'}
     ${logActions(p.solved)}
-  </div><div class="pcue">${listBadges(p)}</div>${meta}${logPanel(p)}</div>`;
+  </div><div class="pcue">${listBadges(p)}</div>${meta}${logPanel(p, p.solved)}</div>`;
 }
 
 function vFrequent(){
@@ -569,8 +576,8 @@ function vFrequent(){
         <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
       ${d.curriculum?`<div class="drawsub">${esc(d.curriculum.block)}</div>`:''}
       <div class="drawacts p" data-id="${d.id}">
-        ${d.solved?'<span class="badge ok">already solved</span>':logActions(false)}
-        ${logPanel(d)}
+        ${logActions(d.solved)}
+        ${logPanel(d, d.solved)}
       </div>
     ` : `<div class="drawtitle" style="opacity:.6">${pool.length?'Press draw':'No problems match these filters'}</div>`}
     <div class="prow">
@@ -668,6 +675,16 @@ function render(opts={}){
   window.scrollTo({top: opts.top ? 0 : y});
 }
 
+async function refreshAll(){
+  plan = await api('/api/plan');
+  if(curric) curric = await api('/api/curriculum');
+  if(hist)   hist   = await api('/api/history');
+  if(freq){ freq = await api('/api/frequent');
+            if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
+  if(preview) preview = await api('/api/plan?date=' + preview.date);
+  render();
+}
+
 async function setDate(iso){
   if(iso === plan.date){ preview = null; return render(); }
   preview = await api('/api/plan?date=' + iso);
@@ -739,6 +756,27 @@ document.addEventListener('click', async e=>{
   }
   // 'stuck' and 'note' both just open the panel; nothing is written until a
   // Log button in it is pressed, so a mistyped note is never committed.
+  if(act==='change'){
+    panel.hidden = false;
+    panel.scrollIntoView({block:'nearest', behavior:'smooth'});
+    return;
+  }
+  if(act==='amend-stuck' || act==='amend-clear'){
+    const note = panel.querySelector('[data-note]').value.trim();
+    try{
+      if(act==='amend-clear'){
+        const r = await api('/api/undo', {id});
+        toast(`${id} — attempt removed`);
+      }else{
+        const r = await api('/api/amend', {id, outcome:'stuck',
+                            mistake: draft[id].mistake, note});
+        toast(`${id} — now stuck, returns ${r.due}`);
+      }
+      delete draft[id];
+      await refreshAll();
+    }catch(err){ toast(err.message); }
+    return;
+  }
   if(act==='stuck' || act==='note'){
     panel.hidden = false;
     card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','true');

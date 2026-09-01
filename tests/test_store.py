@@ -137,3 +137,44 @@ def test_undo_frees_the_daily_quota_again():
     before = todays_plan()["done_today"]
     store.undo(1)
     assert todays_plan()["done_today"] == before - 1
+
+
+def test_amend_keeps_the_original_date():
+    """The correction path must not claim you worked the problem today: that
+    would shift the due date and eat today's quota."""
+    yday = DAY - timedelta(days=1)
+    log(1, "solved", yday)
+    store.amend(1, "stuck")
+    st = replay()[1]
+    assert st.last == yday
+    assert st.due == yday + timedelta(days=3)     # +3 from the ORIGINAL date
+    assert st.attempts == 1                       # replaced, not appended
+
+
+def test_amend_solved_to_stuck_and_back():
+    log(1, "solved", DAY)
+    store.amend(1, "stuck", mistake="invariant")
+    assert not replay()[1].done and replay()[1].due == DAY + timedelta(days=3)
+    store.amend(1, "solved")
+    assert replay()[1].done
+
+
+def test_amend_is_append_only_and_visible():
+    log(1, "solved", DAY)
+    store.amend(1, "stuck")
+    raw = store.raw_entries()
+    assert [r.get("outcome") or "UNDO" for r in raw] == ["solved", "UNDO", "stuck"]
+    assert len(store.entries()) == 1
+
+
+def test_amend_with_nothing_logged_is_rejected():
+    with pytest.raises(ValueError, match="no logged attempt"):
+        store.amend(1, "stuck")
+
+
+def test_amend_does_not_consume_todays_quota():
+    from lcsr.plan import todays_plan
+    log(1, "solved", date.today() - timedelta(days=1))
+    before = todays_plan()["done_today"]
+    store.amend(1, "stuck")
+    assert todays_plan()["done_today"] == before
