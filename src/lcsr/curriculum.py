@@ -118,3 +118,36 @@ def frequent() -> dict:
 
 def leetcode_url(slug: str) -> str:
     return f"https://leetcode.com/problems/{slug}/"
+
+
+@cache
+def frequent_index() -> dict[int, dict]:
+    return {p["id"]: p for p in frequent()["problems"]}
+
+
+def loggable(pid: int) -> dict:
+    """Resolve a problem from the curriculum OR the frequently-asked pool.
+
+    Attempts are recorded against both sets from one log, because 227 of the 363
+    frequent problems ARE curriculum problems and solving one is a single event.
+    What stays separate is the accounting: metrics() scopes itself to curriculum
+    ids, so logging a frequent-only problem never moves the curriculum's numbers.
+    """
+    hit = problems().get(pid)
+    if hit:
+        return hit
+    fq = frequent_index().get(pid)
+    if fq:
+        return {**fq, "tier": "frequent", "week": None,
+                "block": "Frequently asked", "role": "frequent",
+                "immediately_after_prev": False, "cue": None, "order": 20_000 + pid}
+    raise KeyError(f"{pid} is not in the curriculum or the frequent list")
+
+
+def url_of(pid: int) -> str:
+    if pid in problems():
+        return url(pid)
+    fq = frequent_index().get(pid)
+    if fq:
+        return leetcode_url(fq["slug"])
+    raise KeyError(f"{pid} is not in the curriculum or the frequent list")

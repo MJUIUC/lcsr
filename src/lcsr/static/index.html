@@ -194,6 +194,9 @@ details.add[open] summary::before{content:"− "}
 .grid label{font-size:12.5px;color:var(--muted)}
 .err{color:var(--danger);font-size:13px;margin-top:10px}
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.drawacts{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;border:none!important;
+  box-shadow:none!important;background:none!important;border-radius:0!important}
+.drawacts .panel{flex:1 1 100%;border-radius:10px;border:1px solid var(--line);margin-top:4px}
 .drawbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
 .drawmeta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
@@ -307,6 +310,31 @@ function relDay(iso){
 }
 
 /* ---------------- problem row ---------------- */
+function logPanel(p){
+  return `<div class="panel" data-panel hidden>
+      <div class="phead2">Logging <b>${p.id}</b> — stuck means it returns in 3 days,
+        then 10, then 30. Failing again resets it to 3.</div>
+      <div class="lbl">Note — the cue → the pattern</div>
+      <textarea data-note placeholder="one line, in your own words"></textarea>
+      <div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">— only recorded when logged as stuck</span></div>
+      <div class="chips">${(plan?.mistakes||[]).map(m=>
+        `<button class="chip" data-mistake="${m}" aria-pressed="false">${m}</button>`).join('')}</div>
+      <div class="prow">
+        <button class="btn primary" data-act="solved">Log as solved</button>
+        <button class="btn warn" data-act="confirm">Log as stuck</button>
+        <button class="btn" data-act="cancel">Cancel</button>
+      </div>
+    </div>`;
+}
+
+function logActions(solved){
+  return solved ? '' : `<span class="pacts">
+      <button class="btn" data-act="solved">Solved</button>
+      <button class="btn warn" data-act="stuck" aria-expanded="false">Stuck</button>
+      <button class="btn" data-act="note">Note</button>
+    </span>`;
+}
+
 function pRow(p, o={}){
   const st = p.state || {};
   const late = o.late;
@@ -336,20 +364,7 @@ function pRow(p, o={}){
     </div>
     ${o.cue && p.cue ? `<div class="pcue">cue: ${esc(p.cue)}</div>` : ''}
     ${meta}
-    <div class="panel" data-panel hidden>
-      <div class="phead2">Logging <b>${p.id}</b> as <b>stuck</b> — it returns in 3 days,
-        then 10, then 30. Failing again resets it to 3.</div>
-      <div class="lbl">Note — the cue → the pattern</div>
-      <textarea data-note placeholder="one line, in your own words"></textarea>
-      <div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">— only recorded when logged as stuck</span></div>
-      <div class="chips">${(plan?.mistakes||[]).map(m=>
-        `<button class="chip" data-mistake="${m}" aria-pressed="false">${m}</button>`).join('')}</div>
-      <div class="prow">
-        <button class="btn primary" data-act="solved">Log as solved</button>
-        <button class="btn warn" data-act="confirm">Log as stuck</button>
-        <button class="btn" data-act="cancel">Cancel</button>
-      </div>
-    </div>
+    ${logPanel(p)}
   </div>`;
 }
 
@@ -521,17 +536,19 @@ function listBadges(p){
 
 function freqRow(p){
   const c = p.curriculum;
-  return `<div class="p"><div class="phead">
+  const meta = p.solved ? `<div class="pmeta"><span class="ok">✓ solved</span> · ${p.attempts} attempt${p.attempts>1?'s':''}</div>`
+    : p.due ? `<div class="pmeta"><span class="w">returns ${p.due}</span> · ${relDay(p.due)}</div>` : '';
+  return `<div class="p ${p.solved?'isdone':''}" data-id="${p.id}"><div class="phead">
     <span class="dot ${p.solved?'done':(p.attempted?'learning':'')}"></span>
     <span class="pid">${p.id}</span>
     <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
     <span class="badge d${p.difficulty}">${esc(p.difficulty)}</span>
     ${p.paid?'<span class="badge hard">premium</span>':''}
-    <span class="badge n${p.count}">${p.count}/4 lists</span>
+    <span class="badge n${p.count}">${p.count}/4</span>
     ${c?`<span class="badge ok">curriculum${c.week?' W'+c.week:''}</span>`
        :'<span class="badge">not in curriculum</span>'}
-    ${p.solved?'<span class="badge ok">solved</span>':''}
-  </div><div class="pcue">${listBadges(p)}</div></div>`;
+    ${logActions(p.solved)}
+  </div><div class="pcue">${listBadges(p)}</div>${meta}${logPanel(p)}</div>`;
 }
 
 function vFrequent(){
@@ -552,6 +569,10 @@ function vFrequent(){
       <div class="drawtitle"><span class="pid">${d.id}</span>
         <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
       ${d.curriculum?`<div class="drawsub">${esc(d.curriculum.block)}</div>`:''}
+      <div class="drawacts p" data-id="${d.id}">
+        ${d.solved?'<span class="badge ok">already solved</span>':logActions(false)}
+        ${logPanel(d)}
+      </div>
     ` : `<div class="drawtitle" style="opacity:.6">${pool.length?'Press draw':'No problems match these filters'}</div>`}
     <div class="prow">
       <button class="btn primary" id="f-draw">${d?'Draw again':'Draw'}</button>
@@ -701,6 +722,8 @@ document.addEventListener('click', async e=>{
       plan = await api('/api/plan');
       hist = await api('/api/history');
       if(curric) curric = await api('/api/curriculum');
+      if(freq){ freq = await api('/api/frequent');
+                if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
       if(preview) preview = await api('/api/plan?date=' + preview.date);
       render();
     }catch(err){ toast(err.message); }
@@ -743,6 +766,8 @@ document.addEventListener('click', async e=>{
       plan = await api('/api/plan');
       if(curric) curric = await api('/api/curriculum');
       if(hist)   hist   = await api('/api/history');
+      if(freq){ freq = await api('/api/frequent');
+                if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
       render();
     }catch(err){ toast(err.message); }
   }

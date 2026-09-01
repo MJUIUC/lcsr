@@ -109,3 +109,61 @@ def test_stats_add_up(pool):
 def test_urls_are_wellformed(pool):
     for p in pool:
         assert p["url"] == f"https://leetcode.com/problems/{p['slug']}/"
+
+
+# --- logging a frequent-only problem ------------------------------------
+
+def freq_only_id():
+    curric = cur.problems()
+    return next(p["id"] for p in frequent_view()["problems"] if p["id"] not in curric)
+
+
+def test_a_frequent_only_problem_can_be_logged():
+    from datetime import date
+    from lcsr.store import append, make_entry, replay
+    pid = freq_only_id()
+    cur.loggable(pid)                      # must resolve, not raise
+    append(make_entry(pid, "stuck", date.today()))
+    assert replay()[pid].due is not None   # gets the same +3/+10/+30 ladder
+
+
+def test_logging_a_frequent_only_problem_does_not_move_curriculum_metrics():
+    """The whole point of keeping the sets separate."""
+    from datetime import date
+    from lcsr.plan import metrics
+    from lcsr.store import append, make_entry
+    append(make_entry(1, "solved", date.today()))          # a curriculum problem
+    before = metrics()
+    append(make_entry(freq_only_id(), "solved", date.today()))
+    after = metrics()
+    for k in ("attempted", "total", "first_try", "resolve_rate", "resolve_n"):
+        assert after[k] == before[k], f"{k} moved: {before[k]} -> {after[k]}"
+
+
+def test_solving_a_shared_problem_counts_in_both():
+    """227 of the 363 ARE curriculum problems; solving one is a single event and
+    must register on both surfaces."""
+    from datetime import date
+    from lcsr.plan import metrics
+    from lcsr.store import append, make_entry
+    shared = next(p["id"] for p in frequent_view()["problems"] if p["in_curriculum"])
+    append(make_entry(shared, "solved", date.today()))
+    assert metrics()["attempted"] == 1
+    assert next(p for p in frequent_view()["problems"] if p["id"] == shared)["solved"]
+
+
+def test_frequent_only_problem_shows_in_history_with_a_title():
+    from datetime import date
+    from lcsr.plan import history_view
+    from lcsr.store import append, make_entry
+    pid = freq_only_id()
+    append(make_entry(pid, "solved", date.today()))
+    e = history_view()["days"][0]["entries"][0]
+    assert e["id"] == pid
+    assert not e["title"].startswith("#"), "fell back to a bare id"
+    assert e["url"] and e["url"].startswith("https://leetcode.com/problems/")
+
+
+def test_unknown_problem_still_rejected():
+    with pytest.raises(KeyError, match="not in the curriculum or the frequent list"):
+        cur.loggable(999999)

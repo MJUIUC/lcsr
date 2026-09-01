@@ -43,7 +43,7 @@ def cmd_log(a):
         raise SystemExit("--mistake only applies to a stuck attempt")
     states = replay()
     for pid in a.ids:
-        cur.get(pid)                       # validate all before writing any
+        cur.loggable(pid)                  # curriculum OR frequent pool
         st = states.get(pid)
         if st is not None and st.done and not a.again:
             raise SystemExit(
@@ -55,7 +55,7 @@ def cmd_log(a):
     print(f"\nlogged {len(a.ids)} as {B}{outcome}{X} on {on}\n")
     for pid in a.ids:
         st = states[pid]
-        print(f"  {label(cur.get(pid))}  "
+        print(f"  {label(cur.loggable(pid))}  "
               f"{f'{Y}re-solve {st.due}{X}' if st.due else f'{G}done{X}'}")
     print()
 
@@ -164,7 +164,7 @@ def cmd_undo(a):
         where = "not attempted" if st is None else (
             f"{G}done{X}" if st.done else f"{Y}returns {st.due}{X}")
         print(f"\nundid {was['outcome']} on {was['date']} for "
-              f"{label(cur.get(pid))}\n  now: {where}\n")
+              f"{label(cur.loggable(pid))}\n  now: {where}\n")
 
 
 def cmd_serve(a):

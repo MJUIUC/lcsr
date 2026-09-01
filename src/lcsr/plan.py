@@ -174,10 +174,18 @@ def todays_plan(on: date | None = None) -> dict:
 
 def metrics(on: date | None = None) -> dict:
     """The three the curriculum names. 'Problems completed' is deliberately absent."""
-    rows = entries()
-    if not rows:
+    all_rows = entries()
+    if not all_rows:
         return {"attempted": 0, "total": len(cur.problems())}
-    states = replay(rows)
+    # Scope to the curriculum. The log also carries attempts at frequent-only
+    # problems, and folding those in would inflate "attempted" past the total and
+    # quietly move the cold re-solve rate -- the metric the curriculum says
+    # predicts performance.
+    curric = cur.problems()
+    rows = [r for r in all_rows if r["id"] in curric]
+    if not rows:
+        return {"attempted": 0, "total": len(curric)}
+    states = {k: v for k, v in replay(all_rows).items() if k in curric}
 
     # Cold re-solve rate: of attempts that were NOT the first at that problem,
     # how many were solved. This is the headline metric, target >70%.
@@ -293,12 +301,14 @@ def history_view() -> dict:
     rows = entries()
     days: dict[str, list] = {}
     for r in rows:
-        p = cur.problems().get(r["id"], {"title": f"#{r['id']}", "hard": False,
-                                         "tier": "?", "week": None})
+        try:
+            p = cur.loggable(r["id"])
+        except KeyError:
+            p = {"title": f"#{r['id']}", "hard": False, "tier": "?", "week": None}
         days.setdefault(r["date"], []).append({
             "id": r["id"], "title": p["title"], "hard": p.get("hard", False),
             "tier": p.get("tier"), "week": p.get("week"),
-            "url": cur.url(r["id"]) if r["id"] in cur.problems() else None,
+            "url": (cur.url_of(r["id"]) if p.get("tier") != "?" else None),
             "outcome": r["outcome"], "mistake": r.get("mistake"),
             "note": r.get("note"), "ts": r.get("ts"), "can_undo": False,
         })
@@ -347,6 +357,8 @@ def frequent_view() -> dict:
                             "block": in_cur["block"]} if in_cur else None),
             "attempted": st is not None,
             "solved": bool(st and st.done),
+            "due": st.due.isoformat() if st and st.due else None,
+            "attempts": st.attempts if st else 0,
         })
 
     return {
@@ -360,5 +372,7 @@ def frequent_view() -> dict:
             "paid": sum(r["paid"] for r in rows),
             "by_count": dict(sorted(Counter(r["count"] for r in rows).items())),
             "by_difficulty": dict(Counter(r["difficulty"] for r in rows)),
+            "attempted": sum(r["attempted"] for r in rows),
+            "due": sum(bool(r["due"]) for r in rows),
         },
     }

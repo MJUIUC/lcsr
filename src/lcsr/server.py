@@ -90,7 +90,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def _log(self, body):
         pid = int(body["id"])
-        cur.get(pid)                                  # validate before writing
+        cur.loggable(pid)                             # curriculum OR frequent pool
         # A problem that has cleared the ladder schedules nothing, so logging it
         # again only inflates the attempt counts and the cold re-solve rate.
         # Guarded here rather than only in the UI so the CLI cannot do it either.
