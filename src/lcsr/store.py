@@ -37,14 +37,53 @@ def append(entry: dict) -> None:
         fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
-def entries() -> list[dict]:
+def raw_entries() -> list[dict]:
+    """Every line in the log, retractions included, in attempt order.
+
+    Entries can be logged out of order (backfilling yesterday after today), and
+    replay is order-dependent -- sort by the attempt date, not by insertion, or
+    a backfill would be folded in as if it happened last.
+    """
     if not LOG.exists():
         return []
     rows = [json.loads(ln) for ln in LOG.read_text(encoding="utf-8").splitlines() if ln.strip()]
-    # Entries can be logged out of order (backfilling yesterday after today),
-    # and replay is order-dependent -- sort by the attempt date, not by
-    # insertion, or a backfill would be folded in as if it happened last.
     return sorted(rows, key=lambda r: (r["date"], r.get("ts", "")))
+
+
+def entries() -> list[dict]:
+    """Attempts that still stand, with retractions applied.
+
+    Undo appends a retraction rather than deleting a line: the file stays
+    append-only, so a mis-logged attempt is recoverable and the record of what
+    actually happened is never rewritten underneath you. A retraction cancels
+    the most recent surviving attempt at that problem.
+    """
+    alive: list[dict | None] = []
+    positions: dict[int, list[int]] = {}
+    for r in raw_entries():
+        pid = r["id"]
+        if r.get("undo"):
+            if positions.get(pid):
+                alive[positions[pid].pop()] = None
+            continue
+        positions.setdefault(pid, []).append(len(alive))
+        alive.append(r)
+    return [r for r in alive if r is not None]
+
+
+def make_undo(pid: int, on: date) -> dict:
+    """Dated to the attempt it cancels, so it sorts directly after it."""
+    return {"ts": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "date": on.isoformat(), "id": pid, "undo": True}
+
+
+def undo(pid: int) -> dict:
+    live = [r for r in entries() if r["id"] == pid]
+    if not live:
+        raise ValueError(f"{pid} has no logged attempt to undo")
+    last = live[-1]
+    append(make_undo(pid, date.fromisoformat(last["date"])))
+    return last
 
 
 def replay(rows: list[dict] | None = None) -> dict[int, ProblemState]:

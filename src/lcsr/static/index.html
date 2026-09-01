@@ -150,6 +150,8 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .h{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 14px;
   margin-bottom:6px;box-shadow:var(--shadow)}
 .hhead{display:flex;align-items:center;gap:11px}
+.h .undo{margin-left:auto;flex:none;font-size:12px;padding:4px 10px}
+.h .undo:hover{border-color:var(--danger);color:var(--danger);background:none}
 .hnote{margin-top:8px;padding:9px 12px;background:var(--panel2);border-radius:8px;
   font-size:13px;color:var(--mid);border-left:2px solid var(--line)}
 
@@ -434,6 +436,7 @@ function vHistory(){
             <span class="badge">${esc(e.tier)}${e.week?' · W'+e.week:''}</span>
             <span class="badge ${e.outcome==='solved'?'ok':'late'}">${e.outcome}</span>
             ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
+            ${e.can_undo?`<button class="btn undo" data-undo="${e.id}">Undo</button>`:''}
           </div>
           ${e.note?`<div class="hnote">${esc(e.note)}</div>`:''}
         </div>`).join('')}
@@ -565,6 +568,20 @@ document.addEventListener('click', async e=>{
   if(e.target.id==='ahead-toggle'){ showAhead = !showAhead; return render(); }
   if(e.target.id==='cue-all'){ cues.forEach((_,i)=>revealed.add(i)); return render(); }
   if(e.target.id==='cue-none'){ revealed.clear(); return render(); }
+
+  if(e.target.dataset.undo){
+    const id = +e.target.dataset.undo;
+    try{
+      const r = await api('/api/undo', {id});
+      toast(`undid ${r.undone} on ${id}`);
+      plan = await api('/api/plan');
+      hist = await api('/api/history');
+      if(curric) curric = await api('/api/curriculum');
+      if(preview) preview = await api('/api/plan?date=' + preview.date);
+      render();
+    }catch(err){ toast(err.message); }
+    return;
+  }
 
   const card = e.target.closest('.p'); if(!card) return;
   const id = +card.dataset.id, act = e.target.dataset.act;

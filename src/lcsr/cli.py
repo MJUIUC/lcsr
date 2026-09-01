@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from . import curriculum as cur
 from .plan import metrics, todays_plan
 from .schedule import SOLVED, STUCK
-from .store import MISTAKES, append, make_entry, replay
+from .store import MISTAKES, append, make_entry, replay, undo
 
 B, D, R, G, Y, X = "\033[1m", "\033[2m", "\033[31m", "\033[32m", "\033[33m", "\033[0m"
 if not sys.stdout.isatty():
@@ -157,6 +157,16 @@ def cmd_add(a):
     print(f"\nadded {label(p)}\n{D}{cur.url(p['id'])}{X}\n")
 
 
+def cmd_undo(a):
+    for pid in a.ids:
+        was = undo(pid)
+        st = replay().get(pid)
+        where = "not attempted" if st is None else (
+            f"{G}done{X}" if st.done else f"{Y}returns {st.due}{X}")
+        print(f"\nundid {was['outcome']} on {was['date']} for "
+              f"{label(cur.get(pid))}\n  now: {where}\n")
+
+
 def cmd_serve(a):
     from .server import serve
     serve(a.host, a.port, open_browser=not a.no_open)
@@ -182,6 +192,10 @@ def main(argv=None):
     p.add_argument("--again", action="store_true",
                    help="re-open a problem that is already solved")
     p.set_defaults(fn=cmd_log)
+
+    p = sub.add_parser("undo", help="retract the most recent attempt")
+    p.add_argument("ids", nargs="+", type=int)
+    p.set_defaults(fn=cmd_undo)
 
     p = sub.add_parser("today", help="what to solve now")
     p.add_argument("--date", default="today",

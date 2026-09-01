@@ -15,7 +15,7 @@ from pathlib import Path
 from . import curriculum as cur
 from .plan import curriculum_view, history_view, todays_plan
 from .schedule import SOLVED, STUCK
-from .store import MISTAKES, append, make_entry, replay
+from .store import MISTAKES, append, make_entry, replay, undo
 
 INDEX = Path(__file__).parent / "static" / "index.html"
 
@@ -73,6 +73,15 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, self._log(body))
             if self.path == "/api/add":
                 return self._send(200, self._add(body))
+            if self.path == "/api/undo":
+                pid = int(body["id"])
+                was = undo(pid)
+                st = replay().get(pid)
+                return self._send(200, {"ok": True, "id": pid,
+                                        "undone": was["outcome"],
+                                        "date": was["date"],
+                                        "status": "new" if st is None
+                                                  else ("done" if st.done else "learning")})
         except (KeyError, ValueError) as e:
             return self._send(400, {"error": str(e).strip("'")})
         return self._send(404, {"error": "not found"})

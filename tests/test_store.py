@@ -90,3 +90,50 @@ def test_cues_merge_curriculum_and_added():
     assert {c["source"] for c in rows} == {"curriculum", "added"}
     # added rows must explain the discrimination, that is their whole point
     assert all(c.get("because") for c in rows if c["source"] == "added")
+
+
+def test_undo_restores_the_previous_state():
+    log(1, "stuck", DAY)
+    assert replay()[1].due == DAY + timedelta(days=3)
+    store.undo(1)
+    assert 1 not in replay()          # back to never attempted
+
+
+def test_undo_only_cancels_the_latest_attempt():
+    log(1, "stuck", DAY)
+    log(1, "solved", DAY + timedelta(days=3))
+    store.undo(1)                      # cancels the solve, not the failure
+    st = replay()[1]
+    assert st.attempts == 1 and st.box == 0
+    assert st.due == DAY + timedelta(days=3)
+
+
+def test_undo_is_append_only():
+    """The retraction is added; the original line is never rewritten."""
+    log(1, "stuck", DAY)
+    store.undo(1)
+    raw = store.raw_entries()
+    assert len(raw) == 2
+    assert raw[0]["outcome"] == "stuck" and raw[1]["undo"] is True
+    assert store.entries() == []
+
+
+def test_undo_twice_walks_back_two_attempts():
+    log(1, "stuck", DAY)
+    log(1, "solved", DAY + timedelta(days=3))
+    store.undo(1)
+    store.undo(1)
+    assert 1 not in replay()
+
+
+def test_undo_with_nothing_logged_is_rejected():
+    with pytest.raises(ValueError, match="no logged attempt"):
+        store.undo(1)
+
+
+def test_undo_frees_the_daily_quota_again():
+    from lcsr.plan import todays_plan
+    log(1, "solved", date.today())
+    before = todays_plan()["done_today"]
+    store.undo(1)
+    assert todays_plan()["done_today"] == before - 1

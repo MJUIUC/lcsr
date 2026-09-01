@@ -263,8 +263,18 @@ def history_view() -> dict:
             "tier": p.get("tier"), "week": p.get("week"),
             "url": cur.url(r["id"]) if r["id"] in cur.problems() else None,
             "outcome": r["outcome"], "mistake": r.get("mistake"),
-            "note": r.get("note"), "ts": r.get("ts"),
+            "note": r.get("note"), "ts": r.get("ts"), "can_undo": False,
         })
+    # Only the most recent surviving attempt at a problem can be undone --
+    # retraction cancels the latest, so offering it on an older row would
+    # silently remove a different attempt than the one you clicked.
+    latest: dict[int, dict] = {}
+    for d in sorted(days):
+        for e in days[d]:
+            latest[e["id"]] = e
+    for e in latest.values():
+        e["can_undo"] = True
+
     out = []
     for d in sorted(days, reverse=True):
         es = days[d]

@@ -137,3 +137,27 @@ def test_plan_accepts_a_future_date(client):
 def test_plan_rejects_a_bad_date(client):
     code, r = client("/api/plan?date=nonsense")
     assert code == 400 and "YYYY-MM-DD" in r["error"]
+
+
+def test_undo_endpoint_reverts(client):
+    client("/api/log", {"id": 1, "outcome": "stuck"})
+    code, r = client("/api/undo", {"id": 1})
+    assert code == 200 and r["undone"] == "stuck" and r["status"] == "new"
+    _, h = client("/api/history")
+    assert h["total"] == 0
+
+
+def test_undo_lets_you_relog_a_solved_problem(client):
+    """The guard must not trap you: undo then re-log has to work."""
+    client("/api/log", {"id": 1, "outcome": "solved"})
+    client("/api/undo", {"id": 1})
+    code, _ = client("/api/log", {"id": 1, "outcome": "stuck"})
+    assert code == 200
+
+
+def test_only_the_latest_attempt_is_undoable(client):
+    client("/api/log", {"id": 1, "outcome": "stuck", "date": "2026-08-30"})
+    client("/api/log", {"id": 1, "outcome": "solved", "date": "2026-09-01"})
+    _, h = client("/api/history")
+    flags = {(d["date"], e["can_undo"]) for d in h["days"] for e in d["entries"]}
+    assert ("2026-09-01", True) in flags and ("2026-08-30", False) in flags
