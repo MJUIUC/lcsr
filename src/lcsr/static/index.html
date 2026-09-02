@@ -289,6 +289,7 @@ const FILT = {diff:new Set(), noPaid:false, noSolved:true, noCurric:true};
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
 let showAhead = false;
+const inFlight = new Set();   // ids with a write in progress, so a double-click cannot double-log
 let preview = null;   // plan for a future day, null when viewing today
 
 async function api(p, body){
@@ -323,7 +324,7 @@ function relDay(iso){
 function logPanel(p, solved){
   const chips = `<div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">— only recorded when logged as stuck</span></div>
       <div class="chips">${(plan?.mistakes||[]).map(m=>
-        `<button class="chip" data-mistake="${m}" aria-pressed="false">${m}</button>`).join('')}</div>`;
+        `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`).join('')}</div>`;
   const head = solved
     ? `<div class="phead2">This is logged as <b>solved</b>. Changing it rewrites that
         attempt in place, keeping its original date — it does not count as working
@@ -337,10 +338,13 @@ function logPanel(p, solved){
     : `<button class="btn primary" data-act="solved">Log as solved</button>
        <button class="btn warn" data-act="confirm">Log as stuck</button>
        <button class="btn" data-act="cancel">Cancel</button>`;
-  return `<div class="panel" data-panel hidden>
+  // Panel visibility lives in draft so it survives a re-render too: any refresh
+  // replaces innerHTML wholesale, which previously closed the panel and threw
+  // away whatever had been typed into it.
+  return `<div class="panel" data-panel ${(draft[p.id]||{}).open ? '' : 'hidden'}>
       ${head}
       <div class="lbl">Note — the cue → the pattern</div>
-      <textarea data-note placeholder="one line, in your own words"></textarea>
+      <textarea data-note placeholder="one line, in your own words">${esc((draft[p.id]||{}).note||'')}</textarea>
       ${chips}
       <div class="prow">${foot}</div>
     </div>`;
@@ -721,15 +725,28 @@ async function setDate(iso){
 }
 
 async function go(t){
+  const prev = tab;
   tab = t; location.hash = t;
+  try{
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
   if(t==='history') hist = await api('/api/history');
   if(t==='frequent' && !freq){ freq = await api('/api/frequent'); if(!drawn) draw(); }
-  if(t==='cues' && !cues) cues = await api('/api/cues');
+    if(t==='cues' && !cues) cues = await api('/api/cues');
+  }catch(err){
+    tab = prev; location.hash = prev; toast(err.message); return;
+  }
   render({top:true});
 }
 
 /* ---------------- events ---------------- */
+document.addEventListener('input', e=>{
+  const card = e.target.closest('.p');
+  if(card && e.target.matches('[data-note]')){
+    const id = +card.dataset.id;
+    (draft[id] = draft[id] || {}).note = e.target.value;
+  }
+});
+
 $('#nav').addEventListener('click', e=>{
   const b=e.target.closest('[data-tab]'); if(b) go(b.dataset.tab);
 });
@@ -785,11 +802,14 @@ document.addEventListener('click', async e=>{
   // 'stuck' and 'note' both just open the panel; nothing is written until a
   // Log button in it is pressed, so a mistyped note is never committed.
   if(act==='change'){
+    draft[id].open = true;
     panel.hidden = false;
     panel.scrollIntoView({block:'nearest', behavior:'smooth'});
     return;
   }
   if(act==='amend-stuck' || act==='amend-clear'){
+    if(inFlight.has(id)) return;
+    inFlight.add(id);
     const note = panel.querySelector('[data-note]').value.trim();
     try{
       if(act==='amend-clear'){
@@ -803,9 +823,11 @@ document.addEventListener('click', async e=>{
       delete draft[id];
       await refreshAll();
     }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
     return;
   }
   if(act==='stuck' || act==='note'){
+    draft[id].open = true;
     panel.hidden = false;
     card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','true');
     panel.scrollIntoView({block:'nearest', behavior:'smooth'});
@@ -814,23 +836,22 @@ document.addEventListener('click', async e=>{
   }
   if(act==='cancel'){
     panel.hidden = true;
+    draft[id] = {};
     card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','false');
     delete draft[id]; return;
   }
   if(act==='solved' || act==='confirm'){
+    if(inFlight.has(id)) return;
+    inFlight.add(id);
     const note = panel.querySelector('[data-note]').value.trim();
     try{
       await api('/api/log', {id, outcome: act==='solved'?'solved':'stuck',
                              mistake: draft[id].mistake, note});
       delete draft[id];
       toast(act==='solved' ? `${id} logged — does not return` : `${id} logged — returns in 3 days`);
-      plan = await api('/api/plan');
-      if(curric) curric = await api('/api/curriculum');
-      if(hist)   hist   = await api('/api/history');
-      if(freq){ freq = await api('/api/frequent');
-                if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
-      render();
+      await refreshAll();
     }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
   }
 });
 
@@ -851,10 +872,17 @@ window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t
 (async ()=>{
   plan = await api('/api/plan');
   curric = await api('/api/curriculum');
-  if(tab==='history') hist = await api('/api/history');
-  if(tab==='cues') cues = await api('/api/cues');
+  if(tab==='history')  hist = await api('/api/history');
+  if(tab==='cues')     cues = await api('/api/cues');
+  if(tab==='frequent'){ freq = await api('/api/frequent'); if(!drawn) draw(); }
   render();
-})();
+})().catch(err => {
+  // Without this a failed bootstrap left #nav and #view empty -- a blank page
+  // with no error and no way back to any other tab.
+  document.getElementById('view').innerHTML =
+    `<div class="empty"><b>Could not reach lcsr</b>${esc(err.message)}<br><br>
+     Is <code>lcsr serve</code> still running?</div>`;
+});
 </script>
 </body>
 </html>

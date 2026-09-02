@@ -214,3 +214,53 @@ number worse. A paused day is explicitly *not* a finished day.
 Also closed: attempts cannot be logged for a future date, and a corrupt log line
 raises an error naming the file and line rather than a bare `JSONDecodeError` —
 skipping it silently would drop real attempts and change every metric.
+
+---
+
+## Audit fixes
+
+A 14-agent audit (7 finders, each paired with a refute-by-default adversary)
+returned 33 confirmed findings and 6 refuted. The load-bearing ones:
+
+**A note could permanently brick the log.** `append()` terminates records with
+`"\n"`, but `raw_entries()` read them back with `str.splitlines()`, which also
+breaks on U+2028, U+2029, U+0085, `\v`, `\f` and `\x1c`–`\x1e`. Word emits U+2028
+for a soft line break, so pasting a note from a document wrote one record and
+read back two unparseable halves — killing every read path, CLI and UI, with an
+error naming a line number that was not the real boundary.
+
+**A frequent-only problem coming due killed the web UI.** `enrich()` used the
+curriculum-only `url()`, while `plan["due"]` rows are built with `loggable()`,
+which resolves the curriculum *or* the frequent pool. The handler thread raised,
+the socket closed with zero bytes, and the page went permanently blank with no
+route back to History to undo it. `do_GET` now cannot answer with a dead socket.
+
+**28 of 322 LeetCode links were 404s.** Slugs were derived from titles, and the
+curriculum abbreviates ("Maximum Depth" for "Maximum Depth of Binary Tree").
+Slugs now come from LeetCode's own list, with a test cross-checking every problem
+that appears in both the curriculum and the frequent pool.
+
+**Foundations were stranded a second way.** The earlier fix moved the tier mix off
+the calendar, but `intake_week()` is derived from *core* progress and
+`allowance()` zeroes foundations from week 4 — so finishing weeks 1–3's core
+stranded all 42 remaining foundations exactly as the calendar bug had. One tier's
+progress no longer zeroes another's.
+
+**Nothing was serialized.** The server is threaded, so two concurrent logs both
+read "not yet solved", both passed the already-solved gate and both appended; two
+concurrent amends each retracted what the other had already replaced. Every
+read-modify-write now runs under one reentrant lock, and `custom.json` is written
+atomically via a temp file and `os.replace`.
+
+**Ordering compared timestamps as text.** `ts` carries a UTC offset, so after a
+DST fall-back `01:30+01:00` sorted after `02:00+02:00` despite happening earlier
+— and since a retraction cancels whatever sorts last, undo cancelled the wrong
+record. Ordering is now by absolute instant.
+
+Also: `amend()` no longer drops the note, mistake class and `approach_min` it was
+not asked to change; `lcsr log 42 42` no longer slips a duplicate past the
+ladder-cleared guard; cross-origin writes are refused (any page visited while
+`lcsr serve` runs could otherwise POST to it); ids reject bools and fractional
+floats; a typed note and a picked mistake chip survive a re-render; a double
+click cannot double-log; and reloading on the Frequent tab no longer renders a
+blank page.

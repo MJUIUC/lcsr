@@ -8,8 +8,10 @@ without invalidating the history.
 
 import json
 import os
+import tempfile
+import threading
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from .schedule import advance
@@ -18,6 +20,37 @@ HOME = Path(os.environ.get("LCSR_HOME", Path.home() / ".lcsr"))
 LOG = HOME / "log.jsonl"
 
 MISTAKES = ("off-by-one", "invariant", "edge-case", "no-pattern")
+
+# Every read-modify-write on the log runs under this. The server is a
+# ThreadingHTTPServer, so two requests genuinely do run concurrently: without it,
+# two logs of the same problem both read "not yet solved", both pass the
+# already-solved gate and both append, advancing the ladder twice; and two amends
+# both read the same "latest" attempt, so the second retracts a record the first
+# had already replaced -- cancelling an unrelated older attempt.
+# Reentrant because amend() calls entries() and append() while holding it.
+LOCK = threading.RLock()
+
+
+def atomic_write(path, text: str) -> None:
+    """Replace a file's contents without ever exposing a partial one.
+
+    A plain write truncates first, so a concurrent reader can see an empty or
+    half-written file and a crash mid-write destroys the original.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(text)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
 
 
 @dataclass
@@ -32,9 +65,10 @@ class ProblemState:
 
 
 def append(entry: dict) -> None:
-    HOME.mkdir(parents=True, exist_ok=True)
-    with LOG.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    with LOCK:
+        HOME.mkdir(parents=True, exist_ok=True)
+        with LOG.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
 def raw_entries() -> list[dict]:
@@ -47,7 +81,13 @@ def raw_entries() -> list[dict]:
     if not LOG.exists():
         return []
     rows = []
-    for n, ln in enumerate(LOG.read_text(encoding="utf-8").splitlines(), 1):
+    # split("\n"), NOT splitlines(): append() terminates records with "\n", but
+    # str.splitlines() also breaks on U+2028, U+2029, U+0085, \v, \f and \x1c-\x1e.
+    # json.dumps(ensure_ascii=False) passes those through raw, so a note pasted
+    # from Word (which emits U+2028 for a soft line break) would be written as one
+    # line and read back as two unparseable halves -- permanently bricking every
+    # read path, with the error naming a line number that is not the real boundary.
+    for n, ln in enumerate(LOG.read_text(encoding="utf-8").split("\n"), 1):
         if not ln.strip():
             continue
         try:
@@ -58,7 +98,24 @@ def raw_entries() -> list[dict]:
             raise ValueError(
                 f"{LOG}:{n} is not valid JSON ({e.msg}). Fix or delete that line."
             ) from None
-    return sorted(rows, key=lambda r: (r["date"], r.get("ts", "")))
+    return sorted(rows, key=_order_key)
+
+
+def _order_key(r: dict):
+    """Order by attempt date, then by the real instant the record was written.
+
+    ts carries a UTC offset, and comparing those as strings is wrong whenever the
+    offset changes: after a DST fall-back, "…T01:30:00+01:00" sorts AFTER
+    "…T02:00:00+02:00" as text while happening 30 minutes earlier. Since a
+    retraction cancels whatever the ordering says is latest, that made undo and
+    amend cancel the wrong record. Compare instants instead.
+    """
+    ts = r.get("ts")
+    try:
+        when = datetime.fromisoformat(ts).astimezone(timezone.utc)
+    except (TypeError, ValueError):
+        when = datetime.min.replace(tzinfo=timezone.utc)   # legacy/missing ts sorts first
+    return (r.get("date", ""), when)
 
 
 def entries() -> list[dict]:
@@ -98,23 +155,34 @@ def amend(pid: int, outcome: str, mistake: str | None = None,
     a retraction plus a replacement at the same date, so the log stays
     append-only and the correction is visible rather than silent.
     """
-    live = [r for r in entries() if r["id"] == pid]
-    if not live:
-        raise ValueError(f"{pid} has no logged attempt to change")
-    last = live[-1]
-    on = date.fromisoformat(last["date"])
-    append(make_undo(pid, on))
-    append(make_entry(pid, outcome, on, mistake, note=note))
-    return last
+    with LOCK:
+        live = [r for r in entries() if r["id"] == pid]
+        if not live:
+            raise ValueError(f"{pid} has no logged attempt to change")
+        last = live[-1]
+        on = date.fromisoformat(last["date"])
+        append(make_undo(pid, on))
+        # Carry forward the fields this call is not changing. Rebuilding the
+        # entry from scratch silently dropped the note, mistake class and
+        # approach_min recorded at the time -- an amend is a correction to one
+        # field, not a re-entry of the attempt.
+        append(make_entry(
+            pid, outcome, on,
+            mistake if mistake is not None else last.get("mistake"),
+            last.get("approach_min"),
+            note if note is not None else last.get("note"),
+        ))
+        return last
 
 
 def undo(pid: int) -> dict:
-    live = [r for r in entries() if r["id"] == pid]
-    if not live:
-        raise ValueError(f"{pid} has no logged attempt to undo")
-    last = live[-1]
-    append(make_undo(pid, date.fromisoformat(last["date"])))
-    return last
+    with LOCK:
+        live = [r for r in entries() if r["id"] == pid]
+        if not live:
+            raise ValueError(f"{pid} has no logged attempt to undo")
+        last = live[-1]
+        append(make_undo(pid, date.fromisoformat(last["date"])))
+        return last
 
 
 def replay(rows: list[dict] | None = None) -> dict[int, ProblemState]:

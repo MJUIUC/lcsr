@@ -43,19 +43,23 @@ def cmd_log(a):
     outcome = STUCK if a.stuck else SOLVED
     if a.mistake and outcome == SOLVED:
         raise SystemExit("--mistake only applies to a stuck attempt")
+    # De-duplicate: `lcsr log 42 42` validated both against the SAME pre-loop
+    # snapshot, so the second append slipped past the ladder-cleared guard and
+    # fabricated a cold re-solve out of one sitting.
+    ids = list(dict.fromkeys(a.ids))
     states = replay()
-    for pid in a.ids:
+    for pid in ids:
         cur.loggable(pid)                  # curriculum OR frequent pool
         st = states.get(pid)
         if st is not None and st.done and not a.again:
             raise SystemExit(
                 f"{pid} is already solved and schedules nothing — "
                 f"re-run with --again to re-open it")
-    for pid in a.ids:
+    for pid in ids:
         append(make_entry(pid, outcome, on, a.mistake, a.approach_min, a.note))
     states = replay()
-    print(f"\nlogged {len(a.ids)} as {B}{outcome}{X} on {on}\n")
-    for pid in a.ids:
+    print(f"\nlogged {len(ids)} as {B}{outcome}{X} on {on}\n")
+    for pid in ids:
         st = states[pid]
         print(f"  {label(cur.loggable(pid))}  "
               f"{f'{Y}re-solve {st.due}{X}' if st.due else f'{G}done{X}'}")

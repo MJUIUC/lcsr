@@ -15,18 +15,65 @@ from pathlib import Path
 from . import curriculum as cur
 from .plan import curriculum_view, frequent_view, history_view, todays_plan
 from .schedule import SOLVED, STUCK
-from .store import MISTAKES, amend, append, make_entry, replay, undo
+from .store import LOCK, MISTAKES, amend, append, make_entry, replay, undo
 
 INDEX = Path(__file__).parent / "static" / "index.html"
 
 
+def problem_id(body: dict) -> int:
+    """Strict id parsing.
+
+    int() accepts bools (True -> 1, logging an attempt against Two Sum) and
+    truncates floats (42.9 -> 42), both silently writing to the wrong problem.
+    """
+    v = body.get("id")
+    if isinstance(v, bool) or v is None:
+        raise ValueError("id must be an integer")
+    if isinstance(v, float) and not v.is_integer():
+        raise ValueError("id must be a whole number")
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        raise ValueError("id must be an integer") from None
+
+
 def enrich(p: dict) -> dict:
-    return {**p, "url": cur.url(p["id"])}
+    # url_of(), not url(): plan["due"] rows are built with cur.loggable(), which
+    # resolves the curriculum OR the frequent pool, so a frequent-only problem
+    # coming due would raise KeyError here and kill the handler thread -- the
+    # client gets a closed socket with zero bytes and the whole UI goes blank.
+    return {**p, "url": cur.url_of(p["id"])}
+
+
+def err_text(e: BaseException) -> str:
+    """KeyError stringifies as its repr, so str() wraps the message in quotes.
+    Take the argument directly instead of stripping quotes off the outside,
+    which also ate quotes that were part of the message."""
+    if isinstance(e, KeyError) and e.args:
+        return str(e.args[0])
+    return str(e)
 
 
 class Handler(BaseHTTPRequestHandler):
+    # A handler that blocks forever on a short body ties up a thread for good.
+    timeout = 15
+
     def log_message(self, *a):        # keep the terminal quiet
         pass
+
+    def _same_origin(self) -> bool:
+        """Reject cross-site writes.
+
+        The server has no auth and binds to a predictable port, so ANY page the
+        user happens to visit while `lcsr serve` runs could POST here and corrupt
+        the log. Browsers always send Origin on a cross-origin POST; curl and the
+        CLI send none, which is why absent is allowed.
+        """
+        origin = self.headers.get("Origin")
+        if origin is None:
+            return True
+        host = self.headers.get("Host", "")
+        return origin.split("://")[-1] == host
 
     def _send(self, code, body, ctype="application/json"):
         raw = body if isinstance(body, bytes) else json.dumps(body).encode()
@@ -44,7 +91,15 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(raw)
 
     def do_GET(self):
-        route = urlparse(self.path)
+        try:
+            return self._get(urlparse(self.path))
+        except (KeyError, ValueError, TypeError, AttributeError) as e:
+            # Never answer a GET with a closed socket: a handler that raises
+            # writes zero bytes, and the UI's bootstrap has no way to tell that
+            # from a dead server.
+            return self._send(400, {"error": err_text(e)})
+
+    def _get(self, route):
         if route.path in ("/", "/index.html"):
             return self._send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
         if route.path == "/api/plan":
@@ -72,18 +127,27 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(404, {"error": "not found"})
 
     def do_POST(self):
+        if not self._same_origin():
+            return self._send(403, {"error": "cross-origin write refused"})
         try:
             n = int(self.headers.get("Content-Length", 0))
-            body = json.loads(self.rfile.read(n) or b"{}")
-        except (ValueError, json.JSONDecodeError):
+            if n < 0 or n > 1_000_000:
+                return self._send(413, {"error": "body too large"})
+            raw = self.rfile.read(n) if n else b"{}"
+            if len(raw) < n:
+                return self._send(400, {"error": "truncated body"})
+            body = json.loads(raw or b"{}")
+        except (ValueError, json.JSONDecodeError, OSError):
             return self._send(400, {"error": "bad json"})
+        if not isinstance(body, dict):
+            return self._send(400, {"error": "body must be a JSON object"})
         try:
             if self.path == "/api/log":
                 return self._send(200, self._log(body))
             if self.path == "/api/add":
                 return self._send(200, self._add(body))
             if self.path == "/api/amend":
-                pid = int(body["id"])
+                pid = problem_id(body)
                 cur.loggable(pid)
                 outcome = STUCK if body.get("outcome") == STUCK else SOLVED
                 mistake = body.get("mistake") or None
@@ -97,7 +161,7 @@ class Handler(BaseHTTPRequestHandler):
                                         "now": outcome, "date": was["date"],
                                         "due": st.due.isoformat() if st.due else None})
             if self.path == "/api/undo":
-                pid = int(body["id"])
+                pid = problem_id(body)
                 was = undo(pid)
                 st = replay().get(pid)
                 return self._send(200, {"ok": True, "id": pid,
@@ -105,16 +169,26 @@ class Handler(BaseHTTPRequestHandler):
                                         "date": was["date"],
                                         "status": "new" if st is None
                                                   else ("done" if st.done else "learning")})
-        except (KeyError, ValueError) as e:
-            return self._send(400, {"error": str(e).strip("'")})
+        # AttributeError/TypeError too: an unvalidated body could reach code that
+        # calls a method on the wrong type, and an uncaught raise kills the thread
+        # mid-response, leaving the client with a closed socket and no status.
+        except (KeyError, ValueError, TypeError, AttributeError) as e:
+            return self._send(400, {"error": err_text(e)})
         return self._send(404, {"error": "not found"})
 
     def _log(self, body):
-        pid = int(body["id"])
+        pid = problem_id(body)
         cur.loggable(pid)                             # curriculum OR frequent pool
         # A problem that has cleared the ladder schedules nothing, so logging it
         # again only inflates the attempt counts and the cold re-solve rate.
         # Guarded here rather than only in the UI so the CLI cannot do it either.
+        # Gate and append are one critical section. Threaded server: two
+        # concurrent logs of the same problem would both read "not yet solved",
+        # both pass this gate, and both append -- advancing the ladder twice.
+        with LOCK:
+            return self._log_locked(pid, body)
+
+    def _log_locked(self, pid, body):
         prior = replay().get(pid)
         if prior is not None and prior.done and not body.get("again"):
             raise ValueError(f"{pid} is already solved — pass again to re-open it")
@@ -137,7 +211,7 @@ class Handler(BaseHTTPRequestHandler):
         if not title:
             raise ValueError("title is required")
         return {"ok": True, "problem": enrich(cur.add(
-            int(body["id"]), title,
+            problem_id(body), title,
             week=int(body["week"]) if body.get("week") else None,
             hard=bool(body.get("hard")),
             block=(body.get("block") or "Added"),

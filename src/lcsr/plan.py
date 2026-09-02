@@ -53,6 +53,11 @@ MAX_DUE_SHOWN = 8
 BACKLOG_PAUSE = 12
 
 
+def foundations_left(attempted: set[int]) -> int:
+    return sum(1 for p in cur.problems().values()
+               if p["tier"] == "foundations" and p["id"] not in attempted)
+
+
 def intake_week(attempted: set[int]) -> int:
     """The week whose material you are actually on, from progress not calendar.
 
@@ -84,6 +89,21 @@ def todays_plan(on: date | None = None) -> dict:
     wk = current_week(on)
     attempted = set(states)
     iwk = intake_week(attempted)          # drives the tier mix; wk drives reporting
+
+    def quota_for(week: int) -> dict:
+        """allowance(), with foundations kept alive while any remain.
+
+        One tier's progress must not zero another's. intake_week() is derived
+        from CORE progress, and allowance() drops foundations to 0 from week 4 --
+        so finishing weeks 1-3's core stranded all remaining foundations exactly
+        the way the calendar bug did, just via a different route. Foundations are
+        prerequisites; they stop being offered when they are done, not when the
+        core has moved on.
+        """
+        q = dict(allowance(week))
+        if not q["foundations"] and foundations_left(attempted):
+            q["foundations"] = min(3, foundations_left(attempted))
+        return q
     is_future = on > today
 
     first_seen: dict[int, str] = {}
@@ -96,12 +116,12 @@ def todays_plan(on: date | None = None) -> dict:
         # shows the same list -- day+2 repeats day+1 forever.
         skip: Counter = Counter()
         skip.update({t: max(0, n - _started_on(first_seen, today).get(t, 0))
-                     for t, n in allowance(iwk).items()})
+                     for t, n in quota_for(iwk).items()})
         d = today + timedelta(days=1)
         while d < on:
-            skip.update(allowance(iwk))
+            skip.update(quota_for(iwk))
             d += timedelta(days=1)
-        quota = allowance(iwk)
+        quota = quota_for(iwk)
         remaining = dict(quota)
         started_today = Counter()
         # Only re-solves falling due on that exact day: anything due earlier is
@@ -109,7 +129,7 @@ def todays_plan(on: date | None = None) -> dict:
         due_states = [s for s in states.values() if s.due and s.due == on]
     else:
         skip = Counter()
-        quota = allowance(iwk)
+        quota = quota_for(iwk)
         started_today = _started_on(first_seen, on)
         remaining = {t: max(0, n - started_today.get(t, 0)) for t, n in quota.items()}
         due_states = [s for s in states.values() if s.due and s.due <= on]
@@ -141,7 +161,11 @@ def todays_plan(on: date | None = None) -> dict:
             if week is None:
                 return True
             if week == "<=":
-                return p["week"] is not None and p["week"] <= wk
+                # Bound by BOTH weeks. The reps allowance comes from the intake
+                # week, so gating the pool on the calendar week alone starved it
+                # to nothing for anyone running ahead of schedule -- an allowance
+                # with no pool to draw from.
+                return p["week"] is not None and p["week"] <= max(wk, iwk)
             return p["week"] == week
 
         rows_ = [p for p in cur.problems().values()
@@ -172,7 +196,7 @@ def todays_plan(on: date | None = None) -> dict:
         for title, tier, week in (
             ("Foundations", "foundations", None),
             (None, "core", None),
-            ("Reps — interleaved across weeks 1–%d" % wk, "reps", "<="),
+            ("Reps — interleaved across weeks 1–%d" % max(wk, iwk), "reps", "<="),
             ("Added", "custom", None),
         ):
             n = limit_by(tier)
@@ -191,13 +215,17 @@ def todays_plan(on: date | None = None) -> dict:
     # working ahead is a deliberate choice rather than an endlessly refilling list.
     ahead = [] if (is_future or paused) else build(lambda t: quota.get(t, 0))
 
-    done_today = sum(started_today.values())
+    # Count and target over the SAME tiers, or the header reads "6/5" for a day
+    # that is not actually over quota. custom is excluded from both.
+    counted = {t: n for t, n in started_today.items() if t != "custom"}
+    done_today = sum(counted.values())
     target_today = sum(quota.values()) - quota.get("custom", 0)
 
     return {
         "date": on.isoformat(),
         "week": wk,
-        "day": ((on - day_one()).days + 1) if day_one() else 1,
+        # A date before the first attempt would otherwise report day 0 or negative.
+        "day": max(1, (on - day_one()).days + 1) if day_one() else 1,
         "due": due,
         "due_hidden": due_hidden,
         "backlog": backlog,
@@ -251,7 +279,7 @@ def metrics(on: date | None = None) -> dict:
         "resolve_n": attempts,
         "mistakes": dict(Counter(r["mistake"] for r in rows if r.get("mistake"))),
         "approach_avg": (sum(approach) / len(approach)) if approach else None,
-        "day": ((on or date.today()) - day_one()).days + 1,
+        "day": max(1, ((on or date.today()) - day_one()).days + 1),
         "week": current_week(on),
     }
 
