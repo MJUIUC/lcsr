@@ -32,13 +32,6 @@ def day_one() -> date | None:
     return date.fromisoformat(rows[0]["date"]) if rows else None
 
 
-def current_week(on: date | None = None) -> int:
-    start = day_one()
-    if start is None:
-        return 1
-    return ((on or date.today()) - start).days // 7 + 1
-
-
 # --- neglect handling -------------------------------------------------------
 # Re-solves surfaced in one day. They carry forward indefinitely when missed, so
 # without a cap a fortnight away returns a wall of fifty and the day reads as
@@ -61,17 +54,61 @@ def foundations_left(attempted: set[int]) -> int:
 def intake_week(attempted: set[int]) -> int:
     """The week whose material you are actually on, from progress not calendar.
 
-    current_week() counts elapsed days, which is right for reporting and wrong
-    for choosing the daily mix: after a five-week absence it reported week 6, and
-    allowance(6) sets foundations to 0 -- so 42 unattempted foundations became
-    permanently unreachable, because weeks only ever advance. Keying the mix to
-    the next unattempted core problem means falling behind slows the schedule
-    down instead of skipping material.
+    This is the ONLY notion of week. An earlier version also had a calendar week
+    (elapsed days over seven) and the two disagreed constantly: the calendar drove
+    the labels while progress drove the content, so a fast start reported "running
+    ahead of schedule" forever and a long absence reported week 6 while zeroing
+    the foundations allowance -- stranding 42 unattempted problems, because
+    elapsed weeks only ever advance.
+
+    Progress cannot disagree with progress. Elapsed time is still reported, as
+    idle_days and pace, where it is descriptive rather than prescriptive.
     """
     core = sorted((p for p in cur.problems().values() if p["tier"] == "core"),
                   key=lambda p: p["order"])
     nxt = next((p for p in core if p["id"] not in attempted), None)
     return max(1, nxt["week"] or 1) if nxt else 16
+
+
+def last_activity() -> date | None:
+    rows = entries()
+    return date.fromisoformat(rows[-1]["date"]) if rows else None
+
+
+def pace(on: date, window: int = 14) -> dict:
+    """New problems started per day over a trailing window.
+
+    Replaces the calendar-week comparison. "Week" now means where you are in the
+    material, so there is no schedule to be ahead of or behind -- what actually
+    matters is the rate, and the rate is measurable.
+    """
+    first_seen: dict[int, str] = {}
+    for r in entries():
+        first_seen.setdefault(r["id"], r["date"])
+    start = (on - timedelta(days=window - 1)).isoformat()
+    started = sum(1 for d in first_seen.values() if start <= d <= on.isoformat())
+    d1 = day_one()
+    # Divide by days actually elapsed, or a four-day-old log reads as 14 days slow.
+    elapsed = min(window, (on - d1).days + 1) if d1 else window
+    return {"per_day": (started / elapsed) if elapsed else 0.0,
+            "started": started, "window_days": elapsed}
+
+
+def projection(on: date, attempted: set[int], per_day: float) -> dict:
+    """When the curriculum finishes at the observed rate.
+
+    Counts the tiers the curriculum treats as required -- stretch is explicitly
+    optional and custom additions are yours, so neither belongs in a completion
+    estimate.
+    """
+    remaining = sum(1 for p in cur.problems().values()
+                    if p["tier"] in ("foundations", "core", "reps")
+                    and p["id"] not in attempted)
+    if per_day <= 0:
+        return {"remaining": remaining, "days_left": None, "finish": None}
+    days_left = int(remaining / per_day + 0.999)
+    return {"remaining": remaining, "days_left": days_left,
+            "finish": (on + timedelta(days=days_left)).isoformat()}
 
 
 def _started_on(first_seen: dict[int, str], day: date) -> Counter:
@@ -86,9 +123,13 @@ def todays_plan(on: date | None = None) -> dict:
     on = on or today
     states = replay()
     rows = entries()
-    wk = current_week(on)
     attempted = set(states)
-    iwk = intake_week(attempted)          # drives the tier mix; wk drives reporting
+    # ONE notion of week: where you are in the material. The calendar week was a
+    # second, competing one -- it drove the label while progress drove the
+    # content, so finishing week 1's seven core problems in two days reported
+    # "running ahead of schedule" indefinitely. There is no schedule to be ahead
+    # of; there is a sequence and a rate.
+    wk = intake_week(attempted)
 
     def quota_for(week: int) -> dict:
         """allowance(), with foundations kept alive while any remain.
@@ -116,12 +157,12 @@ def todays_plan(on: date | None = None) -> dict:
         # shows the same list -- day+2 repeats day+1 forever.
         skip: Counter = Counter()
         skip.update({t: max(0, n - _started_on(first_seen, today).get(t, 0))
-                     for t, n in quota_for(iwk).items()})
+                     for t, n in quota_for(wk).items()})
         d = today + timedelta(days=1)
         while d < on:
-            skip.update(quota_for(iwk))
+            skip.update(quota_for(wk))
             d += timedelta(days=1)
-        quota = quota_for(iwk)
+        quota = quota_for(wk)
         remaining = dict(quota)
         started_today = Counter()
         # Only re-solves falling due on that exact day: anything due earlier is
@@ -129,7 +170,7 @@ def todays_plan(on: date | None = None) -> dict:
         due_states = [s for s in states.values() if s.due and s.due == on]
     else:
         skip = Counter()
-        quota = quota_for(iwk)
+        quota = quota_for(wk)
         started_today = _started_on(first_seen, on)
         remaining = {t: max(0, n - started_today.get(t, 0)) for t, n in quota.items()}
         due_states = [s for s in states.values() if s.due and s.due <= on]
@@ -144,6 +185,7 @@ def todays_plan(on: date | None = None) -> dict:
         for s in due_sorted[:MAX_DUE_SHOWN]
     ]
     due_hidden = max(0, backlog - MAX_DUE_SHOWN)
+    pc = pace(on)
     # Past the threshold, new material is withheld rather than stacked on top.
     paused = backlog >= BACKLOG_PAUSE and not is_future
 
@@ -161,11 +203,7 @@ def todays_plan(on: date | None = None) -> dict:
             if week is None:
                 return True
             if week == "<=":
-                # Bound by BOTH weeks. The reps allowance comes from the intake
-                # week, so gating the pool on the calendar week alone starved it
-                # to nothing for anyone running ahead of schedule -- an allowance
-                # with no pool to draw from.
-                return p["week"] is not None and p["week"] <= max(wk, iwk)
+                return p["week"] is not None and p["week"] <= wk
             return p["week"] == week
 
         rows_ = [p for p in cur.problems().values()
@@ -174,29 +212,25 @@ def todays_plan(on: date | None = None) -> dict:
         return rows_
 
     def core_title(got):
-        """Name the section after the weeks actually drawn, not the calendar.
+        """Name the section after the weeks actually drawn.
 
-        Core is week-scoped in the document but drawn in document order here: if
-        you outrun the week's seven problems the queue must flow into the next
-        week rather than going empty, and the label has to say so or it reads as
-        a bug. Order is still never broken -- "never skipped, never reordered"
-        constrains the sequence, not the pace.
+        Core is drawn in document order, so a day can straddle two blocks. The
+        label just says which -- no judgement about pace attached, because the
+        week IS the progress and cannot disagree with it.
         """
         weeks = sorted({p["week"] for p in got if p["week"]})
         if not weeks:
             return "Core"
-        if weeks == [wk]:
-            return f"Week {wk} core"
-        span = f"{weeks[0]}" if len(weeks) == 1 else f"{weeks[0]}–{weeks[-1]}"
-        ahead_of = " · running ahead of schedule" if weeks[0] > wk else ""
-        return f"Core — week {span}{ahead_of}"
+        if len(weeks) == 1:
+            return f"Week {weeks[0]} core"
+        return f"Core — weeks {weeks[0]}–{weeks[-1]}"
 
     def build(limit_by):
         out = []
         for title, tier, week in (
             ("Foundations", "foundations", None),
             (None, "core", None),
-            ("Reps — interleaved across weeks 1–%d" % max(wk, iwk), "reps", "<="),
+            ("Reps — interleaved across weeks 1–%d" % wk, "reps", "<="),
             ("Added", "custom", None),
         ):
             n = limit_by(tier)
@@ -224,6 +258,8 @@ def todays_plan(on: date | None = None) -> dict:
     return {
         "date": on.isoformat(),
         "week": wk,
+        "block": next((p["block"] for p in cur.problems().values()
+                       if p["week"] == wk and p["tier"] == "core"), ""),
         # A date before the first attempt would otherwise report day 0 or negative.
         "day": max(1, (on - day_one()).days + 1) if day_one() else 1,
         "due": due,
@@ -231,9 +267,9 @@ def todays_plan(on: date | None = None) -> dict:
         "backlog": backlog,
         "paused": paused,
         "pause_at": BACKLOG_PAUSE,
-        "intake_week": iwk,
-        # Positive means the calendar has run ahead of your progress.
-        "drift_weeks": wk - iwk,
+        "pace": pc,
+        "projection": projection(on, attempted, pc["per_day"]),
+        "idle_days": (on - last_activity()).days if last_activity() else 0,
         "sections": sections,
         "ahead": ahead,
         "done_today": done_today,
@@ -280,7 +316,7 @@ def metrics(on: date | None = None) -> dict:
         "mistakes": dict(Counter(r["mistake"] for r in rows if r.get("mistake"))),
         "approach_avg": (sum(approach) / len(approach)) if approach else None,
         "day": max(1, ((on or date.today()) - day_one()).days + 1),
-        "week": current_week(on),
+        "week": intake_week(set(replay())),
     }
 
 

@@ -94,13 +94,17 @@ def test_core_progress_does_not_strand_foundations():
 
 
 def test_reps_pool_is_not_starved_when_running_ahead():
-    """The reps allowance comes from the intake week; gating the pool on the
-    calendar week alone left an allowance with nothing to draw from."""
+    """The reps allowance and the reps pool must be scoped by the same week.
+
+    They used to disagree -- the allowance came from progress and the pool from
+    the calendar -- so anyone moving faster than 2 core/day got an allowance with
+    nothing to draw from. Now there is only one week and it cannot disagree.
+    """
     for p in cur.problems().values():
         if p["tier"] == "core" and p["week"] and p["week"] <= 5:
             append(make_entry(p["id"], "solved", TODAY))
     plan = todays_plan()
-    assert plan["intake_week"] > plan["week"]
+    assert plan["week"] >= 6            # progress, on day one
     reps = [s for s in plan["sections"] if s["title"].startswith("Reps")]
     assert reps and reps[0]["problems"]
 

@@ -112,7 +112,7 @@ def test_reps_interleave_back_across_earlier_weeks():
         if q["tier"] == "core" and q["week"] and q["week"] <= 4:
             log(q["id"])
     p = todays_plan()
-    assert p["intake_week"] == 5
+    assert p["week"] == 5
     reps = [s for s in p["sections"] if s["title"].startswith("Reps")]
     assert reps, "no reps section at week 5"
     assert any(q["week"] < 5 for q in reps[0]["problems"]), "reps did not reach back"
@@ -175,10 +175,14 @@ def test_future_days_are_never_caught_up_and_offer_no_ahead():
 
 def test_core_flows_into_the_next_week_when_the_current_one_runs_out():
     """Week 1 has 7 core problems; at 2/day a fast start exhausts it, and the
-    queue must continue in document order rather than going empty."""
+    queue must continue in document order rather than going empty.
+
+    The label just names the block it drew from. There is no "ahead of schedule"
+    any more: week means progress, so it cannot disagree with progress.
+    """
     for pid in (643, 1456, 1052, 167, 11, 15, 42):
         log(pid)
     core = [s for s in _preview(1)["sections"] if "ore" in s["title"]]
     assert core, "core section vanished once week 1 was exhausted"
     assert all(q["week"] > 1 for q in core[0]["problems"])
-    assert "ahead of schedule" in core[0]["title"]
+    assert "schedule" not in core[0]["title"]

@@ -264,3 +264,38 @@ ladder-cleared guard; cross-origin writes are refused (any page visited while
 floats; a typed note and a picked mistake chip survive a re-render; a double
 click cannot double-log; and reloading on the Frequent tab no longer renders a
 blank page.
+
+
+---
+
+## One notion of "week"
+
+There were two, and they disagreed constantly.
+
+**Calendar week** — elapsed days since the first attempt, over seven. **Progress
+week** — where you actually are in the material. The calendar drove the labels
+while progress drove the content, which produced two nonsense readings:
+
+- Finish week 1's seven core problems in two days and every day afterwards was
+  labelled *"running ahead of schedule"* — permanently, because the calendar can
+  never catch up to a faster pace.
+- Take five weeks off and the calendar reported week 6 while progress sat at week
+  1, so the tier mix was chosen for week 6 and zeroed the foundations allowance.
+
+The second one was a real defect and got fixed by keying the mix to progress. But
+that left the calendar week doing nothing except generating the first reading —
+so it is gone. `current_week()` is deleted; `intake_week()` is the only week.
+Progress cannot disagree with progress.
+
+Elapsed time is still reported, but descriptively rather than prescriptively:
+
+- **pace** — new problems started per day over a trailing window, divided by days
+  actually elapsed so a young log does not read as slow;
+- **projection** — remaining required problems at that rate, and the date that
+  implies (stretch is optional and custom additions are yours, so neither counts);
+- **idle_days** — days since the last attempt, surfaced past three, since what
+  actually grows while you are away is the re-solve backlog, not the queue.
+
+The 18 weeks were never a deadline. They were the document's estimate at its own
+stated daily load; at a different load you finish at a different date, and the
+tool now just tells you which.

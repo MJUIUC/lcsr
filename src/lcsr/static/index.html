@@ -221,6 +221,11 @@ details.add[open] summary::before{content:"− "}
 .phead2 b{color:var(--ink);font-weight:600}
 .btn[aria-expanded=true]{border-color:var(--warn);color:var(--warn);background:var(--warn-soft);
   font-weight:550}
+.pacebar{display:flex;gap:26px;flex-wrap:wrap;padding:12px 15px;margin-bottom:18px;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);font-size:13px;color:var(--mid)}
+.pacebar b{color:var(--ink);font-weight:600}
+.pacebar em{font-style:normal;color:var(--muted);font-size:12px}
 .drift{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 28%,transparent);
   color:var(--warn);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:14px}
 .drift b{color:inherit}
@@ -403,10 +408,18 @@ function vToday(){
   if(ro) h += `<div class="preview">Preview — you cannot log an attempt for another
     day. Due re-solves shown are everything outstanding by then.</div>`;
 
-  if(p.drift_weeks > 0 && !ro)
-    h += `<div class="drift">The calendar says <b>week ${p.week}</b>, your progress is at
-      <b>week ${p.intake_week}</b> — ${p.drift_weeks} week${p.drift_weeks>1?'s':''} behind.
-      The daily mix follows your progress, not the date, so nothing gets skipped.</div>`;
+  if(!ro && p.idle_days >= 3)
+    h += `<div class="drift">Nothing logged for <b>${p.idle_days} days</b>. Re-solves keep
+      falling due while you are away, so the backlog is what grows — the new-problem
+      queue just waits.</div>`;
+
+  if(!ro && p.pace.started)
+    h += `<div class="pacebar">
+      <span><b>${p.pace.per_day.toFixed(1)}</b> problems/day <em>over ${p.pace.window_days} day${p.pace.window_days>1?'s':''}</em></span>
+      <span><b>${p.projection.remaining}</b> left <em>of the required tiers</em></span>
+      ${p.projection.finish ? `<span>on track to finish <b>${p.projection.finish}</b>
+        <em>${Math.round(p.projection.days_left/7)} weeks</em></span>` : ''}
+    </div>`;
 
   if(p.paused)
     h += `<div class="paused">
@@ -682,7 +695,8 @@ function vStats(){
 
 /* ---------------- render ---------------- */
 function renderChrome(){
-  $('#daychip').innerHTML = `day ${plan.day} · week ${plan.week} · `
+  $('#daychip').innerHTML = `day ${plan.day} · week ${plan.week}${
+      plan.block ? ' · ' + esc(plan.block) : ''} · `
     + `<strong style="color:${plan.caught_up?'var(--ok)':'var(--ink)'}">`
     + `${plan.done_today}/${plan.target_today}</strong> today`;
   const o = curric?.overall;

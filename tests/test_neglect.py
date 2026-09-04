@@ -105,13 +105,16 @@ def test_clearing_the_backlog_resumes_new_problems():
 
 def test_falling_behind_does_not_skip_foundations():
     """The original bug: allowance() keyed off the CALENDAR week, so after five
-    weeks away it returned foundations=0 and all 42 became unreachable forever."""
+    weeks away it returned foundations=0 and all 42 became unreachable forever.
+
+    Week is now progress alone, so elapsed time cannot advance the tier mix past
+    material that has not been done.
+    """
     for i, pid in enumerate(core_ids(4)):
         log(pid, "solved", TODAY - timedelta(days=40) + timedelta(days=i))
     p = todays_plan()
-    assert p["week"] > p["intake_week"], "expected the calendar to be ahead"
-    assert p["drift_weeks"] > 0
-    assert allowance(p["intake_week"])["foundations"] > 0
+    assert p["week"] == 1, "40 idle days must not advance the week"
+    assert allowance(p["week"])["foundations"] > 0
     assert any("Found" in s["title"] for s in p["sections"])
 
 
@@ -122,10 +125,31 @@ def test_intake_week_tracks_progress_not_elapsed_time():
     assert intake_week(done) == 4
 
 
-def test_running_ahead_reports_no_drift():
-    for i, pid in enumerate(core_ids(9)):
+def test_idle_days_and_pace_replace_the_drift_signal():
+    """Elapsed time is reported as idleness and rate, not as being "behind" a
+    schedule that only ever existed as elapsed-days-over-seven."""
+    for i, pid in enumerate(core_ids(4)):
+        log(pid, "solved", TODAY - timedelta(days=10) + timedelta(days=i))
+    p = todays_plan()
+    assert p["idle_days"] == 7
+    assert p["pace"]["per_day"] >= 0
+    assert p["projection"]["remaining"] > 0
+    assert "drift_weeks" not in p and "intake_week" not in p
+
+
+def test_projection_is_none_when_nothing_has_been_started():
+    p = todays_plan()
+    assert p["projection"]["days_left"] is None
+    assert p["projection"]["finish"] is None
+
+
+def test_pace_divides_by_elapsed_days_not_the_full_window():
+    """A two-day-old log must not read as 14 days slow."""
+    for pid in core_ids(6):
         log(pid, "solved", TODAY)
-    assert todays_plan()["drift_weeks"] <= 0
+    p = todays_plan()
+    assert p["pace"]["window_days"] == 1
+    assert p["pace"]["per_day"] == 6.0
 
 
 # --- malformed input ----------------------------------------------------

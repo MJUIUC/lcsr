@@ -126,8 +126,8 @@ def cmd_cues(a):
 
 
 def cmd_week(a):
-    from .plan import current_week
-    wk = a.n or current_week()
+    from .plan import intake_week
+    wk = a.n or intake_week(set(replay()))
     ps = sorted((p for p in cur.problems().values() if p["week"] == wk),
                 key=lambda p: p["order"])
     if not ps:
