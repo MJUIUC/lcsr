@@ -27,7 +27,8 @@ def test_is_up_is_true_while_a_server_listens():
     try:
         assert srv.is_up("127.0.0.1", port) is True
     finally:
-        httpd.shutdown()
+        httpd.shutdown()      # stops the accept loop...
+        httpd.server_close()  # ...but only this releases the listening socket
     assert srv.is_up("127.0.0.1", port) is False
 
 
