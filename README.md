@@ -24,8 +24,19 @@ ln -s ~/leetcode-srs/.venv/bin/lcsr /opt/homebrew/bin/lcsr
 ## Use
 
 ```bash
-lcsr serve                       # the UI — opens http://127.0.0.1:8765
+lcsr up            # start the UI in the background and open it
+lcsr status        # is it running?
+lcsr down          # stop it
 ```
+
+`lcsr up` is idempotent — run it any time, it only starts a server if one is not
+already listening. The process is detached into its own session, so it survives
+the terminal (or the agent session) that launched it closing. Liveness is checked
+by connecting to the port rather than by reading the pidfile, since a pidfile
+outlives a crash and pids get reused.
+
+`lcsr serve` still runs it in the foreground if you want the logs; background
+output goes to `~/.lcsr/server.log`.
 
 The page shows due re-solves first, then today's new problems. Each row links to
 LeetCode, and marks **Solved** or **Stuck**; stuck opens a mistake class and a

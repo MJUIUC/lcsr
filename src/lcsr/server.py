@@ -5,6 +5,12 @@ holds no state of its own, so the two can never disagree about what is due.
 """
 
 import json
+import os
+import signal
+import socket
+import subprocess
+import time
+import sys
 import webbrowser
 from urllib.parse import parse_qs, urlparse
 from datetime import date
@@ -15,9 +21,69 @@ from pathlib import Path
 from . import curriculum as cur
 from .plan import curriculum_view, frequent_view, history_view, todays_plan
 from .schedule import SOLVED, STUCK
-from .store import LOCK, MISTAKES, amend, append, make_entry, replay, undo
+from .store import HOME, LOCK, MISTAKES, amend, append, make_entry, replay, undo
 
 INDEX = Path(__file__).parent / "static" / "index.html"
+
+PIDFILE = HOME / "server.pid"
+SERVERLOG = HOME / "server.log"
+
+
+def is_up(host: str, port: int, timeout: float = 0.4) -> bool:
+    """Liveness by connecting, not by the pidfile.
+
+    A pidfile outlives a crash and the pid can be reused, so it is a claim about
+    the past; a successful connect is a fact about now.
+    """
+    try:
+        with socket.create_connection((host, port), timeout):
+            return True
+    except OSError:
+        return False
+
+
+def start_detached(host: str, port: int) -> bool:
+    """Launch the server in its own session so it outlives this terminal.
+
+    start_new_session detaches it from the calling process group, so closing the
+    shell -- or the agent session that ran it -- does not take it down with them.
+    """
+    HOME.mkdir(parents=True, exist_ok=True)
+    with SERVERLOG.open("a", encoding="utf-8") as out:
+        proc = subprocess.Popen(
+            [sys.executable, "-m", "lcsr", "serve", "--host", host,
+             "--port", str(port), "--no-open"],
+            stdout=out, stderr=out, stdin=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    PIDFILE.write_text(str(proc.pid), encoding="utf-8")
+    for _ in range(40):                      # up to ~8s
+        if is_up(host, port):
+            return True
+        if proc.poll() is not None:          # died on startup
+            return False
+        time.sleep(0.2)
+    return is_up(host, port)
+
+
+def stop() -> bool:
+    try:
+        pid = int(PIDFILE.read_text(encoding="utf-8").strip())
+    except (OSError, ValueError):
+        return False
+    try:
+        os.kill(pid, signal.SIGTERM)
+    except ProcessLookupError:
+        PIDFILE.unlink(missing_ok=True)
+        return False
+    for _ in range(25):
+        time.sleep(0.2)
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            break
+    PIDFILE.unlink(missing_ok=True)
+    return True
 
 
 def problem_id(body: dict) -> int:
@@ -221,6 +287,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def serve(host="127.0.0.1", port=8765, open_browser=True):
     httpd = ThreadingHTTPServer((host, port), partial(Handler))
+    httpd.allow_reuse_address = True
     url = f"http://{host}:{port}"
     print(f"lcsr → {url}   (ctrl-c to stop)")
     if open_browser:

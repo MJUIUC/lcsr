@@ -190,13 +190,61 @@ def cmd_serve(a):
     serve(a.host, a.port, open_browser=not a.no_open)
 
 
+def cmd_up(a):
+    """Idempotent: bring the UI up if it is not already, then open it."""
+    import webbrowser
+
+    from .server import is_up, start_detached
+    url = f"http://{a.host}:{a.port}"
+    if is_up(a.host, a.port):
+        print(f"\n{G}already running{X} → {B}{url}{X}\n")
+    elif start_detached(a.host, a.port):
+        print(f"\n{G}started{X} → {B}{url}{X}   {D}(stop with `lcsr down`){X}\n")
+    else:
+        from .server import SERVERLOG
+        raise SystemExit(f"failed to start; see {SERVERLOG}")
+    if not a.no_open:
+        webbrowser.open(url)
+
+
+def cmd_down(a):
+    from .server import is_up, stop
+    if stop() or not is_up(a.host, a.port):
+        print(f"\n{D}stopped{X}\n")
+    else:
+        print(f"\n{Y}still listening on {a.port} — not started by `lcsr up`?{X}\n")
+
+
+def cmd_status(a):
+    from .server import PIDFILE, is_up
+    url = f"http://{a.host}:{a.port}"
+    if is_up(a.host, a.port):
+        pid = PIDFILE.read_text(encoding="utf-8").strip() if PIDFILE.exists() else "?"
+        print(f"\n{G}up{X}   {url}   {D}pid {pid}{X}\n")
+    else:
+        print(f"\n{D}down{X}   {D}start it with `lcsr up`{X}\n")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="lcsr", description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    p = sub.add_parser("serve", help="open the web UI")
-    p.add_argument("--host", default="127.0.0.1")
-    p.add_argument("--port", type=int, default=8765)
+    def net(sp):
+        sp.add_argument("--host", default="127.0.0.1")
+        sp.add_argument("--port", type=int, default=8765)
+        return sp
+
+    p = net(sub.add_parser("up", help="start the web UI in the background and open it"))
+    p.add_argument("--no-open", action="store_true")
+    p.set_defaults(fn=cmd_up)
+
+    p = net(sub.add_parser("down", help="stop the background web UI"))
+    p.set_defaults(fn=cmd_down)
+
+    p = net(sub.add_parser("status", help="is the web UI running?"))
+    p.set_defaults(fn=cmd_status)
+
+    p = net(sub.add_parser("serve", help="run the web UI in the foreground"))
     p.add_argument("--no-open", action="store_true")
     p.set_defaults(fn=cmd_serve)
 
