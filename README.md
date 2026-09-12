@@ -79,6 +79,9 @@ come with headings.
   back on offer, the ladder empties, and the daily intake rises by one. Nothing
   is deleted, and the old attempts stay in your history and your export.
 - **Export**, to CSV or the raw log, so the record is never trapped in here.
+- **Skip**, for the ones you are not doing today. Set aside from **Today**, and
+  they stop being offered until you bring them back. A skip is never an attempt,
+  so declining the hard ones cannot flatter the cold re-solve rate.
 
 ### Keywords
 
@@ -147,6 +150,8 @@ lcsr log 42 --stuck --mistake invariant
 lcsr log 1 217 242 --date yesterday
 lcsr amend 15 --stuck --mistake no-pattern   # it was not actually solved
 lcsr undo 209                    # retract the most recent attempt
+lcsr skip 42                     # set one aside; `--undo` puts it back
+lcsr skipped                     # what you have set aside
 lcsr stats                       # the three metrics the curriculum names
 lcsr cues                        # self-test the cue table; --answers to check
 lcsr week 5                      # one week's blocks, with progress

@@ -12,7 +12,7 @@ from . import settings as cfg
 from .schedule import SOLVED
 from .settings import allowance          # re-exported: part of plan's surface
 from .store import (current_entries, current_sprint, entries, raw_entries,
-                    replay, stream)
+                    replay, skipped_ids, skipped_on, stream)
 
 
 def day_one() -> date | None:
@@ -44,7 +44,7 @@ def foundations_left(attempted: set[int]) -> int:
                if p["tier"] == "foundations" and p["id"] not in attempted)
 
 
-def intake_week(attempted: set[int]) -> int:
+def intake_week(attempted: set[int], skipped: set[int] | None = None) -> int:
     """The week whose material you are actually on, from progress not calendar.
 
     This is the ONLY notion of week. An earlier version also had a calendar week
@@ -59,7 +59,11 @@ def intake_week(attempted: set[int]) -> int:
     """
     core = sorted((p for p in cur.problems().values() if p["tier"] == "core"),
                   key=lambda p: p["order"])
-    nxt = next((p for p in core if p["id"] not in attempted), None)
+    # A problem you set aside must not freeze the week. Without this, skipping
+    # one core problem pins intake_week() to its week forever and the daily mix
+    # never advances again.
+    done = attempted | (skipped or set())
+    nxt = next((p for p in core if p["id"] not in done), None)
     return max(1, nxt["week"] or 1) if nxt else 16
 
 
@@ -87,16 +91,20 @@ def pace(on: date, window: int = 14) -> dict:
             "started": started, "window_days": elapsed}
 
 
-def projection(on: date, attempted: set[int], per_day: float) -> dict:
+def projection(on: date, attempted: set[int], per_day: float,
+               skipped: set[int] | None = None) -> dict:
     """When the curriculum finishes at the observed rate.
 
     Counts the tiers the curriculum treats as required -- stretch is explicitly
     optional and custom additions are yours, so neither belongs in a completion
     estimate.
     """
+    # Problems you have set aside are not on the path to finishing, so counting
+    # them would keep promising a date for work you have said you are not doing.
+    done = attempted | (skipped or set())
     remaining = sum(1 for p in cur.problems().values()
                     if p["tier"] in ("foundations", "core", "reps")
-                    and p["id"] not in attempted)
+                    and p["id"] not in done)
     if per_day <= 0:
         return {"remaining": remaining, "days_left": None, "finish": None}
     days_left = int(remaining / per_day + 0.999)
@@ -104,11 +112,22 @@ def projection(on: date, attempted: set[int], per_day: float) -> dict:
             "finish": (on + timedelta(days=days_left)).isoformat()}
 
 
-def _started_on(first_seen: dict[int, str], day: date) -> Counter:
-    """New problems whose FIRST attempt fell on `day`, by tier."""
+def _started_on(first_seen: dict[int, str], day: date,
+                also: set[int] | None = None) -> Counter:
+    """New problems whose FIRST attempt fell on `day`, by tier.
+
+    `also` are problems set aside that day. They count against the day's intake
+    too: a skip takes a problem off the queue, and if it did not consume the
+    slot it vacated, the queue would refill and skipping would be punished with
+    a replacement problem.
+    """
     probs = cur.problems()
-    return Counter(probs[pid]["tier"] for pid, d in first_seen.items()
-                   if d == day.isoformat() and pid in probs)
+    got = Counter(probs[pid]["tier"] for pid, d in first_seen.items()
+                  if d == day.isoformat() and pid in probs)
+    for pid in (also or ()):
+        if pid in probs:
+            got[probs[pid]["tier"]] += 1
+    return got
 
 
 def todays_plan(on: date | None = None, today: date | None = None) -> dict:
@@ -123,13 +142,25 @@ def todays_plan(on: date | None = None, today: date | None = None) -> dict:
     states = replay()
     rows = current_entries()
     attempted = set(states)
+    skipped = skipped_ids()
+    # Set aside TODAY, specifically.
+    #
+    # GOTCHA: skipping must never hand you more work than you already had.
+    # intake_week() treats a skipped problem as passed, so setting aside the last
+    # core problem of a week advanced the week mid-day; week 3 starts reps, so a
+    # rep appeared out of nowhere, and the freed core slot refilled from the new
+    # week. Skipping the last item of the day produced two new ones.
+    #
+    # So today's skips do not move the week. They still come off the queue, they
+    # still consume the slot they vacated, and the week advances tomorrow.
+    skipped_today = skipped_on(on)
     sprint = current_sprint()
     # ONE notion of week: where you are in the material. The calendar week was a
     # second, competing one -- it drove the label while progress drove the
     # content, so finishing week 1's seven core problems in two days reported
     # "running ahead of schedule" indefinitely. There is no schedule to be ahead
     # of; there is a sequence and a rate.
-    wk = intake_week(attempted)
+    wk = intake_week(attempted, skipped - skipped_today)
 
     prefs = cfg.load()
 
@@ -152,7 +183,7 @@ def todays_plan(on: date | None = None, today: date | None = None) -> dict:
         # which consumes its own intake. Without this offset every future day
         # shows the same list -- day+2 repeats day+1 forever.
         skip: Counter = Counter()
-        skip.update({t: max(0, n - _started_on(first_seen, today).get(t, 0))
+        skip.update({t: max(0, n - _started_on(first_seen, today, skipped_on(today)).get(t, 0))
                      for t, n in quota_for(wk).items()})
         # Every day between now and then consumes a full intake, and nothing in
         # that quota varies by day, so this is a multiplication rather than a
@@ -166,13 +197,15 @@ def todays_plan(on: date | None = None, today: date | None = None) -> dict:
         started_today = Counter()
         # Only re-solves falling due on that exact day: anything due earlier is
         # assumed cleared on its own day, so carrying it forward would be wrong.
-        due_states = [s for s in states.values() if s.due and s.due == on]
+        due_states = [s for s in states.values()
+                      if s.due and s.due == on and s.pid not in skipped]
     else:
         skip = Counter()
         quota = quota_for(wk)
-        started_today = _started_on(first_seen, on)
+        started_today = _started_on(first_seen, on, skipped_today)
         remaining = {t: max(0, n - started_today.get(t, 0)) for t, n in quota.items()}
-        due_states = [s for s in states.values() if s.due and s.due <= on]
+        due_states = [s for s in states.values()
+                      if s.due and s.due <= on and s.pid not in skipped]
 
     # Most overdue first: a re-solve 30 days late has decayed furthest and is the
     # one the schedule is most wrong about.
@@ -206,7 +239,8 @@ def todays_plan(on: date | None = None, today: date | None = None) -> dict:
             return p["week"] == week
 
         rows_ = [p for p in cur.problems().values()
-                 if p["id"] not in attempted and p["tier"] == tier and wanted(p)]
+                 if p["id"] not in attempted and p["id"] not in skipped
+                 and p["tier"] == tier and wanted(p)]
         rows_.sort(key=lambda p: (p["week"] or 0, p["order"]))
         return rows_
 
@@ -267,7 +301,7 @@ def todays_plan(on: date | None = None, today: date | None = None) -> dict:
         "paused": paused,
         "pause_at": BACKLOG_PAUSE,
         "pace": pc,
-        "projection": projection(on, attempted, pc["per_day"]),
+        "projection": projection(on, attempted, pc["per_day"], skipped),
         "idle_days": (on - last_activity()).days if last_activity() else 0,
         "sections": sections,
         "ahead": ahead,
@@ -277,6 +311,7 @@ def todays_plan(on: date | None = None, today: date | None = None) -> dict:
                               and first_seen.get(r["id"]) != on.isoformat()),
         "caught_up": (not sections and not due) and not is_future and not paused,
         "sprint": sprint,
+        "skipped_count": len(skipped),
         "load": cfg.describe(wk, foundations_left(attempted), prefs, sprint),
         "metrics": metrics(on),
     }
@@ -319,7 +354,7 @@ def metrics(on: date | None = None) -> dict:
         "mistakes": dict(Counter(r["mistake"] for r in rows if r.get("mistake"))),
         "approach_avg": (sum(approach) / len(approach)) if approach else None,
         "day": max(1, ((on or date.today()) - day_one()).days + 1),
-        "week": intake_week(set(replay())),
+        "week": intake_week(set(replay()), skipped_ids()),
         # Scoped to the pass in progress, like everything else here. The lifetime
         # figure is kept alongside so starting a new pass never looks like
         # losing the work.
@@ -351,10 +386,13 @@ def state_of(states: dict, pid: int) -> dict:
 def curriculum_view() -> dict:
     """Every problem in the curriculum, grouped the way the PDF groups them."""
     states = replay()
+    skipped = skipped_ids()
     allp = sorted(cur.problems().values(), key=lambda p: p["order"])
 
     def deco(p):
-        return {**p, "url": cur.url(p["id"]), "state": state_of(states, p["id"])}
+        return {**p, "url": cur.url(p["id"]),
+                "state": {**state_of(states, p["id"]),
+                          "skipped": p["id"] in skipped}}
 
     def progress(rows):
         done = sum(1 for r in rows if r["state"]["status"] == "done")
@@ -401,6 +439,19 @@ def curriculum_view() -> dict:
         "progress": progress(stretch),
         "blocks": [{"title": "", "problems": stretch}],
     })
+
+    # A tier of its own. They stay listed in their own week as well, with a
+    # badge: removing them would quietly shrink that week's totals, and the
+    # curriculum's counts are the one thing this tool does not rewrite.
+    aside = [deco(p) for p in allp if p["id"] in skipped]
+    if aside:
+        groups.append({
+            "key": "skipped", "title": "Tier 4 · Set aside",
+            "subtitle": "not offered until you bring them back · "
+                        "never counted as attempts",
+            "progress": progress(aside),
+            "blocks": [{"title": "", "problems": aside}],
+        })
 
     extra = [deco(p) for p in allp if p["tier"] == "custom"]
     if extra:

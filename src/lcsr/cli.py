@@ -11,7 +11,7 @@ from .plan import (export_csv, foundations_left, intake_week, metrics,
                    todays_plan)
 from .schedule import SOLVED, STUCK
 from .store import (LOG, MISTAKES, amend, append, current_sprint, make_entry,
-                    replay, start_sprint, undo)
+                    replay, set_skipped, skipped_ids, start_sprint, undo)
 
 B, D, R, G, Y, X = "\033[1m", "\033[2m", "\033[31m", "\033[32m", "\033[33m", "\033[0m"
 if not sys.stdout.isatty():
@@ -262,6 +262,31 @@ def cmd_config(a):
               f"`lcsr config --reset` clears all{X}\n")
 
 
+def cmd_skip(a):
+    """Set problems aside, or bring them back."""
+    for pid in a.ids:
+        cur.loggable(pid)
+        set_skipped(pid, not a.undo)
+        p = cur.loggable(pid)
+        verb = f"{D}back on the list{X}" if a.undo else f"{Y}set aside{X}"
+        print(f"  {pid:<5} {label(p)}  {verb}")
+    print()
+
+
+def cmd_skipped(a):
+    ids = sorted(skipped_ids())
+    if not ids:
+        print(f"\n{D}nothing set aside. `lcsr skip 42` to set one aside{X}\n")
+        return
+    print(f"\n{B}set aside{X}  {D}{len(ids)} problem{'s' if len(ids) != 1 else ''}{X}")
+    for pid in ids:
+        try:
+            print(f"  {pid:<5} {label(cur.loggable(pid))}")
+        except KeyError:
+            print(f"  {pid:<5} {D}(not in the curriculum){X}")
+    print(f"\n{D}`lcsr skip 42 --undo` puts one back{X}\n")
+
+
 def cmd_sprint(a):
     """Start another pass over the curriculum, keeping every attempt."""
     states = replay()
@@ -362,6 +387,14 @@ def main(argv=None):
     p.add_argument("--cue")
     p.add_argument("--hard", action="store_true")
     p.set_defaults(fn=cmd_add)
+
+    p = sub.add_parser("skip", help="set a problem aside, so it stops being offered")
+    p.add_argument("ids", nargs="+", type=int)
+    p.add_argument("--undo", action="store_true", help="put it back on the list")
+    p.set_defaults(fn=cmd_skip)
+
+    p = sub.add_parser("skipped", help="what you have set aside")
+    p.set_defaults(fn=cmd_skipped)
 
     p = sub.add_parser("sprint", help="start another pass over the curriculum")
     p.add_argument("--force", action="store_true",

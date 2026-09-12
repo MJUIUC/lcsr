@@ -256,6 +256,13 @@ def _live(with_marks: bool) -> list[dict]:
             if with_marks:
                 alive.append(r)          # index bookkeeping below still lines up
             continue
+        if "skip" in r:
+            # Setting a problem aside is not an attempt at it. It must never
+            # reach replay() (which would read r["outcome"] and raise) nor the
+            # metrics, or declining the hard ones would quietly improve the cold
+            # re-solve rate, which is the one number the curriculum says
+            # predicts anything. See skipped_ids().
+            continue
         pid = r["id"]
         if r.get("undo"):
             if positions.get(pid):
@@ -274,6 +281,54 @@ def entries() -> list[dict]:
 def stream() -> list[dict]:
     """Surviving attempts plus sprint markers, in order. This is what replays."""
     return _live(True)
+
+
+def make_skip(pid: int, on: date, skip: bool = True) -> dict:
+    return {"ts": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "date": on.isoformat(), "id": pid, "skip": bool(skip)}
+
+
+def set_skipped(pid: int, skip: bool = True) -> dict:
+    """Set a problem aside, or bring it back. Appends either way.
+
+    Toggling is a new record rather than a retraction of the old one, so the log
+    keeps the fact that you set it aside on a date and changed your mind on
+    another. Nothing here touches the ladder.
+    """
+    with LOCK:
+        mark = make_skip(pid, date.today(), skip)
+        append(mark)
+        return mark
+
+
+def skip_marks() -> dict[int, dict]:
+    """The latest skip record per problem, in the pass you are on.
+
+    Scoped to the current pass for the same reason schedule state is: a new pass
+    puts every problem back on offer, and that has to include the ones you
+    declined last time round. Declining them again is one click.
+
+    The record is returned whole, not just the flag, because the DATE matters:
+    a problem set aside today must not change the shape of today.
+    """
+    rows = raw_entries()
+    cut = max((i for i, r in enumerate(rows) if "sprint" in r), default=-1)
+    marks: dict[int, dict] = {}
+    for r in rows[cut + 1:]:
+        if "skip" in r:
+            marks[r["id"]] = r
+    return marks
+
+
+def skipped_ids() -> set[int]:
+    return {pid for pid, r in skip_marks().items() if r.get("skip")}
+
+
+def skipped_on(day: date) -> set[int]:
+    """Set aside on this particular day, and still set aside."""
+    iso = day.isoformat()
+    return {pid for pid, r in skip_marks().items()
+            if r.get("skip") and r.get("date") == iso}
 
 
 def make_sprint(n: int, on: date) -> dict:

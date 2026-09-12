@@ -26,7 +26,8 @@ from .plan import (curriculum_view, export_csv, foundations_left, frequent_view,
 from .schedule import SOLVED, STUCK
 from .store import (HOME, LOCK, MISTAKES, amend, append, current_sprint,
                     raw_entries,
-                    make_entry, replay, start_sprint, undo)
+                    make_entry, replay, set_skipped, skipped_ids, start_sprint,
+                    undo)
 
 INDEX = Path(__file__).parent / "static" / "index.html"
 
@@ -348,6 +349,13 @@ class Handler(BaseHTTPRequestHandler):
                                                     else "lcsr-log.jsonl"})
             if path == "/api/add":
                 return self._send(200, self._add(body))
+            if path == "/api/skip":
+                pid = problem_id(body)
+                cur.loggable(pid)
+                # Default true: the button that sends this is "Skip".
+                on = body.get("skip", True) is not False
+                set_skipped(pid, on)
+                return self._send(200, {"ok": True, "id": pid, "skipped": on})
             if path == "/api/sprint":
                 mark = start_sprint()
                 return self._send(200, {"ok": True, "sprint": mark["sprint"],

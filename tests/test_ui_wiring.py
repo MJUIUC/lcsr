@@ -134,8 +134,33 @@ def test_the_toast_undo_is_handled_before_the_card_handler():
 
 def test_a_toast_with_an_action_stays_up_longer():
     """Two seconds is not long enough to notice a button, read it and press it."""
-    body = _block("function toast(msg, opts={})")
-    assert "opts.undo ? 6500 : 2600" in body.replace("\n", " ").replace("  ", " ")
+    body = " ".join(_block("function toast(msg, opts={})").split())
+    assert "(opts.undo || opts.unskip) ? 6500 : 2600" in body
+
+
+def test_skip_is_offered_in_today_and_nowhere_else():
+    """Skip belongs where a queue is being worked. Offering it in Curriculum or
+    the pool would let you set aside a problem you are only browsing."""
+    assert "data-act=\"skip\"" in JS
+    today = _block("function vToday()")
+    assert "skip:!ro" in today.replace(" ", ""), "Today does not pass the flag"
+    for view in ("function vCurriculum()", "function vPool()"):
+        flat = _block(view).replace(" ", "")
+        assert not re.search(r"(?<!un)skip:", flat), f"{view} offers Skip"
+
+
+def test_set_aside_lives_in_curriculum_not_today():
+    """Today is the queue. A list of what you are NOT doing does not belong in it."""
+    assert "class=\"aside\"" not in JS, "the set-aside block is still in Today"
+    assert "g.key==='skipped'" in _block("function vCurriculum()").replace(" ", "")
+
+
+def test_the_skip_toast_undo_is_not_a_log_retraction():
+    """A skip is not an attempt, so undoing one must not append a retraction to
+    the log. It has its own handler."""
+    listener = _click_listener()
+    assert "closest('[data-toast-unskip]')" in listener
+    assert "data-toast-unskip" in JS
 
 
 def test_long_lists_are_bounded():

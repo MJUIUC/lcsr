@@ -176,6 +176,10 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
   color:var(--mid);transition:.13s}
 .btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .btn.warn:hover{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.btn.quiet{color:var(--muted);border-color:transparent}
+.btn.quiet:hover{color:var(--ink);border-color:var(--line);background:var(--panel2)}
+.badge.aside-b{color:var(--muted);border-style:dashed}
+.grp[data-key=skipped] .p{opacity:.72}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#1a1200;font-weight:550}
 .btn.primary:hover{opacity:.88;color:#1a1200;background:var(--brand)}
 .pcue{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);font-style:italic;
@@ -685,14 +689,15 @@ function setTheme(t){
 }
 function toast(msg, opts={}){
   const t = $('#toast');
-  t.innerHTML = `<span>${esc(msg)}</span>` + (opts.undo
-    ? `<button class="tundo" data-toast-undo="${opts.undo}">Undo</button>` : '');
+  t.innerHTML = `<span>${esc(msg)}</span>`
+    + (opts.undo   ? `<button class="tundo" data-toast-undo="${opts.undo}">Undo</button>` : '')
+    + (opts.unskip ? `<button class="tundo" data-toast-unskip="${opts.unskip}">Undo</button>` : '');
   t.classList.toggle('good', !!opts.good);
   t.classList.add('show');
   // Longer when there is something to press: a two-second window to notice a
   // button, read it and reach it is not a window at all.
   clearTimeout(t._h);
-  t._h = setTimeout(()=>t.classList.remove('show'), opts.undo ? 6500 : 2600);
+  t._h = setTimeout(()=>t.classList.remove('show'), (opts.undo || opts.unskip) ? 6500 : 2600);
 }
 // Step a YYYY-MM-DD entirely in UTC. Parsing "2026-09-01T00:00:00" gives LOCAL
 // midnight, and toISOString() then converts to UTC -- which in any zone at or
@@ -740,14 +745,21 @@ function logPanel(p, solved){
     </div>`;
 }
 
-function logActions(solved){
+function logActions(solved, o={}){
+  // In the set-aside tier the only useful action is the way out of it.
+  if(o.unskip) return `<span class="pacts">
+      <button class="btn" data-act="unskip">Bring back</button>
+    </span>`;
   if(solved) return `<span class="pacts">
       <button class="btn" data-act="change">Change</button>
     </span>`;
+  // Skip is offered only where a queue is being worked, which is Today. It is
+  // deliberately last and unemphasised: it is a way out, not a third outcome.
   return `<span class="pacts">
       <button class="btn" data-act="solved">Solved</button>
       <button class="btn warn" data-act="stuck" aria-expanded="false">Stuck</button>
       <button class="btn" data-act="note">Note</button>
+      ${o.skip ? '<button class="btn quiet" data-act="skip" title="Stop offering this one">Skip</button>' : ''}
     </span>`;
 }
 
@@ -773,8 +785,9 @@ function pRow(p, o={}){
     p.hard ? '<span class="badge hard">hard</span>' : '',
     late!=null ? `<span class="badge late">${late>0?late+'d late':'due today'}</span>` : '',
     o.showTier ? `<span class="badge">${esc(p.tier)}${p.week?' · W'+p.week:''}</span>` : '',
+    (st.skipped && !o.unskip) ? '<span class="badge aside-b">set aside</span>' : '',
   ].join('');
-  const acts = o.readonly ? '' : logActions(st.status === 'done');
+  const acts = o.readonly ? '' : logActions(st.status === 'done', o);
   let meta = '';
   if(st.status==='done')      meta = `<div class="pmeta"><span class="ok">✓ solved</span> · ${st.attempts} attempt${st.attempts>1?'s':''}${st.last?' · last '+relDay(st.last):''}</div>`;
   else if(st.status==='learning' && st.due) meta = `<div class="pmeta"><span class="w">returns ${st.due}</span> · ${relDay(st.due)} · ${st.attempts} attempt${st.attempts>1?'s':''}</div>`;
@@ -829,14 +842,14 @@ function vToday(){
       p.backlog > p.due.length
         ? `showing the ${p.due.length} most overdue of ${p.backlog}`
         : 'these come first'}</span></div>
-          <div class="stack">${p.due.map(x=>pRow(x,{late:x.days_late,cue:true,showTier:true,readonly:ro})).join('')}</div>`;
+          <div class="stack">${p.due.map(x=>pRow(x,{late:x.days_late,cue:true,showTier:true,readonly:ro,skip:!ro})).join('')}</div>`;
     if(p.due_hidden)
       h += `<div class="morehint">+ ${p.due_hidden} more overdue, held back so the day stays
         finishable. They surface as these clear.</div>`;
   }
   for(const s of p.sections){
     h += `<div class="sec"><h2>${esc(s.title)}</h2></div>
-          <div class="stack">${s.problems.map(x=>pRow(x,{cue:true,readonly:ro})).join('')}</div>`;
+          <div class="stack">${s.problems.map(x=>pRow(x,{cue:true,readonly:ro,skip:!ro})).join('')}</div>`;
   }
 
   if(p.caught_up && !ro){
@@ -882,7 +895,7 @@ function vCurriculum(){
       : g.blocks.map(b=>
           `${b.title?`<div class="rolelbl">${esc(b.title)}</div>`:''}
            <div class="stack" style="margin-bottom:0;gap:6px">
-             ${b.problems.map(x=>pRow(x,{})).join('')}</div>`).join('');
+             ${b.problems.map(x=>pRow(x, g.key==='skipped' ? {unskip:true} : {})).join('')}</div>`).join('');
     return `<details class="grp" ${isNow?'open':''} data-key="${g.key}">
       <summary>
         <span class="wk">${wk}</span>
@@ -1412,6 +1425,15 @@ document.addEventListener('click', async e=>{
     }catch(err){ toast(err.message); }
     return;
   }
+  const tus = e.target.closest('[data-toast-unskip]');
+  if(tus){
+    const id = +tus.dataset.toastUnskip;
+    $('#toast').classList.remove('show');
+    try{ await api('/api/skip', {id, skip:false}); await refreshAll();
+         toast(`${id} is back on the list.`, {good:true}); }
+    catch(err){ toast(err.message); }
+    return;
+  }
   const tu = e.target.closest('[data-toast-undo]');
   if(tu){
     const id = +tu.dataset.toastUndo;
@@ -1509,6 +1531,20 @@ document.addEventListener('click', async e=>{
       }
       delete draft[id];
       await refreshAll();
+    }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
+    return;
+  }
+  if(act==='skip' || act==='unskip'){
+    if(inFlight.has(id)) return;
+    inFlight.add(id);
+    try{
+      await api('/api/skip', {id, skip: act==='skip'});
+      await refreshAll();
+      toast(act==='skip'
+        ? `${id} set aside. It will not be offered again until you bring it back.`
+        : `${id} is back on the list.`,
+        act==='skip' ? {good:true, unskip:id} : {good:true});
     }catch(err){ toast(err.message); }
     finally{ inFlight.delete(id); }
     return;
