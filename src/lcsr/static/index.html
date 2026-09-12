@@ -1059,7 +1059,6 @@ function vExport(){
 }
 
 const EVIDENCE = {
-  today: 'Spacing beats cramming across 839 measured comparisons in 317 experiments, and expanding intervals beat fixed ones. 3 / 10 / 30 is an expanding schedule.',
   curriculum: 'Plainest example before hard variant, and reps interleaved across weeks rather than massed. Both are findings from the literature, not preferences.',
   progress: 'Cold re-solve at 30 days is the number that predicts performance. The mistake histogram is what tells you which part to fix.',
   pool: 'Overlap across five independently compiled lists is the signal here, which is why the draw weights by it rather than picking uniformly.',
@@ -1101,9 +1100,6 @@ function render(opts={}){
   const v = {today:vToday, curriculum:vCurriculum, progress:vProgress,
              pool:vPool, cues:vCues, settings:vSettings}[tab] || vToday;
   $('#view').innerHTML = v() + evidenceNote();
-  // Hidden on Today: it explains the product to someone who has not used it, and
-  // on the tab you open every day that is the one thing you do not need.
-  $('#fdesc').hidden = (tab === 'today');
   window.scrollTo({top: opts.top ? 0 : y});
 }
 
