@@ -1,0 +1,31 @@
+name: codeql
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly, so a newly published query finds old code without a push.
+    - cron: "41 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: github/codeql-action/init@v4
+        with:
+          # Only Python. The UI's JavaScript lives inside src/lcsr/static/index.html
+          # rather than in .js files, so CodeQL's JS extractor does not see it;
+          # claiming the language here would report a clean scan of nothing.
+          languages: python
+          queries: security-extended
+      - uses: github/codeql-action/analyze@v4

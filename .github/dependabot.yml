@@ -1,0 +1,9 @@
+# lcsr has no Python dependencies, so there is nothing to update there.
+# Actions are the real supply chain here: a compromised or abandoned action in a
+# workflow runs with this repo's token.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

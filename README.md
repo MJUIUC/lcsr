@@ -254,7 +254,8 @@ silently producing a short list.
 
 - [`docs/evidence.md`](docs/evidence.md): the literature review this started from
 - [`docs/design.md`](docs/design.md): what was built and what was dropped
-- [`docs/vercel.md`](docs/vercel.md): running it without a filesystem, not yet built
+- [`docs/vercel.md`](docs/vercel.md): how it runs without a filesystem
+- [`SECURITY.md`](SECURITY.md): the threat model, and how to report a problem
 
 ---
 
