@@ -10,7 +10,10 @@ problem**, which is what the curriculum specifies. The reasoning behind the
 earlier draft is kept in [`evidence.md`](evidence.md) §4b, since it is the one
 place this tool knowingly departs from the strongest evidence.
 
-**Status: proposal. Not implemented.**
+**Status: historical.** This is the original proposal, kept for the reasoning.
+It was written before implementation, so the paths, commands and counts below
+describe what was planned rather than what shipped. `README.md` is the current
+description; `docs/vercel.md` covers the hosted build.
 
 ---
 

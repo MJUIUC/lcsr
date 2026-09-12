@@ -589,9 +589,20 @@ function readState(){
   }catch(e){}
   return {...EMPTY_STATE};
 }
+let STORAGE_OK = null;   // null = untested. A toast cannot carry this: render()
+                         // wipes it, and losing everything deserves a standing sign.
 function writeState(){
-  try{ localStorage.setItem(STATE_KEY, JSON.stringify(STATE)); }
-  catch(e){ toast('This browser will not let the page save your progress.'); }
+  try{
+    localStorage.setItem(STATE_KEY, JSON.stringify(STATE));
+    if(STORAGE_OK === false){ STORAGE_OK = true; paintFooterWhere(); }
+    else STORAGE_OK = true;
+  }catch(e){
+    if(STORAGE_OK !== false){
+      STORAGE_OK = false;
+      toast('This browser will not let the page save your progress.');
+      paintFooterWhere();
+    }
+  }
 }
 function applyPatch(pt){
   if(!pt) return;
@@ -619,11 +630,31 @@ const API_ONE = '/api/index';
    keeps the LOCAL server writing to ~/.lcsr: a body carrying state switches it to
    the in-memory backend, so sending state before knowing the mode would quietly
    stop the CLI's own server from saving anything. */
+// The browser's own calendar day, as YYYY-MM-DD. Built from local parts, never
+// via toISOString(), which converts to UTC and lands on the wrong day either side
+// of midnight.
+function localToday(){
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
 async function api(p, body){
   const [route, query] = p.split('?');
   const payload = {...(body || {}), op: route};
   if(query && query.startsWith('date=')) payload.date = decodeURIComponent(query.slice(5));
-  if(STATELESS) payload.state = STATE;
+  // Which day it is, decided here rather than on the server. The hosted function
+  // runs in UTC, so without this a user west of Greenwich gets tomorrow's queue
+  // during their afternoon and one east of it logs attempts against yesterday.
+  payload.today = localToday();
+  if(STATELESS){
+    // Re-read before every request. STATE was a load-time snapshot, and
+    // writeState() rewrites the whole blob, so a second tab opened earlier would
+    // overwrite everything the first tab had logged since.
+    const stored = readState();
+    if(stored.log.length >= STATE.log.length) STATE = stored;
+    payload.state = STATE;
+  }
   const r = await fetch(API_ONE, {method:'POST',
     headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
   let j;
@@ -650,6 +681,7 @@ function setTheme(t){
   if(t === 'system') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme', t);
   paintThemeSwitch();
+  paintFooterWhere();
 }
 function toast(msg, opts={}){
   const t = $('#toast');
@@ -1191,10 +1223,13 @@ function vPasses(){
       : `<b>${done}</b> of <b>${total}</b> finished, <b>${left}</b> still to go.`}</p>
     <p>Every problem goes back on offer and the 3 / 10 / 30 ladder empties.
       <b>Nothing is deleted</b>: past attempts stay in Progress and in your export.</p>
-    <p><b>Each pass raises the daily intake.</b> ${nextLoad === load_
-      ? `Your cap of <b>${d.settings.daily_total}</b> would hold it at <b>${load_}</b>, so
-         pass ${d.sprint + 1} looks the same until you raise it.`
-      : `<b>${load_}</b> a day becomes <b>${nextLoad}</b>.`}</p>
+    <p><b>Each pass raises the daily intake.</b> ${nextLoad !== load_
+      ? `<b>${load_}</b> a day becomes <b>${nextLoad}</b>.`
+      : d.settings.daily_total != null
+        ? `Your cap of <b>${d.settings.daily_total}</b> would hold it at <b>${load_}</b>, so
+           pass ${d.sprint + 1} looks the same until you raise it.`
+        : `Your own core setting fixes it at <b>${load_}</b>, so pass ${d.sprint + 1}
+           looks the same until you clear that.`}</p>
     ${finished ? '' : `<p class="apart" style="color:var(--warn)">This also drops the
       re-solves currently scheduled.</p>`}
   </div>
@@ -1332,9 +1367,22 @@ $('#theme').addEventListener('click', e=>{
   const b=e.target.closest('[data-theme-set]'); if(b) setTheme(b.dataset.themeSet);
 });
 paintThemeSwitch();
-$('#footwhere').textContent =
-  'Your progress is saved on your own computer, never uploaded. Close the tab '
-  + 'whenever you like, nothing is lost.';
+function paintFooterWhere(){
+  const el = $('#footwhere');
+  if(!el) return;
+  if(STORAGE_OK === false){
+    el.textContent = 'This browser is not letting the page save anything, so nothing '
+      + 'you log here will survive a reload. Check whether site data is blocked.';
+    el.style.color = 'var(--danger)';
+    return;
+  }
+  el.style.color = '';
+  el.textContent = STATELESS
+    ? 'Your progress is kept in this browser. It is sent with each request so the '
+      + 'server can work out what is due, and is never stored there. Clearing site '
+      + 'data deletes it, so use Export in Settings to keep a copy.'
+    : 'Everything is recomputed from a file on this machine. Nothing leaves it.';
+}
 
 document.addEventListener('click', async e=>{
   // cue reveal
@@ -1409,6 +1457,8 @@ document.addEventListener('click', async e=>{
 
   if(e.target.dataset.undo){
     const id = +e.target.dataset.undo;
+    if(inFlight.has(id)) return;      // a second click would retract twice
+    inFlight.add(id);
     try{
       const r = await api('/api/undo', {id});
       toast(`undid ${r.undone} on ${id}`);
@@ -1420,6 +1470,7 @@ document.addEventListener('click', async e=>{
       if(preview) preview = await api('/api/plan?date=' + preview.date);
       render();
     }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
     return;
   }
 

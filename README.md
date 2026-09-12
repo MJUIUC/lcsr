@@ -2,8 +2,14 @@
 
 ### [→ Try it live](https://leetcode-srs-khaki.vercel.app)
 
-No sign-up. Your progress stays in your own browser and never reaches a server.
-Or run it locally with the CLI below, where it lives in a plain file you own.
+No sign-up and no account. Your progress is stored in your own browser, and the
+hosted site keeps nothing: each request sends your log so the server can work out
+what is due, computes an answer, and forgets it. Nothing is stored server-side and
+nothing is shared between visitors. The hosted page loads Vercel Web Analytics,
+which counts page views and never sees your log.
+
+Or run it locally with the CLI below, where the log is a plain file you own and
+nothing leaves the machine at all.
 
 
 **A spaced repetition system for LeetCode and DSA interview prep.**
@@ -15,8 +21,9 @@ bottom, because the point is to re-earn the spacing, not to resume it.
 That schedule runs over 324 problems in a fixed order, taken from an 18-week
 data structures and algorithms curriculum, plus its 20-row pattern cue table.
 
-Self-hosted, single file of state, no account, no tracking, no dependencies.
-Python CLI plus a local web UI, with light and pitch-dark themes.
+Self-hosted, single file of state, no account, no dependencies. Python CLI plus a
+local web UI, with light and pitch-dark themes. Run it locally and nothing leaves
+your machine.
 
 It does not invent a study method. The curriculum has one; this makes following
 it cost nothing.
@@ -85,7 +92,8 @@ python, cli, local-first, no-tracking
 ## Install
 
 ```bash
-/opt/homebrew/bin/python3.13 -m venv .venv && .venv/bin/pip install -e .
+git clone https://github.com/Swapnil-jain/lcsr && cd lcsr
+python3 -m venv .venv && .venv/bin/pip install -e .
 ```
 
 Python 3.10+ (system Python is 3.9). No dependencies.
@@ -93,7 +101,7 @@ Python 3.10+ (system Python is 3.9). No dependencies.
 To get `lcsr` on your PATH:
 
 ```bash
-ln -s ~/leetcode-srs/.venv/bin/lcsr /opt/homebrew/bin/lcsr
+ln -s "$PWD/.venv/bin/lcsr" /usr/local/bin/lcsr   # or anywhere on your PATH
 ```
 
 ## Use
@@ -256,6 +264,22 @@ silently producing a short list.
 - [`docs/design.md`](docs/design.md): what was built and what was dropped
 - [`docs/vercel.md`](docs/vercel.md): how it runs without a filesystem
 - [`SECURITY.md`](SECURITY.md): the threat model, and how to report a problem
+
+## Credits
+
+The curriculum is not mine. The 18-week structure, the problem ordering, the
+20-row cue table and the block titles come from a third-party document,
+`DSA-Curriculum-18-Week.pdf`; `src/lcsr/data/problems.json` and `cues.json` are
+extracted from it verbatim by `tools/parse_curriculum.py`. What this repository
+adds is the tooling, the scheduling code, and ten problems of its own in
+`problems_extra.json`. If you are the curriculum's author and want the extracted
+text credited differently or removed, open an issue and I will.
+
+The interview pool is assembled from the five public lists credited and linked
+above. Only factual data is stored from them: LeetCode problem numbers, slugs,
+difficulties, and which lists a problem appears on.
+
+Problem titles and links belong to LeetCode.
 
 ---
 

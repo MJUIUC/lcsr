@@ -114,7 +114,11 @@ def from_dict(d: dict) -> Settings:
 def load() -> Settings:
     """Not cached: the UI changes these mid-session and must see them at once."""
     try:
-        return from_dict(store.backend().read_settings())
+        # `[]` or `"x"` is valid JSON and not a dict; .get() on it raises
+        # AttributeError, which is not in the tuple below, so the documented
+        # fallback did not fire and every read path went down instead.
+        raw = store.backend().read_settings()
+        return from_dict(raw if isinstance(raw, dict) else {})
     except (json.JSONDecodeError, ValueError, TypeError):
         # A hand-edited file that no longer parses must not take the tool down.
         # The curriculum's own load is always a safe thing to fall back to.

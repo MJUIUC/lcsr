@@ -111,8 +111,14 @@ def _started_on(first_seen: dict[int, str], day: date) -> Counter:
                    if d == day.isoformat() and pid in probs)
 
 
-def todays_plan(on: date | None = None) -> dict:
-    today = date.today()
+def todays_plan(on: date | None = None, today: date | None = None) -> dict:
+    """`today` is the CALLER's calendar day, not the process's.
+
+    The hosted function runs in UTC, where date.today() is nobody's today. The
+    browser supplies its own local day so "is this a preview of a future date"
+    is answered in the user's timezone rather than the server's.
+    """
+    today = today or date.today()
     on = on or today
     states = replay()
     rows = current_entries()
@@ -148,10 +154,13 @@ def todays_plan(on: date | None = None) -> dict:
         skip: Counter = Counter()
         skip.update({t: max(0, n - _started_on(first_seen, today).get(t, 0))
                      for t, n in quota_for(wk).items()})
-        d = today + timedelta(days=1)
-        while d < on:
-            skip.update(quota_for(wk))
-            d += timedelta(days=1)
+        # Every day between now and then consumes a full intake, and nothing in
+        # that quota varies by day, so this is a multiplication rather than a
+        # loop. It used to iterate once per calendar day with `on` taken straight
+        # from a request, which made a date a few years out cost minutes of CPU.
+        whole_days = max(0, (on - today).days - 1)
+        if whole_days:
+            skip.update({t: n * whole_days for t, n in quota_for(wk).items()})
         quota = quota_for(wk)
         remaining = dict(quota)
         started_today = Counter()
@@ -404,19 +413,33 @@ def curriculum_view() -> dict:
     return {"groups": groups, "overall": progress([deco(p) for p in allp])}
 
 
+def _url_for(pid: int, probs: dict, freq: dict) -> str | None:
+    """url_of() against already-built maps, so it is not rebuilt per row."""
+    if pid in probs:
+        return cur.url(pid)
+    fq = freq.get(pid)
+    return cur.leetcode_url(fq["slug"]) if fq else None
+
+
 def history_view() -> dict:
     """Every attempt, newest day first."""
     rows = entries()
+    # Resolved once. loggable() and url_of() each rebuild the merged problem dict,
+    # so calling them per entry made this O(entries x problems): a long log spent
+    # seconds rebuilding the same 324-entry mapping thousands of times.
+    probs = cur.problems()
+    freq = cur.frequent_index()
     days: dict[str, list] = {}
     for r in rows:
-        try:
-            p = cur.loggable(r["id"])
-        except KeyError:
-            p = {"title": f"#{r['id']}", "hard": False, "tier": "?", "week": None}
+        p = probs.get(r["id"])
+        if p is None:
+            fq = freq.get(r["id"])
+            p = ({**fq, "tier": "frequent", "week": None} if fq
+                 else {"title": f"#{r['id']}", "hard": False, "tier": "?", "week": None})
         days.setdefault(r["date"], []).append({
             "id": r["id"], "title": p["title"], "hard": p.get("hard", False),
             "tier": p.get("tier"), "week": p.get("week"),
-            "url": (cur.url_of(r["id"]) if p.get("tier") != "?" else None),
+            "url": (_url_for(r["id"], probs, freq) if p.get("tier") != "?" else None),
             "outcome": r["outcome"], "mistake": r.get("mistake"),
             "note": r.get("note"), "ts": r.get("ts"), "can_undo": False,
         })
@@ -469,7 +492,12 @@ def export_table() -> tuple[list[str], list[list]]:
         rows_by_pid.setdefault(r["id"], []).append({**r, "sprint": n})
 
     states = replay()
-    widest = max((len(v) for v in rows_by_pid.values()), default=0)
+    # Capped. The header gets a column group per attempt at the most-attempted
+    # problem, so a log with one problem attempted 17,000 times produced a 30 MB
+    # CSV from a 1 MB request. Nothing real reaches 200 attempts at one problem.
+    MAX_ATTEMPT_COLUMNS = 200
+    widest = min(max((len(v) for v in rows_by_pid.values()), default=0),
+                 MAX_ATTEMPT_COLUMNS)
 
     head = ["id", "title", "tier", "week", "block", "hard", "url",
             "status", "attempts", "box", "due", "first_attempt", "last_attempt"]
@@ -492,7 +520,7 @@ def export_table() -> tuple[list[str], list[list]]:
             att[0]["date"] if att else "",
             att[-1]["date"] if att else "",
         ]
-        for a in att:
+        for a in att[:widest]:
             row += [a["date"], a["outcome"], a.get("mistake") or "",
                     a["sprint"], (a.get("note") or "").replace("\n", " ")]
         row += [""] * (len(head) - len(row))

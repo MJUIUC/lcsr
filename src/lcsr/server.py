@@ -81,6 +81,12 @@ def stop() -> bool:
     except ProcessLookupError:
         PIDFILE.unlink(missing_ok=True)
         return False
+    except PermissionError:
+        # The pid was recycled and now belongs to someone else. The pidfile is
+        # stale either way, and signalling a stranger's process is worse than
+        # doing nothing.
+        PIDFILE.unlink(missing_ok=True)
+        return False
     for _ in range(25):
         time.sleep(0.2)
         try:
@@ -123,6 +129,24 @@ def err_text(e: BaseException) -> str:
     if isinstance(e, KeyError) and e.args:
         return str(e.args[0])
     return str(e)
+
+
+def _client_day(body) -> date:
+    """The caller's calendar day, falling back to the server's.
+
+    GOTCHA: the hosted function runs in UTC, and date.today() there is not the
+    visitor's today. Without this a user in California gets tomorrow's queue from
+    4pm, and one in India logs the evening's work against yesterday. The browser
+    sends its own local day; the local server has no `today` in the body and
+    keeps using its own clock, which is already the user's.
+    """
+    v = body.get("today") if isinstance(body, dict) else None
+    if isinstance(v, str):
+        try:
+            return date.fromisoformat(v)
+        except ValueError:
+            pass
+    return date.today()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -180,7 +204,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             return self._get(urlparse(self.path))
-        except (KeyError, ValueError, TypeError, AttributeError) as e:
+        except (KeyError, ValueError, TypeError, AttributeError, OverflowError) as e:
             # Never answer a GET with a closed socket: a handler that raises
             # writes zero bytes, and the UI's bootstrap has no way to tell that
             # from a dead server.
@@ -191,12 +215,13 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
         if route.path == "/api/plan":
             q = parse_qs(route.query)
+            today = getattr(self, "_today", None) or date.today()
             try:
-                on = date.fromisoformat(q["date"][0]) if q.get("date") else date.today()
+                on = date.fromisoformat(q["date"][0]) if q.get("date") else today
             except ValueError:
                 return self._send(400, {"error": "date must be YYYY-MM-DD"})
-            plan = todays_plan(on)
-            plan["is_today"] = on == date.today()
+            plan = todays_plan(on, today=today)
+            plan["is_today"] = on == today
             plan["due"] = [enrich(p) for p in plan["due"]]
             for key in ("sections", "ahead"):
                 for s in plan[key]:
@@ -219,9 +244,30 @@ class Handler(BaseHTTPRequestHandler):
         if route.path == "/api/export.jsonl":
             # The raw log, byte for byte. The CSV is a view of it; this is the
             # thing the CLI can read straight back.
-            raw = b""
+            raw = LOG.read_bytes() if LOG.exists() else b""
             return self._download(raw, "application/x-ndjson", "lcsr-log.jsonl")
         return self._send(404, {"error": "not found"})
+
+    def do_HEAD(self):
+        """A HEAD used to fall through to BaseHTTPRequestHandler's 501.
+
+        Link previews, uptime checks and curl -I all send one, and a 501 on the
+        homepage reads as a broken site.
+        """
+        try:
+            route = urlparse(self.path)
+            if route.path in ("/", "/index.html"):
+                raw = INDEX.read_bytes()
+                ctype = "text/html; charset=utf-8"
+            else:
+                raw, ctype = b"", "application/json"
+            self.send_response(200 if raw or route.path.startswith("/api/") else 404)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(raw)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+        except OSError:
+            pass
 
     def do_POST(self):
         if not self._same_origin():
@@ -278,6 +324,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def _post_routes(self, body):
         path = self._route(body)
+        self._today = _client_day(body)
         try:
             # The read endpoints answer a POST too, because that is the only way
             # a stateless client can hand over its state. Same code, same shapes.
@@ -342,7 +389,7 @@ class Handler(BaseHTTPRequestHandler):
         # AttributeError/TypeError too: an unvalidated body could reach code that
         # calls a method on the wrong type, and an uncaught raise kills the thread
         # mid-response, leaving the client with a closed socket and no status.
-        except (KeyError, ValueError, TypeError, AttributeError) as e:
+        except (KeyError, ValueError, TypeError, AttributeError, OverflowError) as e:
             return self._send(400, {"error": err_text(e)})
         return self._send(404, {"error": "not found"})
 
@@ -368,8 +415,9 @@ class Handler(BaseHTTPRequestHandler):
             raise ValueError(f"mistake must be one of {MISTAKES}")
         if outcome == SOLVED:
             mistake = None                            # only meaningful on a failure
-        on = date.fromisoformat(body["date"]) if body.get("date") else date.today()
-        if on > date.today():
+        today = getattr(self, "_today", None) or date.today()
+        on = date.fromisoformat(body["date"]) if body.get("date") else today
+        if on > today:
             raise ValueError("cannot log an attempt for a future date")
         append(make_entry(pid, outcome, on, mistake, note=(body.get("note") or None)))
         st = replay()[pid]
