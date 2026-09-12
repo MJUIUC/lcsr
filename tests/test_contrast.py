@@ -84,6 +84,12 @@ PAIRS = [
     # .evid sits on --panel2 and its link paints --accent.
     ("evidence note text",                 "--muted",  "--panel2",      BODY),
     ("evidence note link",                 "--accent", "--panel2",      BODY),
+    # The success toast is a solid pill; its Undo button must read as a control,
+    # so it is checked against the pill at the 3:1 non-text threshold too.
+    ("toast message",                      "--toast-ink", "--toast-bg",     BODY),
+    ("toast undo label",                   "--toast-btn-ink", "--toast-btn", BODY),
+    ("toast undo against the pill",        "--toast-btn", "--toast-bg",      LARGE),
+    ("premium (gold) badge",               "--gold",   "--panel",       BODY),
     # .btn.primary paints --brand and sets this literal ink on it.
     ("primary button label on the brand",  "#1a1200",  "--brand",       BODY),
     # .badge.nmax and .pool .btn.primary use color:var(--panel) on the pool

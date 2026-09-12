@@ -117,3 +117,29 @@ def test_only_today_passes_cues_to_a_row():
     assert "cueRow(p)" in _block("function pRow(p, o={})")
     curric = _block("function vCurriculum()")
     assert "cue:true" not in curric.replace(" ", ""), "vCurriculum now leaks cues"
+
+
+# --- the toast's undo button ----------------------------------------------
+
+def test_the_toast_undo_is_handled_before_the_card_handler():
+    """The toast lives outside #view and carries no .p ancestor.
+
+    The card handler bails on `if(!card) return`, so a click on the toast's Undo
+    reaches nothing unless an earlier return catches it. Same shape as the cue
+    veil, same silent failure: a button that simply does nothing.
+    """
+    assert "closest('[data-toast-undo]')" in _click_listener(), \
+        "the toast's Undo is handled at or after the card handler, so it does nothing"
+
+
+def test_a_toast_with_an_action_stays_up_longer():
+    """Two seconds is not long enough to notice a button, read it and press it."""
+    body = _block("function toast(msg, opts={})")
+    assert "opts.undo ? 6500 : 2600" in body.replace("\n", " ").replace("  ", " ")
+
+
+def test_long_lists_are_bounded():
+    """Progress and the pool both render hundreds of rows; neither should turn
+    the page into an endless scroll that buries whatever follows it."""
+    for view in ("function vProgress()", "function vPool()"):
+        assert 'class="scrollbox"' in _block(view), view

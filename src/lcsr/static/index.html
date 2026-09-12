@@ -29,6 +29,8 @@
   --warn:#8a5a00; --warn-soft:#fdf3e2; --danger:#c62b3f; --ok:#00786a;
   --easy:#007f65; --medium:#8a5a00; --hard:#c62b3f;
   --pool:#6d38d6; --pool-soft:#f2ecfe;
+  --gold:#9a6a00;
+  --toast-bg:#00695c; --toast-ink:#fff; --toast-btn:#fff; --toast-btn-ink:#00443b;
   --shadow:0 1px 2px rgba(20,20,20,.05),0 6px 20px rgba(20,20,20,.05);
 }
 /* Pitch dark: a real #000, not a charcoal. Shadows do not read against black,
@@ -40,6 +42,9 @@
   --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
   --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
   --pool:#a78bfa; --pool-soft:#1c1233;
+  --gold:#ffc93c;
+  --toast-bg:#00b8a3; --toast-ink:#04211d; --toast-btn:#04211d;
+  --toast-btn-ink:#7ff0dc;
   --shadow:none;
 }}
 :root[data-theme=dark]{
@@ -49,6 +54,9 @@
   --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
   --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
   --pool:#a78bfa; --pool-soft:#1c1233;
+  --gold:#ffc93c;
+  --toast-bg:#00b8a3; --toast-ink:#04211d; --toast-btn:#04211d;
+  --toast-btn-ink:#7ff0dc;
   --shadow:none;
 }
 *{box-sizing:border-box}
@@ -66,7 +74,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   backdrop-filter:saturate(1.6) blur(12px);border-bottom:1px solid var(--line)}
 .top .inner{max-width:1040px;margin:0 auto;padding:0 22px}
 .brandrow{display:flex;align-items:center;gap:13px;padding:16px 0 12px}
-.brand{display:flex;align-items:baseline;gap:11px;text-decoration:none;min-width:0}
+.brand{display:flex;align-items:baseline;gap:11px;text-decoration:none;flex:none}
 .mark{font-family:ui-serif,Georgia,serif;font-size:19px;font-weight:600;letter-spacing:-.02em;
   flex:none}
 .mark em{font-style:normal;color:var(--accent)}
@@ -92,9 +100,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .flinks a:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
 .flinks a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .flinks svg{width:16px;height:16px;fill:currentColor;display:block}
-@media(max-width:640px){
-  .fside{align-items:flex-start;margin-left:0;text-align:left}
-}
 .fname{display:block;font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;
   letter-spacing:-.01em;margin-bottom:7px}
 .fname em{font-style:normal;color:var(--accent)}
@@ -102,7 +107,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .fdesc>span{display:block}
 .fwhere{font-size:12px;color:var(--muted);line-height:1.7;flex-basis:100%;
   border-top:1px solid var(--line2);padding-top:14px}
-@media(max-width:720px){.full{display:none} .overall{display:none}}
 .daychip{font-size:12px;color:var(--mid);background:var(--panel);border:1px solid var(--line);
   padding:3px 10px;border-radius:99px;white-space:nowrap}
 .spacer{flex:1}
@@ -250,10 +254,6 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .cuewhy{flex:1 1 100%;font-size:13px;color:var(--mid);line-height:1.6;
   border-top:1px solid var(--line2);padding-top:11px;margin-top:2px}
 .cuer.hidden{color:var(--muted);font-weight:400;font-style:italic;opacity:.55}
-@media(max-width:640px){
-  .cue{flex-wrap:wrap} .cuel,.cuer{flex:1 1 100%}
-  .pacts{width:100%;justify-content:flex-end} .pcue,.pmeta{padding-left:14px}
-}
 
 /* ---------- stats ---------- */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;
@@ -264,9 +264,10 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
   letter-spacing:-.02em;line-height:1.15}
 .card span{font-size:11.5px;color:var(--muted);display:block;margin-top:4px}
 .card small{font-size:11px;color:var(--muted)}
-.hist{display:flex;align-items:flex-end;gap:8px;height:70px;margin-top:12px}
-.hist div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
-.hist i{display:block;width:100%;background:var(--warn);border-radius:4px 4px 0 0;min-height:3px}
+.hist{display:flex;align-items:flex-end;gap:10px;height:96px;margin-top:14px}
+.hist div{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px}
+.hist i{display:block;width:100%;max-width:88px;background:var(--warn);
+  border-radius:5px 5px 0 0;min-height:3px}
 .hist small{font-size:10.5px;color:var(--muted);text-align:center}
 details.add{margin-top:14px;background:var(--panel);border:1px solid var(--line);
   border-radius:12px;padding:15px;box-shadow:var(--shadow)}
@@ -295,6 +296,11 @@ details.add[open] summary::before{content:"− "}
 .filters .chips{margin-bottom:14px}
 .filters .chips:last-child{margin-bottom:0}
 .badge.src{border-color:color-mix(in srgb,var(--accent) 30%,transparent);color:var(--accent)}
+.badge.gold{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--gold);
+  border-color:color-mix(in srgb,var(--gold) 50%,transparent);
+  background:linear-gradient(160deg,color-mix(in srgb,var(--gold) 20%,transparent),
+             color-mix(in srgb,var(--gold) 5%,transparent))}
+.crown{width:10px;height:10px;fill:currentColor;flex:none;margin-top:-1px}
 .badge.dEasy{color:var(--easy);border-color:color-mix(in srgb,var(--easy) 38%,transparent)}
 .badge.dMedium{color:var(--medium);border-color:color-mix(in srgb,var(--medium) 38%,transparent)}
 .badge.dHard{color:var(--hard);border-color:color-mix(in srgb,var(--hard) 38%,transparent)}
@@ -304,9 +310,7 @@ details.add[open] summary::before{content:"− "}
    components are unchanged; only the two accent tokens are. The point is that
    this tab must not read as more curriculum, which was the main reason it failed
    to explain itself. */
-.pool{--accent:var(--pool);--accent-soft:var(--pool-soft);--brand:var(--pool)}
-.pool .btn.primary{color:var(--panel)}
-.pool .btn.primary:hover{color:var(--panel)}
+.pool{--accent:var(--pool);--accent-soft:var(--pool-soft)}
 .poolintro{background:var(--panel);border:1px solid var(--line);
   border-left:3px solid var(--pool);border-radius:12px;padding:20px 22px;
   margin-bottom:14px;box-shadow:var(--shadow)}
@@ -340,9 +344,6 @@ details.add[open] summary::before{content:"− "}
   font-weight:600}
 .sethead span:nth-child(2),.sethead span:nth-child(3){text-align:center}
 .sethead span:nth-child(3){text-align:right}
-@media(max-width:560px){
-  .setrow,.sethead{grid-template-columns:1fr 72px 92px;gap:10px}
-}
 /* A short, true line per tab about why the mechanism is the way it is, plus a
    link to the literature review. One implementation, appended by render(), so
    it cannot drift into six slightly different versions. */
@@ -352,6 +353,22 @@ details.add[open] summary::before{content:"− "}
 .evid a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;
   white-space:nowrap}
 .evid a:hover{border-bottom-color:currentColor}
+/* A list of 390 rows, or every attempt ever, is not something to scroll the
+   page through. Bounded and scrolled in place, so the page keeps its shape and
+   the section after it stays reachable. */
+.scrollbox{max-height:min(620px,72vh);overflow-y:auto;overscroll-behavior:contain;
+  border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--panel2);
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.scrollbox::-webkit-scrollbar{width:11px}
+.scrollbox::-webkit-scrollbar-track{background:transparent}
+.scrollbox::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;
+  border:3px solid var(--panel2)}
+.scrollbox::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+.scrollbox .stack{margin-bottom:0}
+.scrollbox .p,.scrollbox .h{background:var(--panel)}
+.lead{margin:0 0 14px;font-size:13.5px;color:var(--mid);line-height:1.7;max-width:80ch}
+.lead b{color:var(--ink);font-weight:600}
+.lead .apart{color:var(--pool)}
 .drawlead{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
   margin-bottom:11px;font-weight:600}
 .phead2{font-size:13px;color:var(--mid);margin-bottom:13px;padding-bottom:11px;
@@ -392,9 +409,78 @@ details.add[open] summary::before{content:"− "}
 .doneday .quiet{font-size:12.5px;color:var(--muted);margin-top:5px;max-width:52ch}
 .doneday button{margin-left:auto;flex:none}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
-  background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:99px;font-size:13.5px;
-  box-shadow:0 6px 24px rgba(0,0,0,.22);opacity:0;transition:.25s;pointer-events:none;z-index:60}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  display:flex;align-items:center;gap:12px;max-width:calc(100vw - 28px);
+  background:var(--panel);color:var(--ink);border:1px solid var(--line);
+  padding:9px 10px 9px 18px;border-radius:99px;font-size:13.5px;
+  box-shadow:0 8px 28px rgba(0,0,0,.3);opacity:0;transition:.25s;pointer-events:none;z-index:60}
+/* Success is green, and it is the only toast you can act on, so it is the only
+   one that carries a button. Errors keep the neutral panel colour. */
+.toast.good{background:var(--toast-bg);color:var(--toast-ink);border-color:transparent}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast span{min-width:0}
+.tundo{flex:none;font:inherit;font-size:12.5px;font-weight:600;padding:6px 15px;
+  border-radius:99px;background:var(--toast-btn);color:var(--toast-btn-ink);
+  border:1px solid transparent;transition:.13s}
+.tundo:hover{opacity:.85}
+.tundo:focus-visible{outline:2px solid var(--toast-btn-ink);outline-offset:2px}
+
+/* ---------- responsive ----------
+   Every width rule lives here, at the END of the stylesheet, and nowhere else.
+   GOTCHA: a media query placed ABOVE the rule it overrides loses to it on source
+   order alone, at equal specificity and with no warning. `.overall{display:none}`
+   sat four lines above `.overall{display:flex}` and did nothing, so the progress
+   bar stayed on a 390px phone and pushed the whole header off-screen. */
+
+/* iPad portrait and narrower: the header stops being one row. */
+@media(max-width:900px){
+  .brandrow{flex-wrap:wrap;gap:10px 12px}
+  .spacer{flex:1 1 0}
+  .obar{width:88px}
+}
+/* The product name spelled out is the first thing to go. */
+@media(max-width:720px){
+  .full{display:none}
+}
+@media(max-width:640px){
+  .top .inner{padding:0 14px}
+  main{padding:20px 14px 30px}
+  .brandrow{padding:12px 0 9px}
+  .overall{display:none}
+  /* A problem row becomes: number and title, then badges, then the actions on
+     their own line. Without wrap the title was squeezed into a 60px column and
+     the buttons fell off the right edge entirely. */
+  .phead{flex-wrap:wrap;gap:8px 9px;padding:11px 12px}
+  .ptitle{flex:1 1 58%}
+  .pacts{width:100%;justify-content:flex-end}
+  .pcue,.pmeta{padding-left:12px;padding-right:12px}
+  .panel{padding:12px}
+  .cue{flex-wrap:wrap} .cuel,.cuer{flex:1 1 100%}
+  .pacebar{gap:7px 16px;padding:11px 13px}
+  .cards{grid-template-columns:1fr 1fr;gap:8px}
+  .card{padding:13px}
+  .grid{grid-template-columns:1fr;gap:7px}
+  .grid label{margin-top:6px}
+  .drawbox{padding:17px}
+  .drawtitle{font-size:19px}
+  .setrow,.sethead{grid-template-columns:1fr 62px 78px;gap:9px}
+  .hist{height:82px}
+  .evid{margin-top:26px;padding:11px 13px}
+  .grp summary{padding:13px 13px;gap:10px}
+  .gbody{padding:4px 11px 13px}
+  .sitefoot .finner{padding:22px 14px 30px}
+  .fside{align-items:flex-start;margin-left:0;text-align:left}
+  .dayhead{flex-wrap:wrap;gap:4px 10px}
+  .daytally{margin-left:0}
+  .hhead{flex-wrap:wrap;gap:7px 9px}
+  .h .undo{margin-left:auto}
+}
+@media(max-width:420px){
+  .btn{padding:5px 10px;font-size:12px}
+  .theme button{padding:4px 8px;font-size:11px}
+  .daychip{font-size:11.5px;padding:3px 8px}
+  .cards{grid-template-columns:1fr}
+  .gsub{display:none}
+}
 </style>
 </head>
 <body>
@@ -495,9 +581,16 @@ function setTheme(t){
   else document.documentElement.setAttribute('data-theme', t);
   paintThemeSwitch();
 }
-function toast(msg){
-  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
-  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400);
+function toast(msg, opts={}){
+  const t = $('#toast');
+  t.innerHTML = `<span>${esc(msg)}</span>` + (opts.undo
+    ? `<button class="tundo" data-toast-undo="${opts.undo}">Undo</button>` : '');
+  t.classList.toggle('good', !!opts.good);
+  t.classList.add('show');
+  // Longer when there is something to press: a two-second window to notice a
+  // button, read it and reach it is not a window at all.
+  clearTimeout(t._h);
+  t._h = setTimeout(()=>t.classList.remove('show'), opts.undo ? 6500 : 2600);
 }
 // Step a YYYY-MM-DD entirely in UTC. Parsing "2026-09-01T00:00:00" gives LOCAL
 // midnight, and toISOString() then converts to UTC -- which in any zone at or
@@ -805,6 +898,9 @@ function draw(){
   drawn = pool[pool.length-1];
 }
 
+const CROWN = '<svg class="crown" viewBox="0 0 24 24" aria-hidden="true">'
+  + '<path d="M2.6 6.3l4.8 3.4L12 3l4.6 6.7 4.8-3.4-2 12.1H4.6L2.6 6.3Z"/></svg>';
+
 function nLists(){ return Object.keys(freq.labels).length; }
 function overlapText(n){
   const t = nLists();
@@ -827,7 +923,7 @@ function freqRow(p){
     <span class="pid">${p.id}</span>
     <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
     <span class="badge d${p.difficulty}">${esc(p.difficulty)}</span>
-    ${p.paid?'<span class="badge hard">premium</span>':''}
+    ${p.paid?`<span class="badge gold">${CROWN}premium</span>`:''}
     <span class="badge ${overlapClass(p.count)}">${overlapText(p.count)}</span>
     ${c?`<span class="badge ok">curriculum${c.week?' W'+c.week:''}</span>`
        :'<span class="badge">not in curriculum</span>'}
@@ -845,14 +941,15 @@ function vPool(){
   // Concept, then filters, then the draw. The old order put a lucky-dip button
   // first, so the first draw happened before you could see what you were
   // drawing from or that it was separate from the curriculum at all.
-  const intro = `<div class="poolintro">
-    <h2>Interview pool</h2>
-    <p><b>${st.total} problems that interviews repeat</b>, merged from ${nLists()} public lists.</p>
-    <p><b class="apart">Separate from your curriculum.</b> Nothing you do here moves its
-      progress or metrics. ${st.in_curriculum} overlap, and every row says which.</p>
-    <div class="srcs">${Object.entries(freq.labels).map(([k,v])=>
-      `<span class="srcpill"><i></i>${esc(v)} <b>${counts[k]||0}</b></span>`).join('')}</div>
-  </div>`;
+  const intro = `
+    <div class="sec"><h2>Interview pool</h2>
+      <span class="hint"><b>${st.total} problems that interviews repeat</b>, merged from
+        ${nLists()} public lists</span></div>
+    <p class="lead"><b class="apart">Separate from your curriculum.</b> Nothing you do here
+      moves its progress or metrics.</p>
+    <div class="srcs" style="border-top:none;margin-top:0;padding-top:0">
+      ${Object.entries(freq.labels).map(([k,v])=>
+        `<span class="srcpill"><i></i>${esc(v)} <b>${counts[k]||0}</b></span>`).join('')}</div>`;
 
   const filters = `<div class="filters">
     <div class="lbl">Source list <span style="text-transform:none;letter-spacing:0">(any of those picked)</span></div>
@@ -893,12 +990,12 @@ function vPool(){
 
   return `<div class="pool">
     ${intro}
-    ${filters}
-    <div style="height:14px"></div>
+    <div style="height:20px"></div>
     ${drawbox}
-    <div class="sec"><h2>All ${pool.length} in the pool</h2>
+    ${filters}
+    <div class="sec" style="margin-top:26px"><h2>All ${pool.length} in the pool</h2>
       <span class="hint">most-overlapping first</span></div>
-    <div class="stack">${pool.map(freqRow).join('')}</div>
+    <div class="scrollbox"><div class="stack">${pool.map(freqRow).join('')}</div></div>
   </div>`;
 }
 
@@ -908,7 +1005,7 @@ function vProgress(){
   // record behind them.
   return vStats() + `<div class="sec" style="margin-top:34px"><h2>Every attempt</h2>
     <span class="hint">newest first${hist ? ` · ${hist.total} logged` : ''}</span></div>`
-    + vHistory();
+    + `<div class="scrollbox">${vHistory()}</div>`;
 }
 
 function vStats(){
@@ -930,10 +1027,11 @@ function vStats(){
     <span class="hint">after ~40 problems one class dominates, and weeks 17 to 18 target that class</span></div>
   ${Object.keys(mk).length ? `<div class="card"><div class="hist">
     ${Object.entries(mk).map(([k,v])=>
-      `<div><i style="height:${v/mx*52+3}px"></i><small>${esc(k)}<br>${v}</small></div>`).join('')}
+      `<div><i style="height:${v/mx*74+4}px"></i><small>${esc(k)}<br>${v}</small></div>`).join('')}
   </div></div>` : `<div class="empty">No mistake classes logged yet. They are recorded when you mark a problem stuck.</div>`}
   <div class="foot" style="margin-top:20px">No problems-solved count, on purpose. You can
-  raise it by picking easy problems. The rate above is the one that predicts.</div>`;
+  raise it by picking easy problems. The cold re-solve rate above is the one the curriculum
+  says predicts how you do in an interview.</div>`;
 }
 
 function vAddProblem(){
@@ -1076,8 +1174,7 @@ function evidenceNote(){
 /* ---------------- render ---------------- */
 function renderChrome(){
   $('#daychip').innerHTML = `${plan.sprint > 1 ? 'pass ' + plan.sprint + ' · ' : ''}`
-    + `day ${plan.day} · week ${plan.week}${
-      plan.block ? ' · ' + esc(plan.block) : ''} · `
+    + `day ${plan.day} · week ${plan.week} · `
     + `<strong style="color:${plan.caught_up?'var(--ok)':'var(--ink)'}">`
     + `${plan.done_today}/${plan.target_today}</strong> today`;
   const o = curric?.overall;
@@ -1173,6 +1270,17 @@ document.addEventListener('click', async e=>{
   // cue reveal
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  const tu = e.target.closest('[data-toast-undo]');
+  if(tu){
+    const id = +tu.dataset.toastUndo;
+    $('#toast').classList.remove('show');
+    try{
+      await api('/api/undo', {id});
+      await refreshAll();
+      toast(`${id} is back on today's list.`);
+    }catch(err){ toast(err.message); }
+    return;
+  }
   const veil = e.target.closest('[data-veil]');
   if(veil){
     const id = +veil.dataset.veil;
@@ -1248,11 +1356,11 @@ document.addEventListener('click', async e=>{
     try{
       if(act==='amend-clear'){
         const r = await api('/api/undo', {id});
-        toast(`${id}: attempt removed`);
+        toast(`${id} is back on today's list.`, {good:true});
       }else{
         const r = await api('/api/amend', {id, outcome:'stuck',
                             mistake: draft[id].mistake, note});
-        toast(`${id} is now stuck, returns ${r.due}`);
+        toast(`${id} is now stuck. Back on ${r.due}.`, {good:true});
       }
       delete draft[id];
       await refreshAll();
@@ -1282,7 +1390,10 @@ document.addEventListener('click', async e=>{
       await api('/api/log', {id, outcome: act==='solved'?'solved':'stuck',
                              mistake: draft[id].mistake, note});
       delete draft[id];
-      toast(act==='solved' ? `${id} logged, does not return` : `${id} logged, returns in 3 days`);
+      toast(act==='solved'
+        ? `Nice. ${id} is solved and will not come back.`
+        : `${id} marked stuck. You will see it again in 3 days.`,
+        {good:true, undo:id});
       await refreshAll();
     }catch(err){ toast(err.message); }
     finally{ inFlight.delete(id); }
