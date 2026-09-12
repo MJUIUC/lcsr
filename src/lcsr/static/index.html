@@ -81,7 +81,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .sitefoot{border-top:1px solid var(--line);background:var(--panel);margin-top:70px}
 .sitefoot .finner{max-width:1040px;margin:0 auto;padding:26px 22px 34px;display:flex;
   gap:16px 30px;flex-wrap:wrap;align-items:flex-start}
-.fmain{flex:1 1 300px;min-width:0;max-width:68ch}
+.fmain{flex:1 1 300px;min-width:0;max-width:96ch}
 .fside{display:flex;flex-direction:column;gap:9px;align-items:flex-end;flex:none;
   margin-left:auto;text-align:right}
 .fmade{font-size:13px;color:var(--mid);white-space:nowrap}
@@ -98,7 +98,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .fname{display:block;font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;
   letter-spacing:-.01em;margin-bottom:7px}
 .fname em{font-style:normal;color:var(--accent)}
-.fdesc{display:block;font-size:13px;color:var(--muted);line-height:1.75;max-width:68ch}
+.fdesc{display:block;font-size:13px;color:var(--muted);line-height:1.75;max-width:96ch}
 .fwhere{font-size:12px;color:var(--muted);line-height:1.7;flex-basis:100%;
   border-top:1px solid var(--line2);padding-top:14px}
 @media(max-width:720px){.full{display:none} .overall{display:none}}
@@ -342,10 +342,17 @@ details.add[open] summary::before{content:"− "}
 @media(max-width:560px){
   .setrow,.sethead{grid-template-columns:1fr 72px 92px;gap:10px}
 }
+/* A short, true line per tab about why the mechanism is the way it is, plus a
+   link to the literature review. One implementation, appended by render(), so
+   it cannot drift into six slightly different versions. */
+.evid{margin:36px 0 0;padding:12px 16px;border-left:2px solid var(--accent);
+  background:var(--panel2);border-radius:0 9px 9px 0;font-size:12.5px;
+  color:var(--muted);line-height:1.7;max-width:76ch}
+.evid a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;
+  white-space:nowrap}
+.evid a:hover{border-bottom-color:currentColor}
 .drawlead{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
   margin-bottom:11px;font-weight:600}
-.psec{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.7}
-.psec b{color:var(--mid);font-weight:550}
 .phead2{font-size:13px;color:var(--mid);margin-bottom:13px;padding-bottom:11px;
   border-bottom:1px solid var(--line)}
 .phead2 b{color:var(--ink);font-weight:600}
@@ -511,11 +518,10 @@ function logPanel(p, solved){
       <div class="chips">${(plan?.mistakes||[]).map(m=>
         `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`).join('')}</div>`;
   const head = solved
-    ? `<div class="phead2">This is logged as <b>solved</b>. Changing it rewrites that
-        attempt in place, keeping its original date. It does not count as working
-        the problem again today.</div>`
-    : `<div class="phead2">Logging <b>${p.id}</b>. Stuck means it returns in 3 days,
-        then 10, then 30. Failing again resets it to 3.</div>`;
+    ? `<div class="phead2">Logged as <b>solved</b>. Changing it rewrites that attempt in
+        place and does not count as today's work.</div>`
+    : `<div class="phead2">Stuck means it returns in 3 days, then 10, then 30. Failing
+        again resets it to 3.</div>`;
   const foot = solved
     ? `<button class="btn warn" data-act="amend-stuck">Change to stuck</button>
        <button class="btn" data-act="amend-clear">Remove the attempt</button>
@@ -599,13 +605,11 @@ function vToday(){
       <button class="btn" id="d-next">›</button>
       ${ro?`<button class="btn" id="d-today">Back to today</button>`:''}
     </div>`;
-  if(ro) h += `<div class="preview">Preview. You cannot log an attempt for another
-    day. Due re-solves shown are everything outstanding by then.</div>`;
+  if(ro) h += `<div class="preview">Preview. Nothing can be logged for another day.</div>`;
 
   if(!ro && p.idle_days >= 3)
-    h += `<div class="drift">Nothing logged for <b>${p.idle_days} days</b>. Re-solves keep
-      falling due while you are away, so the backlog is what grows. The new-problem
-      queue just waits.</div>`;
+    h += `<div class="drift">Nothing logged for <b>${p.idle_days} days</b>. Re-solves kept
+      falling due; the new-problem queue just waited.</div>`;
 
   if(!ro && p.pace.started)
     h += `<div class="pacebar">
@@ -618,9 +622,8 @@ function vToday(){
   if(p.paused)
     h += `<div class="paused">
       <b>${p.backlog} re-solves outstanding, so new problems are paused</b>
-      <span>The curriculum's rule when the cold re-solve rate slips is that you are moving
-      too fast. Stacking new material on an unworked backlog is what makes that number
-      worse, so nothing new is issued until the backlog is under ${p.pause_at}.</span></div>`;
+      <span>Stacking new material on an unworked backlog is what makes the re-solve rate
+      worse. Nothing new until the backlog is under ${p.pause_at}.</span></div>`;
 
   if(p.due.length){
     h += `<div class="sec due"><h2>Due re-solves</h2><span class="hint">${
@@ -646,8 +649,7 @@ function vToday(){
         <span>${p.done_today} new problem${p.done_today===1?'':'s'}${
           p.resolves_today?` · ${p.resolves_today} re-solve${p.resolves_today===1?'':'s'}`:''
         } · today's target is ${p.target_today}${over?' (you went over)':''}</span>
-        <span class="quiet">The curriculum's load is deliberate. Working further ahead
-          trades tomorrow's spacing for today's volume.</span>
+        <span class="quiet">Working ahead trades tomorrow's spacing for today's volume.</span>
       </div>
       ${p.ahead.length?`<button class="btn" id="ahead-toggle">Work ahead</button>`:''}
     </div>`;
@@ -675,8 +677,7 @@ function vCurriculum(){
     const wk = g.week ? 'W'+g.week : (g.key==='foundations'?'T0':g.key==='stretch'?'T3':
                g.key==='consolidation'?'W17':'+');
     const body = g.note
-      ? `<div class="note">Adding new material here feels productive and measures nothing.
-         These two weeks are the only part of the schedule where problems reach you
+      ? `<div class="note">The only part of the schedule where problems reach you
          <strong>without a pattern label attached</strong>, which is the only part that
          resembles an interview.</div>`
       : g.blocks.map(b=>
@@ -863,10 +864,6 @@ function vPool(){
     </div>
   </div>`;
 
-  const sections = d && d.sections
-    ? `<div class="psec">${Object.entries(d.sections).map(([k,v])=>
-        `<b>${esc(freq.labels[k])}:</b> ${esc(v)}`).join('<br>')}</div>` : '';
-
   const drawbox = `<div class="drawbox">
     <div class="drawlead">Lucky draw</div>
     ${d ? `
@@ -878,7 +875,6 @@ function vPool(){
       <div class="drawtitle"><span class="pid">${d.id}</span>
         <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
       ${d.curriculum?`<div class="drawsub">${esc(d.curriculum.block)}</div>`:''}
-      ${sections}
       <div class="drawacts p" data-id="${d.id}">
         ${logActions(d.solved)}
         ${logPanel(d, d.solved)}
@@ -932,10 +928,8 @@ function vStats(){
     ${Object.entries(mk).map(([k,v])=>
       `<div><i style="height:${v/mx*52+3}px"></i><small>${esc(k)}<br>${v}</small></div>`).join('')}
   </div></div>` : `<div class="empty">No mistake classes logged yet. They are recorded when you mark a problem stuck.</div>`}
-  <div class="foot" style="margin-top:20px">There is no problems-solved count here, on
-  purpose. It is the easiest number to move and the one that tells you least: you can raise
-  it by picking easy problems, and it says nothing about whether you could solve them again
-  cold a month later. That is the question the cold re-solve rate above answers.</div>`;
+  <div class="foot" style="margin-top:20px">No problems-solved count, on purpose. You can
+  raise it by picking easy problems. The rate above is the one that predicts.</div>`;
 }
 
 function vAddProblem(){
@@ -952,17 +946,17 @@ function vAddProblem(){
     </div>
     <div class="prow"><button class="btn primary" id="a-save">Add problem</button></div>
     <div class="err" id="a-err"></div>
-    <div class="foot">Kept separate from the packaged curriculum, so an upgrade never
-      overwrites it. Reusing a packaged number overrides that problem.</div>
+    <div class="foot">Kept separate from the packaged curriculum. Reusing a number
+      overrides that problem.</div>
   </details>`;
 }
 
 function vSettings(){
   const d = load, s = d.settings, c = d.curriculum, e = d.effective;
   const TIERS = [
-    ['foundations','Foundations','The basics every later pattern assumes you already have. Front-loaded into weeks 1 to 3, and kept on offer after that until you have worked through all of them, so racing ahead on core cannot leave them behind.'],
-    ['core','Core','The pattern being taught that week, in the order the curriculum teaches it: the plainest example of a pattern before any hard variant of it. Cut this last.'],
-    ['reps','Reps','Second and third problems on patterns from earlier weeks, mixed into today rather than drilled in a block. Mixing them is the point: you have to work out which pattern applies instead of being told by the heading.'],
+    ['foundations','Foundations','The basics later patterns assume. They keep coming until all of them are done.'],
+    ['core','Core','This week\u2019s pattern, plainest example before any hard variant. Cut this last.'],
+    ['reps','Reps','Earlier weeks\u2019 patterns, mixed into today rather than drilled in a block, so you have to spot the pattern yourself.'],
   ];
   const row = ([k,label,hint]) => `
     <div class="setrow">
@@ -979,20 +973,16 @@ function vSettings(){
   <div class="sec"><h2>Daily load</h2>
     <span class="hint">how many new problems a day, before due re-solves</span></div>
   <div class="poolintro" style="border-left-color:var(--brand)">
-    <p>The curriculum states a load for itself and that is what you get by default.
-      Leave a box empty to follow it, or type a number to override it.
-      <b>0 is a real setting</b> and stops that tier being issued at all.</p>
-    <p>Due re-solves are never capped by any of this. They are mandatory, and the
-      curriculum counts them as additional to the day's new problems.</p>
+    <p>Empty follows the curriculum. A number overrides it, and <b>0</b> stops that tier
+      entirely. Due re-solves are never capped: they are mandatory and additional.</p>
   </div>
 
   <div class="setcard">
     <div class="sethead"><span>Tier</span><span>Per day</span><span>You get</span></div>
     ${TIERS.map(row).join('')}
     <div class="setrow total">
-      <span class="setlab"><b>Cap the whole day</b><span>An upper limit across all three.
-        Reps are cut first, then foundations, then core, which is the curriculum's own
-        order when you are moving too fast.</span></span>
+      <span class="setlab"><b>Cap the whole day</b><span>Across all three. Reps are cut
+        first, then foundations, then core.</span></span>
       <input type="number" min="0" max="${d.max_per_tier}" data-set="daily_total"
              value="${s.daily_total ?? ''}" placeholder="none" aria-label="Total per day">
       <span class="seteff ${total===0?'zero':''}">${total}<em>${
@@ -1028,18 +1018,14 @@ function vPasses(){
     <p>You are on <b>pass ${d.sprint}</b>. ${finished
       ? 'Every problem is finished.'
       : `<b>${done}</b> of <b>${total}</b> finished, <b>${left}</b> still to go.`}</p>
-    <p>Starting a new pass puts every problem back on offer and empties the
-      3 / 10 / 30 ladder. <b>Nothing is deleted.</b> Every attempt you have ever logged
-      stays in Progress and in your export; it just stops being what you are scheduled on.</p>
-    <p><b>Each pass also raises how many new problems you get a day</b>, on the assumption
-      that the second time through material you have already seen, you can carry more.
-      ${nextLoad === load_ ? `Your total cap of <b>${d.settings.daily_total}</b> a day would
-        hold it at <b>${load_}</b> regardless, so pass ${d.sprint + 1} would look the same
-        until you raise the cap.`
-      : `Today's <b>${load_}</b> a day would become <b>${nextLoad}</b> on pass
-        ${d.sprint + 1}.`}</p>
-    ${finished ? '' : `<p class="apart" style="color:var(--warn)">Starting now also drops
-      the re-solves currently scheduled, because those belong to this pass.</p>`}
+    <p>Every problem goes back on offer and the 3 / 10 / 30 ladder empties.
+      <b>Nothing is deleted</b>: past attempts stay in Progress and in your export.</p>
+    <p><b>Each pass raises the daily intake.</b> ${nextLoad === load_
+      ? `Your cap of <b>${d.settings.daily_total}</b> would hold it at <b>${load_}</b>, so
+         pass ${d.sprint + 1} looks the same until you raise it.`
+      : `<b>${load_}</b> a day becomes <b>${nextLoad}</b>.`}</p>
+    ${finished ? '' : `<p class="apart" style="color:var(--warn)">This also drops the
+      re-solves currently scheduled.</p>`}
   </div>
   <div class="prow">
     <button class="btn ${finished?'primary':'warn'}" id="sprint-go"
@@ -1058,17 +1044,31 @@ function vExport(){
   <div class="sec" style="margin-top:38px"><h2>Export</h2>
     <span class="hint">your record, in a form nothing here owns</span></div>
   <div class="poolintro" style="border-left-color:var(--brand)">
-    <p><b>Progress table (CSV).</b> One row per problem across all ${plan.metrics.total} of
-      them, attempted or not, with its tier, week, status and current due date, then one
-      column group per attempt: the date, the outcome, the mistake class, which pass it
-      belonged to, and your note. Opens in any spreadsheet.</p>
-    <p><b>Raw log (JSONL).</b> The append-only file itself, byte for byte, retractions and
-      pass markers included. This is the one the CLI reads back.</p>
+    <p><b>CSV.</b> One row per problem, all ${plan.metrics.total} of them, then a column
+      group per attempt: date, outcome, mistake class, pass and note.</p>
+    <p><b>Raw log.</b> The append-only file itself, which is what the CLI reads back.</p>
   </div>
   <div class="prow">
     <a class="btn primary" href="/api/export.csv" download>Download CSV</a>
     <a class="btn" href="/api/export.jsonl" download>Download raw log</a>
   </div>`;
+}
+
+const EVIDENCE = {
+  today: 'Spacing beats cramming across 839 measured comparisons in 317 experiments, and expanding intervals beat fixed ones. 3 / 10 / 30 is an expanding schedule.',
+  curriculum: 'Plainest example before hard variant, and reps interleaved across weeks rather than massed. Both are findings from the literature, not preferences.',
+  progress: 'Cold re-solve at 30 days is the number that predicts performance. The mistake histogram is what tells you which part to fix.',
+  pool: 'Overlap across five independently compiled lists is the signal here, which is why the draw weights by it rather than picking uniformly.',
+  cues: 'Interleaving works because it makes you choose the method from the problem. Under blocked practice the heading has already chosen for you.',
+  settings: 'The defaults are the load the curriculum states for itself. Raising them is a choice about volume over spacing.',
+};
+
+function evidenceNote(){
+  const t = EVIDENCE[tab];
+  if(!t) return '';
+  return `<div class="evid">${t}
+    <a href="https://github.com/Swapnil-jain/leetcode-srs/blob/main/docs/evidence.md"
+       target="_blank" rel="noopener noreferrer">Read the evidence</a></div>`;
 }
 
 /* ---------------- render ---------------- */
@@ -1096,7 +1096,7 @@ function render(opts={}){
   renderChrome();
   const v = {today:vToday, curriculum:vCurriculum, progress:vProgress,
              pool:vPool, cues:vCues, settings:vSettings}[tab] || vToday;
-  $('#view').innerHTML = v();
+  $('#view').innerHTML = v() + evidenceNote();
   window.scrollTo({top: opts.top ? 0 : y});
 }
 

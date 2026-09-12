@@ -16,10 +16,9 @@ It does not invent a study method. The curriculum has one; this makes following
 it cost nothing.
 
 **Why spaced repetition for coding interviews.** Solving a problem once and
-moving on feels productive and does not last. Re-solving the ones you failed, at
-widening intervals, is what moves a pattern from "I read the solution" to "I can
-reach for it cold". The schedule here is the curriculum's own, and the tool
-exists so that following it costs nothing.
+moving on feels productive and does not last. Spacing beats massed practice
+across 839 measured comparisons, and expanding intervals beat fixed ones
+([the evidence](docs/evidence.md)). 3 / 10 / 30 is an expanding schedule.
 
 ### The order is the other half
 
@@ -27,16 +26,15 @@ A list of problems is not a curriculum. These 324 run in a deliberate sequence:
 the plainest example of a pattern always lands before any hard variant of it, so
 every problem has something to stand on.
 
-Where the source curriculum broke its own rule, this fixes it. It taught Max
-Product Subarray without ever teaching max-sum Kadane first, and Find the
-Duplicate without the index-as-hash exemplar it depends on. Ten problems were
-added to close gaps like that, each slotted into its real place in the sequence
-rather than appended to the end, because a base exemplar that arrives after its
-own hard variant teaches backwards.
+Where the source curriculum broke its own rule, this fixes it: it taught Max
+Product Subarray without max-sum Kadane first. Ten problems were added to close
+gaps like that, each slotted into its real place rather than appended, because a
+base exemplar arriving after its own hard variant teaches backwards.
 
-Reps are interleaved on purpose: second and third problems on patterns from
-earlier weeks, mixed into today rather than drilled in a block, so you have to
-work out which pattern applies instead of being told by the heading.
+Reps are interleaved on purpose. Blocked practice's errors are mostly
+strategy-selection errors, picking a method that belonged to a different problem
+type, because the heading already told you which one to use. Interviews do not
+come with headings.
 
 ### What it does
 
@@ -87,11 +85,9 @@ lcsr status        # is it running?
 lcsr down          # stop it
 ```
 
-`lcsr up` is idempotent: run it any time, it only starts a server if one is not
-already listening. The process is detached into its own session, so it survives
-the terminal (or the agent session) that launched it closing. Liveness is checked
-by connecting to the port rather than by reading the pidfile, since a pidfile
-outlives a crash and pids get reused.
+`lcsr up` is idempotent and detaches into its own session, so it survives the
+terminal that launched it. Liveness is a connection to the port, not a pidfile:
+a pidfile outlives a crash and pids get reused.
 
 `lcsr serve` still runs it in the foreground if you want the logs; background
 output goes to `~/.lcsr/server.log`.
@@ -137,10 +133,9 @@ Mistake classes: `off-by-one`, `invariant`, `edge-case`, `no-pattern`.
 
 ### The daily load
 
-By default you get what the curriculum prescribes for the week you are on:
-roughly 4 to 5 new problems a day in weeks 1 to 3, 3 a day after that, plus
-however many re-solves fall due. Due re-solves are never capped, because the
-curriculum counts them as additional and mandatory.
+By default you get the curriculum's own load: roughly 4 to 5 new problems a day
+in weeks 1 to 3, 3 a day after, plus whatever re-solves fall due. Due re-solves
+are never capped.
 
 Change any of it in **Settings**, or from the CLI:
 
@@ -150,10 +145,8 @@ lcsr config --total 4                  # or cap the whole day
 lcsr config --reset                    # back to the curriculum's own load
 ```
 
-Leave a tier unset to follow the curriculum. `0` is a real instruction and stops
-that tier being issued at all, which is not the same thing. When a total cap
-bites, reps are cut first, then foundations, then core, which is the
-curriculum's own order for when you are moving too fast.
+Unset follows the curriculum; `0` stops that tier entirely, which is not the
+same thing. When a cap bites, reps are cut first, then foundations, then core.
 
 ### Going round again
 
@@ -163,13 +156,10 @@ When the curriculum is finished, start another pass:
 lcsr sprint          # refuses unless everything is done; --force overrides
 ```
 
-Every problem goes back on offer, the `+3 / +10 / +30` ladder empties, and new
-problems per day go up by one. **Nothing is deleted.** A pass is one more line in
-the append-only log, so every attempt from every pass stays in Progress and in
-your export; earlier work simply stops being what you are scheduled on.
-
-Corrections stay inside the pass you are in: `undo` and `amend` will not reach
-back into a finished one.
+Every problem goes back on offer, the ladder empties, and the daily intake rises
+by one. **Nothing is deleted**: a pass is one more line in the append-only log,
+so every attempt stays in Progress and in your export. `undo` and `amend` will
+not reach back into a finished pass.
 
 ### Export
 
@@ -179,10 +169,8 @@ lcsr export --out progress.csv   # or to a file
 lcsr export --format jsonl       # the raw append-only log
 ```
 
-The CSV has one row per problem, all 324, attempted or not: tier, week, status,
-current due date, then one column group per attempt with its date, outcome,
-mistake class, which pass it belonged to, and your note. Both are in **Settings**
-in the UI too.
+One row per problem, all 324, then a column group per attempt: date, outcome,
+mistake class, pass and note. Both are in **Settings** in the UI too.
 
 ## How it works
 
@@ -200,12 +188,8 @@ sync and the scheduling rule can change later without invalidating history.
 Scheduling is `src/lcsr/schedule.py`: one pure function, with an exhaustive
 truth table over all 8 states in `tests/test_schedule.py`.
 
-There is no streak counter and no problems-solved count. Problems-solved is the
-easiest number to move and the one that tells you least: you can raise it by
-picking easy problems, and it says nothing about whether you could solve them
-again cold a month later. That is the question the cold re-solve rate answers,
-and it is the metric the curriculum says actually predicts interview
-performance.
+No streak counter and no problems-solved count. You can raise problems-solved by
+picking easy problems. The cold re-solve rate is the one that predicts.
 
 ## The interview pool
 
@@ -224,10 +208,9 @@ The draw is weighted by how many lists a problem appears on, so the eight that
 all five agree about come up most and the 212 that only one list carries come up
 least.
 
-It is deliberately *not* merged into the curriculum, and it does not change the
-324 totals or any metric. The only crossing point is read-only: each problem
-shows whether it is already in your curriculum and whether you have logged it,
-so a draw can skip what you have covered.
+It is deliberately *not* merged into the curriculum and changes no metric. The
+only crossing point is read-only: each row says whether it is already in your
+curriculum and whether you have logged it.
 
 Deduplication is by LeetCode frontend id, the only stable key (titles repeat,
 slugs change). 749 raw entries collapse to 390, because the lists overlap

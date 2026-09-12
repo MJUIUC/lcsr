@@ -81,6 +81,9 @@ PAIRS = [
     ("Hard badge",                         "--hard",   "--panel",       BODY),
     ("pool accent on a panel",             "--pool",   "--panel",       BODY),
     ("pool accent on its own tint",        "--pool",   "--pool-soft",   BODY),
+    # .evid sits on --panel2 and its link paints --accent.
+    ("evidence note text",                 "--muted",  "--panel2",      BODY),
+    ("evidence note link",                 "--accent", "--panel2",      BODY),
     # .btn.primary paints --brand and sets this literal ink on it.
     ("primary button label on the brand",  "#1a1200",  "--brand",       BODY),
     # .badge.nmax and .pool .btn.primary use color:var(--panel) on the pool
