@@ -1668,7 +1668,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 142
@@ -1680,7 +1680,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 143
@@ -1692,7 +1692,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 144
@@ -1704,7 +1704,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 145
@@ -1716,7 +1716,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 146
@@ -1728,7 +1728,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 147
@@ -1740,7 +1740,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 148
@@ -1752,7 +1752,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "core",
   "order": 149
@@ -1764,7 +1764,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "reps",
   "order": 150
@@ -1776,7 +1776,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "reps",
   "order": 151
@@ -1788,7 +1788,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "reps",
   "order": 152
@@ -1800,7 +1800,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "reps",
   "order": 153
@@ -1812,7 +1812,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "reps",
   "order": 154
@@ -1824,7 +1824,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 8,
-  "block": "Trees I — traversal, and “return one thing, track another”",
+  "block": "Trees I: traversal, and “return one thing, track another”",
   "cue": "any tree question where the answer is not what the recursion needs to return",
   "role": "reps",
   "order": 155
@@ -1836,7 +1836,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "core",
   "order": 156
@@ -1848,7 +1848,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "core",
   "order": 157
@@ -1860,7 +1860,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "core",
   "order": 158
@@ -1872,7 +1872,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "core",
   "order": 159
@@ -1884,7 +1884,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "core",
   "order": 160
@@ -1896,7 +1896,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "core",
   "order": 161
@@ -1908,7 +1908,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "core",
   "order": 162
@@ -1920,7 +1920,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "reps",
   "order": 163
@@ -1932,7 +1932,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "reps",
   "order": 164
@@ -1944,7 +1944,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "reps",
   "order": 165
@@ -1956,7 +1956,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "reps",
   "order": 166
@@ -1968,7 +1968,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "reps",
   "order": 167
@@ -1980,7 +1980,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 9,
-  "block": "Trees II — BST, construction, serialization",
+  "block": "Trees II: BST, construction, serialization",
   "cue": "“binary search tree” (order is information) · “rebuild from traversals”",
   "role": "reps",
   "order": 168
@@ -2208,7 +2208,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 187
@@ -2220,7 +2220,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 188
@@ -2232,7 +2232,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 189
@@ -2244,7 +2244,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 190
@@ -2256,7 +2256,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 191
@@ -2268,7 +2268,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 192
@@ -2280,7 +2280,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 193
@@ -2292,7 +2292,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 194
@@ -2304,7 +2304,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "core",
   "order": 195
@@ -2316,7 +2316,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 196
@@ -2328,7 +2328,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 197
@@ -2340,7 +2340,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 198
@@ -2352,7 +2352,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 199
@@ -2364,7 +2364,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 200
@@ -2376,7 +2376,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 201
@@ -2388,7 +2388,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 202
@@ -2400,7 +2400,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 203
@@ -2412,7 +2412,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 11,
-  "block": "Graphs I — grids, BFS/DFS, topological order",
+  "block": "Graphs I: grids, BFS/DFS, topological order",
   "cue": "“shortest path, all edges cost 1” → BFS · “valid order given prerequisites” → topological sort",
   "role": "reps",
   "order": 204
@@ -2424,7 +2424,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "core",
   "order": 205
@@ -2436,7 +2436,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "core",
   "order": 206
@@ -2448,7 +2448,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "core",
   "order": 207
@@ -2460,7 +2460,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "core",
   "order": 208
@@ -2472,7 +2472,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "core",
   "order": 209
@@ -2484,7 +2484,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "core",
   "order": 210
@@ -2496,7 +2496,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "core",
   "order": 211
@@ -2508,7 +2508,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "reps",
   "order": 212
@@ -2520,7 +2520,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "reps",
   "order": 213
@@ -2532,7 +2532,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "reps",
   "order": 214
@@ -2544,7 +2544,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "reps",
   "order": 215
@@ -2556,7 +2556,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "reps",
   "order": 216
@@ -2568,7 +2568,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 12,
-  "block": "Graphs II — union-find, weighted, implicit",
+  "block": "Graphs II: union-find, weighted, implicit",
   "cue": "“are these connected / merge these groups” → union-find · “weighted shortest path” → Dijkstra",
   "role": "reps",
   "order": 217
@@ -2580,7 +2580,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 218
@@ -2592,7 +2592,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 219
@@ -2604,7 +2604,7 @@
   "immediately_after_prev": true,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 220
@@ -2616,7 +2616,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 221
@@ -2628,7 +2628,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 222
@@ -2640,7 +2640,7 @@
   "immediately_after_prev": true,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 223
@@ -2652,7 +2652,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 224
@@ -2664,7 +2664,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 225
@@ -2676,7 +2676,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 226
@@ -2688,7 +2688,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "core",
   "order": 227
@@ -2700,7 +2700,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 228
@@ -2712,7 +2712,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 229
@@ -2724,7 +2724,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 230
@@ -2736,7 +2736,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 231
@@ -2748,7 +2748,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 232
@@ -2760,7 +2760,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 233
@@ -2772,7 +2772,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 234
@@ -2784,7 +2784,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 235
@@ -2796,7 +2796,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 236
@@ -2808,7 +2808,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 13,
-  "block": "Dynamic programming I — one dimension",
+  "block": "Dynamic programming I: one dimension",
   "cue": "“how many ways” · “minimum cost to reach” · “can this be made from” · choices that exclude neighbours",
   "role": "reps",
   "order": 237
@@ -2820,7 +2820,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 238
@@ -2832,7 +2832,7 @@
   "immediately_after_prev": true,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 239
@@ -2844,7 +2844,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 240
@@ -2856,7 +2856,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 241
@@ -2868,7 +2868,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 242
@@ -2880,7 +2880,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 243
@@ -2892,7 +2892,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 244
@@ -2904,7 +2904,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 245
@@ -2916,7 +2916,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 246
@@ -2928,7 +2928,7 @@
   "immediately_after_prev": false,
   "tier": "core",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "core",
   "order": 247
@@ -2940,7 +2940,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 248
@@ -2952,7 +2952,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 249
@@ -2964,7 +2964,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 250
@@ -2976,7 +2976,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 251
@@ -2988,7 +2988,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 252
@@ -3000,7 +3000,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 253
@@ -3012,7 +3012,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 254
@@ -3024,7 +3024,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 255
@@ -3036,7 +3036,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 256
@@ -3048,7 +3048,7 @@
   "immediately_after_prev": false,
   "tier": "reps",
   "week": 14,
-  "block": "Dynamic programming II — grids, strings, state machines",
+  "block": "Dynamic programming II: grids, strings, state machines",
   "cue": "two sequences → 2-D table · “with a cooldown / at most k transactions” → state machine",
   "role": "reps",
   "order": 257

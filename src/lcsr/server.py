@@ -257,7 +257,7 @@ class Handler(BaseHTTPRequestHandler):
     def _log_locked(self, pid, body):
         prior = replay().get(pid)
         if prior is not None and prior.done and not body.get("again"):
-            raise ValueError(f"{pid} is already solved — pass again to re-open it")
+            raise ValueError(f"{pid} is already solved. Pass again to re-open it.")
         outcome = STUCK if body.get("outcome") == STUCK else SOLVED
         mistake = body.get("mistake") or None
         if mistake and mistake not in MISTAKES:

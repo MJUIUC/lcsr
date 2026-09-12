@@ -9,7 +9,7 @@
  },
  {
   "says": "“count subarrays with sum = k”, or negatives are present",
-  "reach_for": "Prefix sum + hashmap — a window cannot work"
+  "reach_for": "Prefix sum + hashmap: a window cannot work"
  },
  {
   "says": "“exactly K distinct / odd / sum”",
@@ -29,7 +29,7 @@
  },
  {
   "says": "“kth largest”, “top k”, “median of a stream”",
-  "reach_for": "Heap — one, or two facing each other"
+  "reach_for": "Heap: one, or two facing each other"
  },
  {
   "says": "“overlapping ranges”, “rooms needed”",
@@ -41,11 +41,11 @@
  },
  {
   "says": "“shortest path”, every edge costs 1",
-  "reach_for": "BFS — multi-source if there are several origins"
+  "reach_for": "BFS: multi-source if there are several origins"
  },
  {
   "says": "“shortest path” with weights",
-  "reach_for": "Dijkstra — unless a hop limit is imposed"
+  "reach_for": "Dijkstra: unless a hop limit is imposed"
  },
  {
   "says": "“are these connected”, “merge these groups”",
@@ -57,7 +57,7 @@
  },
  {
   "says": "States and transitions, but no explicit edge list",
-  "reach_for": "It is still a graph — search over generated neighbours"
+  "reach_for": "It is still a graph: search over generated neighbours"
  },
  {
   "says": "“return all subsets / permutations / combinations”",
@@ -65,7 +65,7 @@
  },
  {
   "says": "“how many ways”, “minimum cost to reach”",
-  "reach_for": "DP — define the state before writing anything"
+  "reach_for": "DP: define the state before writing anything"
  },
  {
   "says": "Two sequences compared",

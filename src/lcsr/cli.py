@@ -53,7 +53,7 @@ def cmd_log(a):
         st = states.get(pid)
         if st is not None and st.done and not a.again:
             raise SystemExit(
-                f"{pid} is already solved and schedules nothing — "
+                f"{pid} is already solved and schedules nothing. "
                 f"re-run with --again to re-open it")
     for pid in ids:
         append(make_entry(pid, outcome, on, a.mistake, a.approach_min, a.note))
@@ -70,7 +70,7 @@ def cmd_today(a):
     on = parse_day(a.date)
     p = todays_plan(on)
     if on != date.today():
-        print(f"\n{Y}preview of {on} — nothing can be logged for another day{X}")
+        print(f"\n{Y}preview of {on}: nothing can be logged for another day{X}")
     print(f"\n{B}Day {p['day']} · Week {p['week']}{X} {D}·{X} {p['date']}\n")
     if p["due"]:
         print(f"{B}{Y}Due re-solves{X} {D}(these come first){X}")
@@ -212,7 +212,7 @@ def cmd_down(a):
     if stop() or not is_up(a.host, a.port):
         print(f"\n{D}stopped{X}\n")
     else:
-        print(f"\n{Y}still listening on {a.port} — not started by `lcsr up`?{X}\n")
+        print(f"\n{Y}still listening on {a.port}, not started by `lcsr up`?{X}\n")
 
 
 def cmd_status(a):

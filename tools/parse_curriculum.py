@@ -129,8 +129,27 @@ assert len(problems) == 314, f'expected 314 problems, got {len(problems)}'
 assert not dupes, f'duplicate ids: {dupes}'
 print('counts match the document')
 
+def no_em_dash(rows):
+    """Strip em dashes out of extracted text on the way in.
+
+    GOTCHA: the UI must not show em dashes, and the PDF is full of them (98 in
+    the block titles alone). Normalising the JSON by hand does not hold, because
+    this script rewrites both files from the PDF and would silently put every one
+    of them back. It has to happen here, at extraction, or not at all.
+
+    Every em dash in this document separates a title from its subtitle
+    ("Trees I - traversal, and ...") or a pattern from its elaboration, so a
+    colon is the right substitution for all of them. If a future edition uses one
+    mid-clause, that reads oddly and should be added to the hand-edited
+    *_extra.json files instead.
+    """
+    return [{k: (v.replace(' \u2014 ', ': ').replace('\u2014', ':')
+                 if isinstance(v, str) else v)
+             for k, v in r.items()} for r in rows]
+
+
 OUT.mkdir(parents=True, exist_ok=True)
-json.dump(problems, open(OUT / 'problems.json', 'w'), indent=1, ensure_ascii=False)
+json.dump(no_em_dash(problems), open(OUT / 'problems.json', 'w'), indent=1, ensure_ascii=False)
 
 # ---- Cue -> pattern table (the curriculum's stated "object of study").
 # Two columns split by 2+ spaces; the left cell wraps onto a continuation line
@@ -147,4 +166,4 @@ for ln in lines[start + 1:]:
     elif cues:
         cues[-1]['says'] += ' ' + parts[0].strip()   # wrapped left cell
 print('cue rows:', len(cues))
-json.dump(cues, open(OUT / 'cues.json', 'w'), indent=1, ensure_ascii=False)
+json.dump(no_em_dash(cues), open(OUT / 'cues.json', 'w'), indent=1, ensure_ascii=False)

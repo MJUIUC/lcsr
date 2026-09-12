@@ -223,14 +223,14 @@ def todays_plan(on: date | None = None) -> dict:
             return "Core"
         if len(weeks) == 1:
             return f"Week {weeks[0]} core"
-        return f"Core — weeks {weeks[0]}–{weeks[-1]}"
+        return f"Core, weeks {weeks[0]} to {weeks[-1]}"
 
     def build(limit_by):
         out = []
         for title, tier, week in (
             ("Foundations", "foundations", None),
             (None, "core", None),
-            ("Reps — interleaved across weeks 1–%d" % wk, "reps", "<="),
+            ("Reps, interleaved across weeks 1 to %d" % wk, "reps", "<="),
             ("Added", "custom", None),
         ):
             n = limit_by(tier)

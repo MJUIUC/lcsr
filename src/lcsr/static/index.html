@@ -3,22 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>lcsr — 18-week DSA curriculum</title>
+<title>LeetCode Spaced Repetition</title>
+<meta name="description" content="Runs the daily loop from the 18-week DSA curriculum and
+  records it: 322 problems, the cue table, and the +3d / +10d / +30d rule for problems you
+  got stuck on.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="LeetCode Spaced Repetition">
+<meta property="og:description" content="Run the 18-week DSA curriculum's daily loop, and
+  record it. No streaks, no problems-solved counter.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ffa116'/><path d='M20.5 8.5 12 16l8.5 7.5' fill='none' stroke='%23151515' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<script>
+(function(){try{var t=localStorage.getItem('lcsr-theme');
+  if(t&&t!=='system')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
 <style>
+/* LeetCode-flavoured. --brand is the LeetCode orange and is used for FILLS;
+   --accent is the text-safe variant of it, because #ffa116 on white is ~2:1 and
+   fails contrast for anything you have to read. Difficulty colours are
+   LeetCode's own, so Easy/Medium/Hard mean the same here as on the site. */
 :root{
-  --bg:#f7f5f1; --panel:#fff; --panel2:#fbfaf8; --ink:#1b1b1d; --mid:#55555c;
-  --muted:#86868f; --line:#e5e1d9; --line2:#efece5;
-  --accent:#0f6b57; --accent-soft:#e6f0ec;
-  --warn:#a15c12; --warn-soft:#fbf0e2; --danger:#b3261e; --ok:#1f7a45;
-  --shadow:0 1px 2px rgba(20,20,20,.04),0 6px 20px rgba(20,20,20,.05);
+  --brand:#ffa116;
+  --bg:#f4f4f5; --panel:#fff; --panel2:#fafafa; --ink:#18181b; --mid:#4b4b52;
+  --muted:#7c7c85; --line:#e3e3e6; --line2:#eeeef0;
+  --accent:#a55a00; --accent-soft:#fdf1e0;
+  --warn:#8a5a00; --warn-soft:#fdf3e2; --danger:#c62b3f; --ok:#00786a;
+  --easy:#00876b; --medium:#8a5a00; --hard:#c62b3f;
+  --pool:#6d38d6; --pool-soft:#f2ecfe;
+  --shadow:0 1px 2px rgba(20,20,20,.05),0 6px 20px rgba(20,20,20,.05);
 }
-@media (prefers-color-scheme:dark){:root{
-  --bg:#141416; --panel:#1c1c20; --panel2:#232329; --ink:#eeeef0; --mid:#b4b4bd;
-  --muted:#82828c; --line:#2c2c33; --line2:#26262c;
-  --accent:#59b79c; --accent-soft:#17322b;
-  --warn:#d99a4e; --warn-soft:#33261480; --danger:#e8695f; --ok:#5cb47e;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);
+/* Pitch dark: a real #000, not a charcoal. Shadows do not read against black,
+   so surfaces separate with borders instead and --shadow goes to none. */
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#000; --panel:#111; --panel2:#171717; --ink:#f2f2f2; --mid:#a6a6ad;
+  --muted:#6f6f78; --line:#262626; --line2:#1d1d1d;
+  --accent:#ffa116; --accent-soft:#2a1b06;
+  --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
+  --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
+  --pool:#a78bfa; --pool-soft:#1c1233;
+  --shadow:none;
 }}
+:root[data-theme=dark]{
+  --bg:#000; --panel:#111; --panel2:#171717; --ink:#f2f2f2; --mid:#a6a6ad;
+  --muted:#6f6f78; --line:#262626; --line2:#1d1d1d;
+  --accent:#ffa116; --accent-soft:#2a1b06;
+  --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
+  --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
+  --pool:#a78bfa; --pool-soft:#1c1233;
+  --shadow:none;
+}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);
@@ -33,25 +65,44 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
   backdrop-filter:saturate(1.6) blur(12px);border-bottom:1px solid var(--line)}
 .top .inner{max-width:1040px;margin:0 auto;padding:0 22px}
-.brandrow{display:flex;align-items:center;gap:14px;padding:16px 0 12px}
-.brand{font-family:ui-serif,Georgia,serif;font-size:19px;font-weight:600;letter-spacing:-.02em}
-.brand em{font-style:normal;color:var(--accent)}
+.brandrow{display:flex;align-items:center;gap:13px;padding:16px 0 12px}
+.brand{display:flex;align-items:baseline;gap:11px;text-decoration:none;min-width:0}
+.mark{font-family:ui-serif,Georgia,serif;font-size:19px;font-weight:600;letter-spacing:-.02em;
+  flex:none}
+.mark em{font-style:normal;color:var(--brand)}
+.full{font-family:ui-serif,Georgia,serif;font-size:14.5px;font-weight:600;letter-spacing:-.01em;
+  color:var(--mid);padding-left:11px;border-left:1px solid var(--line);white-space:nowrap}
+.theme{display:flex;gap:2px;background:var(--line2);border:1px solid var(--line);
+  border-radius:8px;padding:2px;flex:none}
+.theme button{font-size:11.5px;padding:4px 10px;border-radius:6px;color:var(--muted);
+  transition:.13s}
+.theme button:hover{color:var(--ink)}
+.theme button[aria-pressed=true]{background:var(--panel);color:var(--ink);font-weight:550}
+.sitefoot{border-top:1px solid var(--line);background:var(--panel);margin-top:70px}
+.sitefoot .finner{max-width:1040px;margin:0 auto;padding:26px 22px 38px;display:flex;
+  gap:14px 30px;flex-wrap:wrap;align-items:baseline}
+.fname{font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.fname em{font-style:normal;color:var(--brand)}
+.fdesc{font-size:13px;color:var(--muted);line-height:1.7;flex:1;min-width:260px}
+.fwhere{font-size:12px;color:var(--muted);line-height:1.7;flex-basis:100%;
+  border-top:1px solid var(--line2);padding-top:14px}
+@media(max-width:720px){.full{display:none} .overall{display:none}}
 .daychip{font-size:12px;color:var(--mid);background:var(--panel);border:1px solid var(--line);
   padding:3px 10px;border-radius:99px;white-space:nowrap}
 .spacer{flex:1}
 .overall{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
 .obar{width:120px;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
-.obar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.obar i{display:block;height:100%;background:var(--brand);border-radius:99px}
 nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
 nav button{padding:9px 15px 12px;font-size:14px;color:var(--muted);white-space:nowrap;
   border-bottom:2px solid transparent;margin-bottom:-1px;transition:.13s}
 nav button:hover{color:var(--ink)}
-nav button[aria-current=true]{color:var(--ink);font-weight:550;border-bottom-color:var(--accent)}
+nav button[aria-current=true]{color:var(--ink);font-weight:550;border-bottom-color:var(--brand)}
 nav .count{font-size:11px;color:var(--muted);background:var(--line2);border-radius:99px;
   padding:1px 6px;margin-left:6px}
 nav button[aria-current=true] .count{background:var(--accent-soft);color:var(--accent)}
-main{max-width:1040px;margin:0 auto;padding:26px 22px 90px}
+main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 
 /* ---------- generic ---------- */
 .sec{margin:0 0 10px;display:flex;align-items:baseline;gap:10px}
@@ -90,8 +141,8 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 90px}
   color:var(--mid);transition:.13s}
 .btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .btn.warn:hover{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn.primary:hover{opacity:.88;color:#fff;background:var(--accent)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#1a1200;font-weight:550}
+.btn.primary:hover{opacity:.88;color:#1a1200;background:var(--brand)}
 .pcue{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);font-style:italic;
   margin-top:-4px}
 .pmeta{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);margin-top:-4px}
@@ -133,7 +184,7 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .gprog{display:flex;align-items:center;gap:9px;flex:none}
 .gprog span{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted)}
 .gbar{width:64px;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
-.gbar i{display:block;height:100%;background:var(--accent)}
+.gbar i{display:block;height:100%;background:var(--brand)}
 .gbar.full i{background:var(--ok)}
 .gbody{padding:4px 14px 15px;border-top:1px solid var(--line2)}
 .rolelbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
@@ -211,11 +262,36 @@ details.add[open] summary::before{content:"− "}
 .filters .chips{margin-bottom:14px}
 .filters .chips:last-child{margin-bottom:0}
 .badge.src{border-color:color-mix(in srgb,var(--accent) 30%,transparent);color:var(--accent)}
-.badge.dEasy{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
-.badge.dMedium{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,transparent)}
-.badge.dHard{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
+.badge.dEasy{color:var(--easy);border-color:color-mix(in srgb,var(--easy) 38%,transparent)}
+.badge.dMedium{color:var(--medium);border-color:color-mix(in srgb,var(--medium) 38%,transparent)}
+.badge.dHard{color:var(--hard);border-color:color-mix(in srgb,var(--hard) 38%,transparent)}
 .badge.n4{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
 .badge.n3{border-color:var(--accent);color:var(--accent)}
+/* Everything inside .pool swaps the LeetCode orange for the pool's violet. The
+   components are unchanged; only the two accent tokens are. The point is that
+   this tab must not read as more curriculum, which was the main reason it failed
+   to explain itself. */
+.pool{--accent:var(--pool);--accent-soft:var(--pool-soft);--brand:var(--pool)}
+.pool .btn.primary{color:#fff}
+.pool .btn.primary:hover{color:#fff}
+.poolintro{background:var(--panel);border:1px solid var(--line);
+  border-left:3px solid var(--pool);border-radius:12px;padding:20px 22px;
+  margin-bottom:14px;box-shadow:var(--shadow)}
+.poolintro h2{font-size:19px;margin-bottom:10px}
+.poolintro p{margin:0 0 9px;font-size:13.5px;color:var(--mid);line-height:1.68;max-width:76ch}
+.poolintro p:last-of-type{margin-bottom:0}
+.poolintro b{color:var(--ink);font-weight:600}
+.poolintro .apart{color:var(--pool)}
+.srcs{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px;padding-top:14px;
+  border-top:1px solid var(--line2)}
+.srcpill{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--mid);
+  background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:4px 11px}
+.srcpill i{width:7px;height:7px;border-radius:99px;background:var(--pool);flex:none}
+.srcpill b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.drawlead{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:11px;font-weight:600}
+.psec{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.7}
+.psec b{color:var(--mid);font-weight:550}
 .phead2{font-size:13px;color:var(--mid);margin-bottom:13px;padding-bottom:11px;
   border-bottom:1px solid var(--line)}
 .phead2 b{color:var(--ink);font-weight:600}
@@ -263,15 +339,32 @@ details.add[open] summary::before{content:"− "}
 
 <div class="top"><div class="inner">
   <div class="brandrow">
-    <span class="brand">lc<em>sr</em></span>
+    <a class="brand" href="#today">
+      <span class="mark">lc<em>sr</em></span>
+      <span class="full">LeetCode Spaced Repetition</span>
+    </a>
     <span class="daychip" id="daychip">…</span>
     <span class="spacer"></span>
     <span class="overall" id="overall"></span>
+    <div class="theme" id="theme" role="group" aria-label="Colour theme">
+      <button data-theme-set="system">Auto</button>
+      <button data-theme-set="light">Light</button>
+      <button data-theme-set="dark">Dark</button>
+    </div>
   </div>
-  <nav id="nav"></nav>
+  <nav id="nav" role="tablist" aria-label="Sections"></nav>
 </div></div>
 
 <main id="view"></main>
+
+<footer class="sitefoot"><div class="finner">
+  <span class="fname">LeetCode Spaced Repetition <em>(lcsr)</em></span>
+  <span class="fdesc">Runs the daily loop from the 18-week DSA curriculum and records it.
+    All 322 problems, the cue table, and the curriculum's +3d / +10d / +30d rule for
+    problems you got stuck on. No streaks, and no problems-solved counter.</span>
+  <span class="fwhere" id="footwhere"></span>
+</div></footer>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -283,14 +376,15 @@ const TABS = [
   {k:'today',      label:'Today'},
   {k:'curriculum', label:'Curriculum'},
   {k:'history',    label:'History'},
-  {k:'frequent',   label:'Frequent'},
+  {k:'pool',       label:'Interview pool'},
   {k:'cues',       label:'Cue table'},
   {k:'stats',      label:'Stats'},
 ];
 let tab = location.hash.slice(1) || 'today';
+if(tab === 'frequent') tab = 'pool';        // the tab this used to be called
 let plan=null, curric=null, hist=null, cues=null, freq=null;
 let drawn = null;
-const FILT = {diff:new Set(), noPaid:false, noSolved:true, noCurric:true};
+const FILT = {diff:new Set(), lists:new Set(), noPaid:false, noSolved:true, noCurric:true};
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
 let showAhead = false;
@@ -303,6 +397,23 @@ async function api(p, body){
   const j = await r.json();
   if(!r.ok) throw new Error(j.error || 'request failed');
   return j;
+}
+/* Three-way theme. prefers-color-scheme alone was not enough: someone whose OS
+   sits in light mode could never reach the dark palette at all. 'system' removes
+   the attribute so the media query takes over again. */
+function currentTheme(){
+  try{ return localStorage.getItem('lcsr-theme') || 'system'; }catch(e){ return 'system'; }
+}
+function paintThemeSwitch(){
+  const cur = currentTheme();
+  document.querySelectorAll('[data-theme-set]').forEach(b=>
+    b.setAttribute('aria-pressed', b.dataset.themeSet === cur));
+}
+function setTheme(t){
+  try{ localStorage.setItem('lcsr-theme', t); }catch(e){}
+  if(t === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', t);
+  paintThemeSwitch();
 }
 function toast(msg){
   const t=$('#toast'); t.textContent=msg; t.classList.add('show');
@@ -327,14 +438,14 @@ function relDay(iso){
 
 /* ---------------- problem row ---------------- */
 function logPanel(p, solved){
-  const chips = `<div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">— only recorded when logged as stuck</span></div>
+  const chips = `<div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">(only recorded when logged as stuck)</span></div>
       <div class="chips">${(plan?.mistakes||[]).map(m=>
         `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`).join('')}</div>`;
   const head = solved
     ? `<div class="phead2">This is logged as <b>solved</b>. Changing it rewrites that
-        attempt in place, keeping its original date — it does not count as working
+        attempt in place, keeping its original date. It does not count as working
         the problem again today.</div>`
-    : `<div class="phead2">Logging <b>${p.id}</b> — stuck means it returns in 3 days,
+    : `<div class="phead2">Logging <b>${p.id}</b>. Stuck means it returns in 3 days,
         then 10, then 30. Failing again resets it to 3.</div>`;
   const foot = solved
     ? `<button class="btn warn" data-act="amend-stuck">Change to stuck</button>
@@ -348,7 +459,7 @@ function logPanel(p, solved){
   // away whatever had been typed into it.
   return `<div class="panel" data-panel ${(draft[p.id]||{}).open ? '' : 'hidden'}>
       ${head}
-      <div class="lbl">Note — the cue → the pattern</div>
+      <div class="lbl">Note: the cue, then the pattern</div>
       <textarea data-note placeholder="one line, in your own words">${esc((draft[p.id]||{}).note||'')}</textarea>
       ${chips}
       <div class="prow">${foot}</div>
@@ -405,12 +516,12 @@ function vToday(){
       <button class="btn" id="d-next">›</button>
       ${ro?`<button class="btn" id="d-today">Back to today</button>`:''}
     </div>`;
-  if(ro) h += `<div class="preview">Preview — you cannot log an attempt for another
+  if(ro) h += `<div class="preview">Preview. You cannot log an attempt for another
     day. Due re-solves shown are everything outstanding by then.</div>`;
 
   if(!ro && p.idle_days >= 3)
     h += `<div class="drift">Nothing logged for <b>${p.idle_days} days</b>. Re-solves keep
-      falling due while you are away, so the backlog is what grows — the new-problem
+      falling due while you are away, so the backlog is what grows. The new-problem
       queue just waits.</div>`;
 
   if(!ro && p.pace.started)
@@ -423,7 +534,7 @@ function vToday(){
 
   if(p.paused)
     h += `<div class="paused">
-      <b>${p.backlog} re-solves outstanding — new problems paused</b>
+      <b>${p.backlog} re-solves outstanding, so new problems are paused</b>
       <span>The curriculum's rule when the cold re-solve rate slips is that you are moving
       too fast. Stacking new material on an unworked backlog is what makes that number
       worse, so nothing new is issued until the backlog is under ${p.pause_at}.</span></div>`;
@@ -451,7 +562,7 @@ function vToday(){
         <b>Done for today</b>
         <span>${p.done_today} new problem${p.done_today===1?'':'s'}${
           p.resolves_today?` · ${p.resolves_today} re-solve${p.resolves_today===1?'':'s'}`:''
-        } · today's target is ${p.target_today}${over?' — you went over':''}</span>
+        } · today's target is ${p.target_today}${over?' (you went over)':''}</span>
         <span class="quiet">The curriculum's load is deliberate. Working further ahead
           trades tomorrow's spacing for today's volume.</span>
       </div>
@@ -483,7 +594,7 @@ function vCurriculum(){
     const body = g.note
       ? `<div class="note">Adding new material here feels productive and measures nothing.
          These two weeks are the only part of the schedule where problems reach you
-         <strong>without a pattern label attached</strong> — which is the only part that
+         <strong>without a pattern label attached</strong>, which is the only part that
          resembles an interview.</div>`
       : g.blocks.map(b=>
           `${b.title?`<div class="rolelbl">${esc(b.title)}</div>`:''}
@@ -540,7 +651,7 @@ function vCues(){
   });
   const n = cues.length;
   return `<div class="sec"><h2>Cue → pattern</h2>
-    <span class="hint">the curriculum calls this the object of study — reconstruct it, don't read it</span></div>
+    <span class="hint">the curriculum calls this the object of study: reconstruct it, don't read it</span></div>
     <div class="prow" style="margin:0 0 18px">
       <button class="btn" id="cue-all">Reveal all</button>
       <button class="btn" id="cue-none">Hide all</button>
@@ -565,6 +676,7 @@ function freqPool(){
     if(FILT.noSolved && p.solved) return false;
     if(FILT.noCurric && p.in_curriculum) return false;
     if(FILT.diff.size && !FILT.diff.has(p.difficulty)) return false;
+    if(FILT.lists.size && !p.lists.some(l=>FILT.lists.has(l))) return false;
     return true;
   });
 }
@@ -595,67 +707,95 @@ function freqRow(p){
     <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
     <span class="badge d${p.difficulty}">${esc(p.difficulty)}</span>
     ${p.paid?'<span class="badge hard">premium</span>':''}
-    <span class="badge n${p.count}">${p.count}/4</span>
+    <span class="badge n${p.count}">${p.count===4?'on all 4 lists':p.count+' of 4 lists'}</span>
     ${c?`<span class="badge ok">curriculum${c.week?' W'+c.week:''}</span>`
        :'<span class="badge">not in curriculum</span>'}
     ${logActions(p.solved)}
   </div><div class="pcue">${listBadges(p)}</div>${meta}${logPanel(p, p.solved)}</div>`;
 }
 
-function vFrequent(){
+function vPool(){
   const st = freq.stats, pool = freqPool();
   const chip = (on,k,label) => `<button class="chip" aria-pressed="${on}" data-f="${k}">${label}</button>`;
   const d = drawn;
-  return `
-  <div class="sec"><h2>Frequently asked</h2>
-    <span class="hint">${st.total} unique problems merged from four lists · separate from the curriculum</span></div>
+  const counts = {};
+  for(const p of freq.problems) for(const l of p.lists) counts[l] = (counts[l]||0)+1;
 
-  <div class="drawbox">
-    ${d ? `
-      <div class="drawmeta">${listBadges(d)}
-        <span class="badge d${d.difficulty}">${esc(d.difficulty)}</span>
-        <span class="badge n${d.count}">${d.count}/4 lists</span>
-        ${d.curriculum?`<span class="badge ok">in curriculum${d.curriculum.week?' · W'+d.curriculum.week:''}</span>`
-                      :'<span class="badge">not in curriculum</span>'}</div>
-      <div class="drawtitle"><span class="pid">${d.id}</span>
-        <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
-      ${d.curriculum?`<div class="drawsub">${esc(d.curriculum.block)}</div>`:''}
-      <div class="drawacts p" data-id="${d.id}">
-        ${logActions(d.solved)}
-        ${logPanel(d, d.solved)}
-      </div>
-    ` : `<div class="drawtitle" style="opacity:.6">${pool.length?'Press draw':'No problems match these filters'}</div>`}
-    <div class="prow">
-      <button class="btn primary" id="f-draw">${d?'Draw again':'Draw'}</button>
-      <span class="hint">${pool.length} in the pool · weighted by how many lists a problem appears on</span>
-    </div>
-  </div>
+  // Concept, then filters, then the draw. The old order put a lucky-dip button
+  // first, so the first draw happened before you could see what you were
+  // drawing from or that it was separate from the curriculum at all.
+  const intro = `<div class="poolintro">
+    <h2>Interview pool</h2>
+    <p><b>${st.total} problems that interviews actually repeat</b>, merged from four public
+      lists and deduplicated by LeetCode number. 599 raw entries collapse to ${st.total},
+      because the lists overlap heavily and Striver's alone files 18 problems under two
+      topics.</p>
+    <p><b class="apart">This is separate from your 18-week curriculum.</b> Drawing here,
+      and solving what you draw, never changes your curriculum progress, its totals, or any
+      of the three metrics. The only crossing point is read-only:
+      <b>${st.in_curriculum}</b> of these are already in your curriculum and
+      <b>${st.only_here}</b> are not, and every row tells you which.</p>
+    <div class="srcs">${Object.entries(freq.labels).map(([k,v])=>
+      `<span class="srcpill"><i></i>${esc(v)} <b>${counts[k]||0}</b></span>`).join('')}</div>
+  </div>`;
 
-  <div class="filters">
+  const filters = `<div class="filters">
+    <div class="lbl">Source list <span style="text-transform:none;letter-spacing:0">(any of those picked)</span></div>
+    <div class="chips">${Object.entries(freq.labels).map(([k,v])=>
+      chip(FILT.lists.has(k),'list:'+k,esc(v))).join('')}</div>
     <div class="lbl">Difficulty</div>
     <div class="chips">${['Easy','Medium','Hard'].map(x=>chip(FILT.diff.has(x),'diff:'+x,x)).join('')}</div>
-    <div class="lbl">Exclude</div>
+    <div class="lbl">Leave out</div>
     <div class="chips">
       ${chip(FILT.noPaid,'x:noPaid','premium')}
       ${chip(FILT.noSolved,'x:noSolved','already solved')}
       ${chip(FILT.noCurric,'x:noCurric','already in curriculum')}
     </div>
-  </div>
+  </div>`;
 
-  <div class="cards" style="margin-top:22px">
-    <div class="card"><b>${st.total}</b><span>unique problems</span></div>
-    <div class="card"><b>${st.in_curriculum}</b><span>also in your curriculum</span></div>
-    <div class="card"><b>${st.only_here}</b><span>only here</span></div>
-    <div class="card"><b>${st.by_count[4]||0}</b><span>on all four lists</span></div>
-  </div>
+  const sections = d && d.sections
+    ? `<div class="psec">${Object.entries(d.sections).map(([k,v])=>
+        `<b>${esc(freq.labels[k])}:</b> ${esc(v)}`).join('<br>')}</div>` : '';
 
-  <div class="sec"><h2>All ${pool.length}</h2><span class="hint">most-overlapping first</span></div>
-  <div class="stack">${pool.map(freqRow).join('')}</div>`;
+  const drawbox = `<div class="drawbox">
+    <div class="drawlead">Lucky draw</div>
+    ${d ? `
+      <div class="drawmeta">${listBadges(d)}
+        <span class="badge d${d.difficulty}">${esc(d.difficulty)}</span>
+        <span class="badge n${d.count}">${d.count===4?'on all 4 lists':d.count+' of 4 lists'}</span>
+        ${d.curriculum?`<span class="badge ok">in curriculum${d.curriculum.week?' · W'+d.curriculum.week:''}</span>`
+                      :'<span class="badge">not in curriculum</span>'}</div>
+      <div class="drawtitle"><span class="pid">${d.id}</span>
+        <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
+      ${d.curriculum?`<div class="drawsub">${esc(d.curriculum.block)}</div>`:''}
+      ${sections}
+      <div class="drawacts p" data-id="${d.id}">
+        ${logActions(d.solved)}
+        ${logPanel(d, d.solved)}
+      </div>
+    ` : `<div class="drawtitle" style="opacity:.6">${
+          pool.length ? 'Press draw' : 'Nothing matches these filters'}</div>`}
+    <div class="prow">
+      <button class="btn primary" id="f-draw">${d?'Draw again':'Draw a problem'}</button>
+      <span class="hint"><b>${pool.length}</b> in the pool, weighted by how many of the four
+        lists a problem is on, so the ones every list agrees about come up most.</span>
+    </div>
+  </div>`;
+
+  return `<div class="pool">
+    ${intro}
+    ${filters}
+    <div style="height:14px"></div>
+    ${drawbox}
+    <div class="sec"><h2>All ${pool.length} in the pool</h2>
+      <span class="hint">most-overlapping first</span></div>
+    <div class="stack">${pool.map(freqRow).join('')}</div>
+  </div>`;
 }
 
 function vStats(){
   const m = plan.metrics;
-  const rate = m.resolve_rate==null ? '—' : Math.round(m.resolve_rate*100)+'%';
+  const rate = m.resolve_rate==null ? 'not yet' : Math.round(m.resolve_rate*100)+'%';
   const rcol = m.resolve_rate==null ? 'var(--muted)' : (m.resolve_rate>.70?'var(--ok)':'var(--danger)');
   const mk = m.mistakes||{}, mx = Math.max(1,...Object.values(mk));
   return `
@@ -665,11 +805,11 @@ function vStats(){
     <div class="card"><b style="color:${rcol}">${rate}</b>
       <span>cold re-solve · target &gt;70%</span></div>
     <div class="card"><b>${m.first_try??0}</b><span>solved cold, first try</span></div>
-    <div class="card"><b>${m.approach_avg?m.approach_avg.toFixed(1)+'m':'—'}</b>
+    <div class="card"><b>${m.approach_avg?m.approach_avg.toFixed(1)+'m':'not yet'}</b>
       <span>time to approach · target &lt;5m by W10</span></div>
   </div>
   <div class="sec"><h2>Mistake classes</h2>
-    <span class="hint">after ~40 problems one class dominates — weeks 17–18 target that class</span></div>
+    <span class="hint">after ~40 problems one class dominates, and weeks 17 to 18 target that class</span></div>
   ${Object.keys(mk).length ? `<div class="card"><div class="hist">
     ${Object.entries(mk).map(([k,v])=>
       `<div><i style="height:${v/mx*52+3}px"></i><small>${esc(k)}<br>${v}</small></div>`).join('')}
@@ -716,7 +856,7 @@ function render(opts={}){
   const y = window.scrollY;
   renderChrome();
   const v = {today:vToday, curriculum:vCurriculum, history:vHistory,
-             frequent:vFrequent, cues:vCues, stats:vStats}[tab] || vToday;
+             pool:vPool, cues:vCues, stats:vStats}[tab] || vToday;
   $('#view').innerHTML = v();
   window.scrollTo({top: opts.top ? 0 : y});
 }
@@ -744,7 +884,7 @@ async function go(t){
   try{
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
   if(t==='history') hist = await api('/api/history');
-  if(t==='frequent' && !freq){ freq = await api('/api/frequent'); if(!drawn) draw(); }
+  if(t==='pool' && !freq){ freq = await api('/api/frequent'); if(!drawn) draw(); }
     if(t==='cues' && !cues) cues = await api('/api/cues');
   }catch(err){
     tab = prev; location.hash = prev; toast(err.message); return;
@@ -764,6 +904,13 @@ document.addEventListener('input', e=>{
 $('#nav').addEventListener('click', e=>{
   const b=e.target.closest('[data-tab]'); if(b) go(b.dataset.tab);
 });
+$('#theme').addEventListener('click', e=>{
+  const b=e.target.closest('[data-theme-set]'); if(b) setTheme(b.dataset.themeSet);
+});
+paintThemeSwitch();
+$('#footwhere').textContent =
+  'Everything is recomputed from ~/.lcsr/log.jsonl, an append-only file on this '
+  + 'machine. The page stores nothing of its own, so closing the tab loses nothing.';
 
 document.addEventListener('click', async e=>{
   // cue reveal
@@ -778,6 +925,7 @@ document.addEventListener('click', async e=>{
   if(e.target.dataset.f){
     const [kind,val] = e.target.dataset.f.split(':');
     if(kind==='diff') FILT.diff.has(val)?FILT.diff.delete(val):FILT.diff.add(val);
+    if(kind==='list') FILT.lists.has(val)?FILT.lists.delete(val):FILT.lists.add(val);
     if(kind==='x')    FILT[val] = !FILT[val];
     if(drawn && !freqPool().some(p=>p.id===drawn.id)) drawn = null;
     return render();
@@ -828,11 +976,11 @@ document.addEventListener('click', async e=>{
     try{
       if(act==='amend-clear'){
         const r = await api('/api/undo', {id});
-        toast(`${id} — attempt removed`);
+        toast(`${id}: attempt removed`);
       }else{
         const r = await api('/api/amend', {id, outcome:'stuck',
                             mistake: draft[id].mistake, note});
-        toast(`${id} — now stuck, returns ${r.due}`);
+        toast(`${id} is now stuck, returns ${r.due}`);
       }
       delete draft[id];
       await refreshAll();
@@ -862,7 +1010,7 @@ document.addEventListener('click', async e=>{
       await api('/api/log', {id, outcome: act==='solved'?'solved':'stuck',
                              mistake: draft[id].mistake, note});
       delete draft[id];
-      toast(act==='solved' ? `${id} logged — does not return` : `${id} logged — returns in 3 days`);
+      toast(act==='solved' ? `${id} logged, does not return` : `${id} logged, returns in 3 days`);
       await refreshAll();
     }catch(err){ toast(err.message); }
     finally{ inFlight.delete(id); }
@@ -888,7 +1036,7 @@ window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t
   curric = await api('/api/curriculum');
   if(tab==='history')  hist = await api('/api/history');
   if(tab==='cues')     cues = await api('/api/cues');
-  if(tab==='frequent'){ freq = await api('/api/frequent'); if(!drawn) draw(); }
+  if(tab==='pool'){ freq = await api('/api/frequent'); if(!drawn) draw(); }
   render();
 })().catch(err => {
   // Without this a failed bootstrap left #nav and #view empty -- a blank page

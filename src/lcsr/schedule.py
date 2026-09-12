@@ -4,7 +4,7 @@ The curriculum's rule: a failed problem returns at +3d, +10d, +30d; a problem
 solved cold does not return at all. `box` is the position in that ladder.
 
 GOTCHA: a wrong cell in this table is invisible in code review and does not
-raise — it silently shifts every future due date and quietly corrupts the
+raise. It silently shifts every future due date and quietly corrupts the
 30-day cold re-solve rate, which is the one metric the curriculum says predicts
 interview performance. Hence the exhaustive test in tests/test_schedule.py over
 all 8 (box, outcome) pairs. Change a cell here and that test must change too,

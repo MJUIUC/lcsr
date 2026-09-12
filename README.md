@@ -29,7 +29,7 @@ lcsr status        # is it running?
 lcsr down          # stop it
 ```
 
-`lcsr up` is idempotent — run it any time, it only starts a server if one is not
+`lcsr up` is idempotent: run it any time, it only starts a server if one is not
 already listening. The process is detached into its own session, so it survives
 the terminal (or the agent session) that launched it closing. Liveness is checked
 by connecting to the port rather than by reading the pidfile, since a pidfile
@@ -40,7 +40,7 @@ output goes to `~/.lcsr/server.log`.
 
 The page shows due re-solves first, then today's new problems. Each row links to
 LeetCode, and marks **Solved** or **Stuck**; stuck opens a mistake class and a
-note field. Nothing is stored in the browser — every action appends to the same
+note field. Nothing is stored in the browser; every action appends to the same
 log the CLI reads.
 
 ### Adding problems
@@ -53,14 +53,14 @@ lcsr add 1768 "Merge Strings Alternately" --block Warmup --cue "two strings, alt
 
 Additions go to `~/.lcsr/custom.json`, kept separate from the packaged
 curriculum so upgrades never overwrite them, and appear under "Added". A custom
-entry reusing a packaged id overrides it — that is how you re-week or retag a
+entry reusing a packaged id overrides it, which is how you re-week or retag a
 problem without editing packaged data.
 
 ### CLI
 
 ```bash
 lcsr today                       # due re-solves first, then today's new problems
-lcsr show 42                     # the cue and the link — but not the pattern name
+lcsr show 42                     # the cue and the link, but not the pattern name
 lcsr log 42                      # solved it cold
 lcsr log 42 --stuck --mistake invariant
 lcsr log 1 217 242 --date yesterday
@@ -84,9 +84,9 @@ consume the day's quota. Due dates, boxes and
 every metric are recomputed from it on each run, so nothing can drift out of
 sync and the scheduling rule can change later without invalidating history.
 
-`lcsr serve` binds to loopback only and has no auth — it is a local tool.
+`lcsr serve` binds to loopback only and has no auth. It is a local tool.
 
-Scheduling is `src/lcsr/schedule.py` — one pure function, with an exhaustive
+Scheduling is `src/lcsr/schedule.py`: one pure function, with an exhaustive
 truth table over all 8 states in `tests/test_schedule.py`.
 
 There is no streak counter and no problems-solved metric. The curriculum names
@@ -95,10 +95,10 @@ inflate.
 
 ## The frequently-asked pool
 
-A separate **Frequent** tab: 363 unique problems merged from Top Interview 150,
+A separate **Interview pool** tab: 363 unique problems merged from Top Interview 150,
 LeetCode 75, Top 100 Liked and Striver's A2Z, with a weighted lucky draw.
 
-It is deliberately *not* merged into the curriculum — it does not change the
+It is deliberately *not* merged into the curriculum, and it does not change the
 322 totals or any metric. The only crossing point is read-only: each problem
 shows whether it is already in your curriculum and whether you have logged it,
 so a draw can skip what you have covered.
@@ -123,5 +123,5 @@ silently producing a short list.
 
 ## Docs
 
-- [`docs/evidence.md`](docs/evidence.md) — the literature review this started from
-- [`docs/design.md`](docs/design.md) — what was built and what was dropped
+- [`docs/evidence.md`](docs/evidence.md): the literature review this started from
+- [`docs/design.md`](docs/design.md): what was built and what was dropped
