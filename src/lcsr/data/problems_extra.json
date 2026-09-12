@@ -1,5 +1,31 @@
 [
  {
+  "id": 189,
+  "title": "Rotate Array",
+  "hard": false,
+  "immediately_after_prev": true,
+  "tier": "foundations",
+  "week": null,
+  "block": "Arrays & hashing",
+  "cue": "shift every element k places, in place, O(1) extra space · reverse the whole array, then reverse the first k and the rest",
+  "role": "foundation",
+  "order": 6.1,
+  "url": null
+ },
+ {
+  "id": 151,
+  "title": "Reverse Words in a String",
+  "hard": false,
+  "immediately_after_prev": true,
+  "tier": "foundations",
+  "week": null,
+  "block": "Arrays & hashing",
+  "cue": "reverse the order of words but not the letters inside them · reverse everything, then reverse each word back",
+  "role": "foundation",
+  "order": 6.2,
+  "url": null
+ },
+ {
   "id": 448,
   "title": "Find All Numbers Disappeared in an Array",
   "hard": false,

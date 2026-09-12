@@ -16,9 +16,22 @@ again. tests/test_settings.py runs the truth table.
 import json
 from dataclasses import asdict, dataclass, replace
 
-from .store import HOME, LOCK, atomic_write
+from . import store
+from .store import LOCK, atomic_write
 
-FILE = HOME / "settings.json"
+
+def _file():
+    """Resolved per call, not bound at import.
+
+    GOTCHA: a module-level `FILE = HOME / "settings.json"` captures store.HOME as
+    it was when this module was first imported. Every test isolates itself by
+    monkeypatching store.HOME, so a captured path silently keeps pointing at the
+    real ~/.lcsr and the suite reads whatever the developer happens to have
+    configured. That is not a hypothetical: it turned three unrelated plan tests
+    red the first time a real settings.json existed, and it would have turned
+    them GREEN just as easily.
+    """
+    return store.HOME / "settings.json"
 
 # The tiers that count toward the daily total. 'custom' is deliberately absent:
 # your own additions are yours, and target_today has always excluded them.
@@ -92,10 +105,11 @@ def from_dict(d: dict) -> Settings:
 
 def load() -> Settings:
     """Not cached: the UI changes these mid-session and must see them at once."""
-    if not FILE.exists():
+    f = _file()
+    if not f.exists():
         return Settings()
     try:
-        return from_dict(json.loads(FILE.read_text(encoding="utf-8")))
+        return from_dict(json.loads(f.read_text(encoding="utf-8")))
     except (json.JSONDecodeError, ValueError, TypeError):
         # A hand-edited file that no longer parses must not take the tool down.
         # The curriculum's own load is always a safe thing to fall back to.
@@ -104,7 +118,7 @@ def load() -> Settings:
 
 def save(s: Settings) -> Settings:
     with LOCK:
-        atomic_write(FILE, json.dumps(asdict(s), indent=1) + "\n")
+        atomic_write(_file(), json.dumps(asdict(s), indent=1) + "\n")
     return s
 
 

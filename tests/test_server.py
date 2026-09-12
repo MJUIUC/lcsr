@@ -16,7 +16,7 @@ from lcsr import store
 
 # 314 from the PDF + 8 added to the curriculum in problems_extra.json. Explicit
 # rather than computed, so silently dropping a problem fails here.
-TOTAL = 322
+TOTAL = 324
 
 
 @pytest.fixture

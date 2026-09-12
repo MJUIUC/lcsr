@@ -94,7 +94,7 @@ def test_slugs_are_unique_too(pool):
 
 def test_pool_is_not_merged_into_the_curriculum(pool):
     """The curriculum's totals must not move because this list exists."""
-    assert len(cur.problems()) == 322
+    assert len(cur.problems()) == 324
     only_here = [p for p in pool if not p["in_curriculum"]]
     assert only_here, "expected problems that exist only in the frequent pool"
     assert all(p["id"] not in cur.problems() for p in only_here)

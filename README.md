@@ -1,11 +1,47 @@
-# lcsr
+# lcsr: LeetCode Spaced Repetition
 
-Runs the daily loop from `DSA-Curriculum-18-Week.pdf` and records it. All 314
-problems, the 20-row cue table, and the curriculum's `+3d / +10d / +30d`
-re-solve rule for problems you got stuck on.
+**A spaced repetition system for LeetCode and DSA interview prep.** Runs the
+daily loop from an 18-week data structures and algorithms curriculum and records
+it: 324 problems, a 20-row pattern cue table, and a `+3d / +10d / +30d` review
+schedule for every problem you got stuck on.
+
+Self-hosted, single file of state, no account, no tracking, no dependencies.
+Python CLI plus a local web UI, with light and pitch-dark themes.
 
 It does not invent a study method. The curriculum has one; this makes following
 it cost nothing.
+
+**Why spaced repetition for coding interviews.** Solving a problem once and
+moving on feels productive and does not last. Re-solving the ones you failed, at
+widening intervals, is what moves a pattern from "I read the solution" to "I can
+reach for it cold". The schedule here is the curriculum's own, and the tool
+exists so that following it costs nothing.
+
+### What it does
+
+- **Spaced repetition / SRS scheduling.** Failed problems return at 3, 10 and 30
+  days. Solved cold, they do not return. Fail again at any rung and you drop to
+  the bottom: the point is to re-earn the spacing, not resume it.
+- **An 18-week DSA curriculum**, 324 problems across foundations, core, reps and
+  stretch tiers, in a fixed order that teaches base patterns before hard
+  variants.
+- **A cue table**: what the problem *says*, mapped to the pattern to reach for.
+  Self-testable, answers hidden by default.
+- **An interview pool** of 390 problems merged from five well-known lists
+  (below), with a weighted random draw.
+- **The three metrics the curriculum names**: cold re-solve rate at 30 days,
+  time to correct approach, and a mistake-class histogram. No streaks and no
+  problems-solved counter, on purpose.
+- **A configurable daily load**, if the curriculum's own pace is wrong for you.
+
+### Keywords
+
+leetcode, spaced repetition, SRS, DSA, data structures and algorithms, coding
+interview preparation, technical interview prep, algorithm practice, NeetCode
+150, Blind 75, LeetCode 75, Top Interview 150, Top 100 Liked, Striver A2Z,
+SDE sheet, FAANG interview, active recall, retrieval practice, interleaving,
+study planner, problem tracker, review scheduler, anki for leetcode, self-hosted,
+python, cli, local-first, no-tracking
 
 ## Install
 
@@ -69,9 +105,31 @@ lcsr undo 209                    # retract the most recent attempt
 lcsr stats                       # the three metrics the curriculum names
 lcsr cues                        # self-test the cue table; --answers to check
 lcsr week 5                      # one week's blocks, with progress
+lcsr config                      # show the daily load
+lcsr config --core 3 --total 5   # change it; `--core default` clears one
 ```
 
 Mistake classes: `off-by-one`, `invariant`, `edge-case`, `no-pattern`.
+
+### The daily load
+
+By default you get what the curriculum prescribes for the week you are on:
+roughly 4 to 5 new problems a day in weeks 1 to 3, 3 a day after that, plus
+however many re-solves fall due. Due re-solves are never capped, because the
+curriculum counts them as additional and mandatory.
+
+Change any of it in **Settings**, or from the CLI:
+
+```bash
+lcsr config --foundations 1 --core 2   # per tier
+lcsr config --total 4                  # or cap the whole day
+lcsr config --reset                    # back to the curriculum's own load
+```
+
+Leave a tier unset to follow the curriculum. `0` is a real instruction and stops
+that tier being issued at all, which is not the same thing. When a total cap
+bites, reps are cut first, then foundations, then core, which is the
+curriculum's own order for when you are moving too fast.
 
 ## How it works
 
@@ -93,19 +151,32 @@ There is no streak counter and no problems-solved metric. The curriculum names
 that one as the weakest predictor of interview performance, and the easiest to
 inflate.
 
-## The frequently-asked pool
+## The interview pool
 
-A separate **Interview pool** tab: 363 unique problems merged from Top Interview 150,
-LeetCode 75, Top 100 Liked and Striver's A2Z, with a weighted lucky draw.
+A separate **Interview pool** tab: 390 unique problems merged from five public
+lists, with a weighted lucky draw.
+
+| List | Problems |
+|---|---|
+| [NeetCode 150](https://neetcode.io/practice) | 150 |
+| [Top Interview 150](https://leetcode.com/studyplan/top-interview-150/) | 150 |
+| [Top 100 Liked](https://leetcode.com/studyplan/top-100-liked/) | 100 |
+| [LeetCode 75](https://leetcode.com/studyplan/leetcode-75/) | 75 |
+| [Striver A2Z](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/) | 251 |
+
+The draw is weighted by how many lists a problem appears on, so the eight that
+all five agree about come up most and the 212 that only one list carries come up
+least.
 
 It is deliberately *not* merged into the curriculum, and it does not change the
-322 totals or any metric. The only crossing point is read-only: each problem
+324 totals or any metric. The only crossing point is read-only: each problem
 shows whether it is already in your curriculum and whether you have logged it,
 so a draw can skip what you have covered.
 
 Deduplication is by LeetCode frontend id, the only stable key (titles repeat,
-slugs change). 599 raw entries collapse to 363: A2Z alone lists 18 problems
-under two topics, and the four lists overlap heavily.
+slugs change). 749 raw entries collapse to 390, because the lists overlap
+heavily and A2Z files 18 problems under two to four topics each (274 entries for
+251 problems).
 
 ```bash
 python tools/build_frequent.py     # refetch and rebuild the pool

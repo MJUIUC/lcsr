@@ -13,6 +13,7 @@ import json
 import pytest
 
 from lcsr import settings as cfg
+from lcsr import store
 from lcsr.settings import COUNTED, Settings, allowance, daily_quota
 
 WEEKS = range(1, 17)
@@ -155,7 +156,7 @@ def test_blank_and_none_both_mean_follow_the_curriculum():
 
 
 def test_round_trip_through_the_file(tmp_path, monkeypatch):
-    monkeypatch.setattr(cfg, "FILE", tmp_path / "settings.json")
+    monkeypatch.setattr(store, "HOME", tmp_path)
     assert cfg.load().is_default()
     cfg.update(core=4, daily_total=6)
     assert cfg.load() == Settings(core=4, daily_total=6)
@@ -168,15 +169,15 @@ def test_round_trip_through_the_file(tmp_path, monkeypatch):
 def test_a_corrupt_settings_file_falls_back_instead_of_breaking(tmp_path, monkeypatch):
     """Settings are a preference, not a record. A hand-edited file that no longer
     parses must not take down every read path the way a corrupt log rightly does."""
+    monkeypatch.setattr(store, "HOME", tmp_path)
     p = tmp_path / "settings.json"
     p.write_text("{not json", encoding="utf-8")
-    monkeypatch.setattr(cfg, "FILE", p)
     assert cfg.load().is_default()
     p.write_text(json.dumps({"core": -5}), encoding="utf-8")
     assert cfg.load().is_default()
 
 
 def test_update_rejects_an_unknown_key(tmp_path, monkeypatch):
-    monkeypatch.setattr(cfg, "FILE", tmp_path / "settings.json")
+    monkeypatch.setattr(store, "HOME", tmp_path)
     with pytest.raises(ValueError):
         cfg.update(stretch=3)

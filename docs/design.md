@@ -5,7 +5,7 @@ loop and its own spacing rule; this tool's job is to **run that loop and record
 it**, not to invent a better one.
 
 Superseded: an earlier draft scheduled *patterns* and drew a fresh unseen problem
-each review. Dropped on request — repetition here is re-solving **the same
+each review. Dropped on request, repetition here is re-solving **the same
 problem**, which is what the curriculum specifies. The reasoning behind the
 earlier draft is kept in [`evidence.md`](evidence.md) §4b, since it is the one
 place this tool knowingly departs from the strongest evidence.
@@ -19,7 +19,7 @@ place this tool knowingly departs from the strongest evidence.
 Taken from the PDF, not invented here:
 
 - **Spacing:** a failed problem returns at **+3d, +10d, +30d**. Solved problems
-  do not return except in the W17–18 consolidation weeks.
+  do not return except in the W17-18 consolidation weeks.
 - **The daily loop:** name the pattern + target complexity aloud (~2 min) →
   25-minute timer, no editorial/hints/LLM → solved, or stuck → if stuck, read the
   editorial *once*, close it, walk away five minutes, re-implement from a blank
@@ -51,7 +51,7 @@ visibly misfire.
 
 ## Data
 
-Curriculum (in-repo, read-only) — already extracted and verified:
+Curriculum (in-repo, read-only), already extracted and verified:
 
 ```
 curriculum/problems.json   314 problems: id, title, hard, tier, week, block,
@@ -67,7 +67,7 @@ Your state (outside the repo, `~/.lcsr/`, plain JSON):
 
 ```
 state.json    per problem: status, attempts[], next_due, box (0..3)
-log.jsonl     append-only, one line per attempt — the only real record
+log.jsonl     append-only, one line per attempt, the only real record
 ```
 
 Append-only log is the point: the three metrics are all computed from it, so
@@ -86,8 +86,8 @@ lcsr stats            # the three metrics + mistake histogram
 lcsr week [n]         # show a week's blocks
 ```
 
-`lcsr start` deliberately shows the **cue** and not the pattern name — that is
-the whole of weeks 17–18 in miniature, and it costs nothing to do all along.
+`lcsr start` deliberately shows the **cue** and not the pattern name, that is
+the whole of weeks 17-18 in miniature, and it costs nothing to do all along.
 
 ## Scheduling, in full
 
@@ -106,7 +106,7 @@ and silently corrupts the 30-day metric.
 
 ## Not doing
 
-- No streaks, no problems-solved counter — the curriculum explicitly names that
+- No streaks, no problems-solved counter, the curriculum explicitly names that
   metric as the weakest predictor, and it is the one that tempts inflation.
 - No solution storage. Write in a plain editor; the tool records outcomes only.
 - No auto-fetching LeetCode. Titles + ids are enough to build the URL.
@@ -151,11 +151,11 @@ one per front-end.
 
 ## Additions to the curriculum
 
-Eight problems added in `src/lcsr/data/problems_extra.json`, merged over the
-PDF's 314 (322 total). Kept in a second file for the same reason the cue table
+Ten problems added in `src/lcsr/data/problems_extra.json`, merged over the
+PDF's 314 (324 total). Kept in a second file for the same reason the cue table
 is: `problems.json` is regenerated from the PDF and its parser asserts the tier
 counts the document states for itself, so hand-edits there would be wiped or
-would break the assertion. Neither file is user state — that is `custom.json`.
+would break the assertion. Neither file is user state, that is `custom.json`.
 
 The finding behind them: in three places the curriculum includes the **advanced**
 member of a pattern family while the base exemplar is missing, which inverts its
@@ -167,8 +167,15 @@ own Tier 1 rule of "one exemplar per distinct cue".
 | Index-as-hash | 287 Find the Duplicate (W16 core), 41 (stretch) | **448** (W3 core), **442**, **645** (W3 reps) |
 | Fast exponentiation | nothing | **50** (W16 core), **29** (W16 rep) |
 | Binary search in a design problem | 704 etc. (W6) | **981** (W6 core) |
+| Rearrangement by reversal | 344 Reverse String (foundations) | **189**, **151** (foundations, directly after 344) |
 
-152's difficulty is that you track the running min alongside the max — an
+189 and 151 are the two standard applications of the reversal 344 teaches, and
+344 without them teaches a primitive with nothing to apply it to. 189 is the
+pure form (reverse everything, then reverse the two parts); 151 is the same
+move with tokenisation on top, so it goes second. Both are marked
+`immediately_after_prev`, which is what that flag is for.
+
+152's difficulty is that you track the running min alongside the max, an
 insight that only lands if you already own the max-sum version. Likewise 287 has
 both a Floyd's-cycle and an index-marking solution, and without the base pattern
 only the first door is visible.
@@ -190,14 +197,14 @@ The daily path never exercises these; they appear only after you stop using the
 tool for a while, which is exactly when a silently wrong queue does most damage.
 
 **The daily mix follows progress, not the calendar.** `current_week()` counts
-elapsed days — right for reporting, wrong for choosing what to hand you. It
+elapsed days, right for reporting, wrong for choosing what to hand you. It
 reported week 6 after a five-week absence, and `allowance(6)` sets foundations to
 0, so 42 unattempted foundations became **permanently unreachable**: weeks only
 ever advance. `intake_week()` now derives the mix from the next unattempted core
 problem, so falling behind slows the schedule rather than skipping material. The
 gap between the two is reported as drift.
 
-**New problems never stack.** A skipped day is skipped, not banked — the intake
+**New problems never stack.** A skipped day is skipped, not banked, the intake
 is per-day, so three days away does not produce a quadruple-size day.
 
 **Re-solves do carry forward, capped.** They stay due and age, ordered most
@@ -207,13 +214,13 @@ the day stays finishable, appearing as those clear.
 
 **Past `BACKLOG_PAUSE = 12` outstanding, new problems stop being issued.** The
 curriculum's own rule when the cold re-solve rate slips is "you are moving too
-fast — cut Reps and Stretch before you cut Core, and raise the number of spaced
+fast, cut Reps and Stretch before you cut Core, and raise the number of spaced
 re-solves". Stacking new material on an unworked backlog is what makes that
 number worse. A paused day is explicitly *not* a finished day.
 
 Also closed: attempts cannot be logged for a future date, and a corrupt log line
-raises an error naming the file and line rather than a bare `JSONDecodeError` —
-skipping it silently would drop real attempts and change every metric.
+raises an error naming the file and line rather than a bare `JSONDecodeError`.
+Skipping it silently would drop real attempts and change every metric.
 
 ---
 
@@ -226,7 +233,7 @@ returned 33 confirmed findings and 6 refuted. The load-bearing ones:
 `"\n"`, but `raw_entries()` read them back with `str.splitlines()`, which also
 breaks on U+2028, U+2029, U+0085, `\v`, `\f` and `\x1c`–`\x1e`. Word emits U+2028
 for a soft line break, so pasting a note from a document wrote one record and
-read back two unparseable halves — killing every read path, CLI and UI, with an
+read back two unparseable halves, killing every read path, CLI and UI, with an
 error naming a line number that was not the real boundary.
 
 **A frequent-only problem coming due killed the web UI.** `enrich()` used the
@@ -242,7 +249,7 @@ that appears in both the curriculum and the frequent pool.
 
 **Foundations were stranded a second way.** The earlier fix moved the tier mix off
 the calendar, but `intake_week()` is derived from *core* progress and
-`allowance()` zeroes foundations from week 4 — so finishing weeks 1–3's core
+`allowance()` zeroes foundations from week 4, so finishing weeks 1-3's core
 stranded all 42 remaining foundations exactly as the calendar bug had. One tier's
 progress no longer zeroes another's.
 
@@ -254,8 +261,8 @@ atomically via a temp file and `os.replace`.
 
 **Ordering compared timestamps as text.** `ts` carries a UTC offset, so after a
 DST fall-back `01:30+01:00` sorted after `02:00+02:00` despite happening earlier
-— and since a retraction cancels whatever sorts last, undo cancelled the wrong
-record. Ordering is now by absolute instant.
+, and since a retraction cancels whatever sorts last, undo cancelled the
+wrong record. Ordering is now by absolute instant.
 
 Also: `amend()` no longer drops the note, mistake class and `approach_min` it was
 not asked to change; `lcsr log 42 42` no longer slips a duplicate past the
@@ -272,28 +279,28 @@ blank page.
 
 There were two, and they disagreed constantly.
 
-**Calendar week** — elapsed days since the first attempt, over seven. **Progress
-week** — where you actually are in the material. The calendar drove the labels
+**Calendar week**: elapsed days since the first attempt, over seven. **Progress
+week**: where you actually are in the material. The calendar drove the labels
 while progress drove the content, which produced two nonsense readings:
 
 - Finish week 1's seven core problems in two days and every day afterwards was
-  labelled *"running ahead of schedule"* — permanently, because the calendar can
+  labelled *"running ahead of schedule"*, permanently, because the calendar can
   never catch up to a faster pace.
 - Take five weeks off and the calendar reported week 6 while progress sat at week
   1, so the tier mix was chosen for week 6 and zeroed the foundations allowance.
 
 The second one was a real defect and got fixed by keying the mix to progress. But
-that left the calendar week doing nothing except generating the first reading —
+that left the calendar week doing nothing except generating the first reading,
 so it is gone. `current_week()` is deleted; `intake_week()` is the only week.
 Progress cannot disagree with progress.
 
 Elapsed time is still reported, but descriptively rather than prescriptively:
 
-- **pace** — new problems started per day over a trailing window, divided by days
+- **pace**: new problems started per day over a trailing window, divided by days
   actually elapsed so a young log does not read as slow;
-- **projection** — remaining required problems at that rate, and the date that
+- **projection**: remaining required problems at that rate, and the date that
   implies (stretch is optional and custom additions are yours, so neither counts);
-- **idle_days** — days since the last attempt, surfaced past three, since what
+- **idle_days**: days since the last attempt, surfaced past three, since what
   actually grows while you are away is the re-solve backlog, not the queue.
 
 The 18 weeks were never a deadline. They were the document's estimate at its own

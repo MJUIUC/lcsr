@@ -799,7 +799,7 @@
  },
  {
   "id": 303,
-  "title": "Range Sum Query – Immutable",
+  "title": "Range Sum Query - Immutable",
   "hard": false,
   "immediately_after_prev": false,
   "tier": "core",

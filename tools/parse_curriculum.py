@@ -137,6 +137,10 @@ def no_em_dash(rows):
     this script rewrites both files from the PDF and would silently put every one
     of them back. It has to happen here, at extraction, or not at all.
 
+    En dashes go to plain hyphens for the same reason, and one of them is not
+    cosmetic: the PDF writes "Range Sum Query \u2013 Immutable" where LeetCode
+    writes a hyphen, so the title shown in the UI did not match the real one.
+
     Every em dash in this document separates a title from its subtitle
     ("Trees I - traversal, and ...") or a pattern from its elaboration, so a
     colon is the right substitution for all of them. If a future edition uses one
@@ -144,6 +148,7 @@ def no_em_dash(rows):
     *_extra.json files instead.
     """
     return [{k: (v.replace(' \u2014 ', ': ').replace('\u2014', ':')
+                 .replace('\u2013', '-')
                  if isinstance(v, str) else v)
              for k, v in r.items()} for r in rows]
 

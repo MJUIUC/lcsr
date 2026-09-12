@@ -344,7 +344,7 @@ def curriculum_view() -> dict:
         blocks.setdefault(p["block"], []).append(p)
     groups.append({
         "key": "foundations", "title": "Tier 0 · Foundations",
-        "subtitle": "weeks 1–3 · prerequisite fluency, not curriculum",
+        "subtitle": "weeks 1-3 · prerequisite fluency, not curriculum",
         "progress": progress(found),
         "blocks": [{"title": k, "problems": v} for k, v in blocks.items()],
     })
@@ -364,7 +364,7 @@ def curriculum_view() -> dict:
         })
 
     groups.append({
-        "key": "consolidation", "title": "Weeks 17–18 · Consolidation",
+        "key": "consolidation", "title": "Weeks 17-18 · Consolidation",
         "subtitle": "no new problems · random draw across all sixteen blocks, "
                     "the failed-problem queue, two timed mocks per week",
         "progress": {"done": 0, "total": 0}, "blocks": [], "note": True,
@@ -373,7 +373,7 @@ def curriculum_view() -> dict:
     stretch = [deco(p) for p in allp if p["tier"] == "stretch"]
     groups.append({
         "key": "stretch", "title": "Tier 3 · Stretch",
-        "subtitle": "weeks 12–18 · only for a hard bar · cut this first",
+        "subtitle": "weeks 12-18 · only for a hard bar · cut this first",
         "progress": progress(stretch),
         "blocks": [{"title": "", "problems": stretch}],
     })

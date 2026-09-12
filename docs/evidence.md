@@ -2,9 +2,9 @@
 
 Gathered 2026-09-01. Every claim below is tagged with how well I could verify it:
 
-- **[primary]** — read the paper/meta-analysis or its abstract directly.
-- **[secondary]** — from a review, wiki, or search summary; not read at source.
-- **[inference]** — my reasoning from the above, not a finding.
+- **[primary]**: read the paper/meta-analysis or its abstract directly.
+- **[secondary]**: from a review, wiki, or search summary; not read at source.
+- **[inference]**: my reasoning from the above, not a finding.
 
 The point of this document is to be *falsifiable*. If a claim here is wrong, the
 design in `design.md` should change.
@@ -14,15 +14,15 @@ design in `design.md` should change.
 ## 1. Spacing works, and there is an optimal gap
 
 **[primary]** Cepeda, Pashler, Vul, Wixted & Rohrer (2006), *Psychological
-Bulletin* — meta-analysis of 839 assessments of distributed practice across 317
+Bulletin*, meta-analysis of 839 assessments of distributed practice across 317
 experiments in 184 articles. Distributed practice beats massed practice robustly.
 
-**[primary]** Cepeda et al. (2008), *Psychological Science* 19(11), 1095–1102,
+**[primary]** Cepeda et al. (2008), *Psychological Science* 19(11), 1095-1102,
 "Spacing Effects in Learning: A Temporal Ridgeline of Optimal Retention". The
 inter-study interval and the retention interval interact. Retention as a function
 of gap is an **inverted U**: increasing the gap helps, then hurts. The optimal gap
 is roughly **20% of the target test delay** at delays of a few weeks, falling to
-about **5–10%** at a one-year delay.
+about **5-10%** at a one-year delay.
 
 **[secondary]** Expanding intervals outperformed uniform intervals.
 
@@ -33,12 +33,12 @@ about **5–10%** at a one-year delay.
 
 ---
 
-## 2. Forgetting is loss of access, not loss of storage — and difficulty is the point
+## 2. Forgetting is loss of access, not loss of storage, and difficulty is the point
 
 **[primary]** Bjork & Bjork (1992), *New Theory of Disuse*. Two strengths:
 
-- **Storage strength** — how well entrenched an item is. Never decreases.
-- **Retrieval strength** — how accessible it is *right now*. Decays.
+- **Storage strength**: how well entrenched an item is. Never decreases.
+- **Retrieval strength**: how accessible it is *right now*. Decays.
 
 Only retrieval strength shows up in performance; only storage strength is
 learning. Critically: **the lower the retrieval strength at the moment of a
@@ -54,7 +54,7 @@ retrieval practice all make practice feel worse and learning end up better.
 
 ---
 
-## 3. Retrieval practice is strong for facts — and *does not clearly transfer to problem solving*
+## 3. Retrieval practice is strong for facts, and *does not clearly transfer to problem solving*
 
 This is the most important finding for this project, and it cuts against the
 obvious design.
@@ -75,15 +75,15 @@ Retrieval practice is more likely to transfer when learners **get feedback** and
 when they must genuinely retrieve rather than recognise.
 
 **[secondary]** Carpenter, Pan & Butler (2022), *Nature Reviews Psychology*,
-"The science of effective learning with spacing and retrieval practice" — the
+"The science of effective learning with spacing and retrieval practice", the
 current authoritative overview. **I could not read the full text (paywalled), so
 I am making no specific numerical claims from it.** It belongs on the reading
 list before implementation.
 
 > **Design consequence, and it is a big one.** "Re-solve the same LeetCode problem
 > on an Anki schedule" is the design with the *weakest* evidential support. It is
-> retrieval practice over procedural material — precisely the case that failed to
-> replicate — and it optimises recall of one specific solution, which is the
+> retrieval practice over procedural material, precisely the case that failed to
+> replicate, and it optimises recall of one specific solution, which is the
 > known failure mode ("I memorised the solution and still bombed the interview").
 
 ---
@@ -96,11 +96,11 @@ list before implementation.
 *Journal of Educational Psychology*. Mixing problem *kinds* within an assignment
 beats blocking them. The mechanism is the **discriminative-contrast hypothesis**:
 interleaving forces you to *choose a strategy on the basis of the problem*, which
-blocked practice never requires — under blocking you already know which method to
+blocked practice never requires, under blocking you already know which method to
 use because the header of the exercise set told you.
 
 **[primary]** The error analysis is the killer detail: in the blocked condition,
-**most test errors were strategy-selection errors** — picking a method belonging
+**most test errors were strategy-selection errors**: picking a method belonging
 to one of the *other* problem types. That did not happen under interleaving.
 
 **[inference]** This is exactly the LeetCode failure mode. In an interview nobody
@@ -117,7 +117,7 @@ produces more general, more robust performance.
 
 > **Design consequence.** The repetition should be of the *pattern*, instantiated
 > by a **different problem each time**. Re-solving the identical problem is
-> constant practice — the condition that loses.
+> constant practice, the condition that loses.
 
 ### 4c. Worked examples beat flailing, for novices
 
@@ -133,7 +133,7 @@ explanations become redundant.
 
 > **Design consequence.** A failed attempt should route you to a worked solution,
 > not to "try harder". And that support must **fade as your stability on that
-> pattern grows** — otherwise it flips from helpful to harmful.
+> pattern grows**: otherwise it flips from helpful to harmful.
 
 ### 4d. Successive relearning
 
@@ -151,18 +151,18 @@ relearning sessions appear to capture most of the benefit.
 ## 5. Which scheduler: FSRS, not SM-2
 
 **[primary]** The open FSRS benchmark (expertium.github.io/Benchmark.html):
-16 algorithms — FSRS v3–v6, HLR, Ebisu v2, DASH, ACT-R, GRU/LSTM/RWKV, SM-2, and
-an average baseline — over **~727 million reviews from ~10,000 users** (~350M
+16 algorithms, FSRS v3–v6, HLR, Ebisu v2, DASH, ACT-R, GRU/LSTM/RWKV, SM-2, and
+an average baseline, over **~727 million reviews from ~10,000 users** (~350M
 after filtering). FSRS-6 beats Anki's SM-2 on log loss for **99.6%** of
-collections. **[secondary]** roughly 20–30% fewer reviews for equal retention.
+collections. **[secondary]** roughly 20-30% fewer reviews for equal retention.
 
 **Stated caveats, which matter:**
 - SM-2 was never designed to emit probabilities, so converting it into a
-  probabilistic predictor required assumptions — the comparison is not fully fair.
+  probabilistic predictor required assumptions, the comparison is not fully fair.
 - SuperMemo's current proprietary algorithms could not be benchmarked.
 - Rankings shift with metric and binning choices.
 - **[inference]** An RWKV sequence model beat everything, which tells you the
-  DSR model is not the ceiling — but it is not shipping in a small CLI.
+  DSR model is not the ceiling, but it is not shipping in a small CLI.
 
 FSRS models three per-item quantities (**DSR**): Difficulty, Stability,
 Retrievability, with power-law decay, and picks the interval where predicted
@@ -177,7 +177,7 @@ your optimal retention. UTC only. Requires **Python 3.10+**.
 **Desired retention.** **[primary]** The optimum is defined as the value that
 minimises **workload ÷ knowledge**, and is U-shaped: raise it and you review more;
 lower it too far and you forget more and pay in relearning. **[secondary]** Often
-cited around **0.85–0.90**; py-fsrs defaults to **0.90**. The honest answer is
+cited around **0.85-0.90**; py-fsrs defaults to **0.90**. The honest answer is
 that it is personal and the optimizer computes it from your data.
 
 ---
@@ -185,14 +185,14 @@ that it is personal and the optimizer computes it from your data.
 ## 6. The biggest threat to this whole design
 
 **[inference, and I want this on the record]** FSRS's parameters were fit on
-**flashcards** — a fixed cue paired with a fixed response. This design deliberately
+**flashcards**: a fixed cue paired with a fixed response. This design deliberately
 makes the item a **pattern** retrieved through a **different problem every time**.
 That violates FSRS's modelling assumption. The stability of a *schema* under
 varied retrieval is not obviously the same process as the stability of a fixed
 cue–response pair, and the 727M-review benchmark says nothing about it.
 
-I do not think this sinks the design — the DSR model is generic enough that the
-shape is plausible — but it means **the default parameters are an extrapolation,
+I do not think this sinks the design, the DSR model is generic enough that the
+shape is plausible, but it means **the default parameters are an extrapolation,
 not a result.**
 
 The mitigation is the thing that makes this project scientific rather than merely
@@ -204,11 +204,11 @@ and the optimizer refits. See "Calibration" in the design.
 
 ## Reading list before implementation
 
-- Carpenter, Pan & Butler (2022), *Nature Reviews Psychology* — full text.
-- Cepeda et al. (2008) — the ridgeline figure, for target-date mode.
-- Rohrer, Dedrick & Stershic (2015) — the error-analysis tables.
+- Carpenter, Pan & Butler (2022), *Nature Reviews Psychology*, full text.
+- Cepeda et al. (2008), the ridgeline figure, for target-date mode.
+- Rohrer, Dedrick & Stershic (2015), the error-analysis tables.
 - "A Stochastic Shortest Path Algorithm for Optimizing Spaced Repetition
-  Scheduling" — the basis of FSRS's optimal-retention computation.
+  Scheduling", the basis of FSRS's optimal-retention computation.
 
 ## Sources
 

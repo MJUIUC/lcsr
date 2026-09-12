@@ -73,7 +73,7 @@ def test_custom_problem_merges_and_overrides():
 def test_custom_can_override_a_packaged_problem():
     cur.add(1, "Two Sum", week=4, block="Moved")
     assert cur.get(1)["week"] == 4
-    assert len(cur.problems()) == 322          # override, not an extra row
+    assert len(cur.problems()) == 324          # override, not an extra row
 
 
 def test_unknown_id_is_rejected():
