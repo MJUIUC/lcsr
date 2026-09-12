@@ -20,6 +20,7 @@ from pathlib import Path
 
 from . import curriculum as cur
 from . import settings as cfg
+from . import store
 from .plan import (curriculum_view, export_csv, foundations_left, frequent_view,
                    history_view, intake_week, todays_plan)
 from .schedule import SOLVED, STUCK
@@ -127,6 +128,12 @@ class Handler(BaseHTTPRequestHandler):
     # A handler that blocks forever on a short body ties up a thread for good.
     timeout = 15
 
+    # Flipped on by the serverless entrypoint. When true there is no writable
+    # disk, so the client posts its own state with every request and gets back
+    # the records to persist. The local server leaves this false and keeps
+    # reading and writing ~/.lcsr exactly as before.
+    STATELESS = False
+
     def log_message(self, *a):        # keep the terminal quiet
         pass
 
@@ -145,6 +152,16 @@ class Handler(BaseHTTPRequestHandler):
         return origin.split("://")[-1] == host
 
     def _send(self, code, body, ctype="application/json"):
+        if isinstance(body, dict):
+            body = {**body, "stateless": self.STATELESS}
+            mem = getattr(self, "_mem", None)
+            if mem is not None:
+                patch = mem.patch()
+                if patch:
+                    # What the browser must apply to its own copy. Log records
+                    # are appended, never replaced, so its copy stays the same
+                    # append-only jsonl the file would have been.
+                    body["state_patch"] = patch
         raw = body if isinstance(body, bytes) else json.dumps(body).encode()
         self.send_response(code)
         self.send_header("Content-Type", ctype)
@@ -220,7 +237,36 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(400, {"error": "bad json"})
         if not isinstance(body, dict):
             return self._send(400, {"error": "body must be a JSON object"})
+        token = None
+        if self.STATELESS or "state" in body:
+            self._mem = store.MemoryBackend.from_payload(body.get("state"))
+            token = store.use(self._mem)
         try:
+            return self._post_routes(body)
+        finally:
+            if token is not None:
+                store.release(token)
+
+    # /api/settings is the one path that both reads and writes, so the payload
+    # decides. Routing it by path alone made every save look like a read: it
+    # answered with the old values and saved nothing.
+    SETTING_KEYS = ("foundations", "core", "reps", "daily_total", "reset")
+    READ_PATHS = ("/api/plan", "/api/curriculum", "/api/history",
+                  "/api/frequent", "/api/cues")
+
+    def _is_read(self, body) -> bool:
+        if self.path in self.READ_PATHS:
+            return True
+        return (self.path == "/api/settings"
+                and not any(k in body for k in self.SETTING_KEYS))
+
+    def _post_routes(self, body):
+        try:
+            # The read endpoints answer a POST too, because that is the only way
+            # a stateless client can hand over its state. Same code, same shapes.
+            if self._is_read(body):
+                q = f"?date={body['date']}" if body.get("date") else ""
+                return self._get(urlparse(self.path + q))
             if self.path == "/api/log":
                 return self._send(200, self._log(body))
             if self.path == "/api/add":

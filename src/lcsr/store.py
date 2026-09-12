@@ -6,6 +6,7 @@ nothing can drift out of sync, and the scheduling rule can be changed later
 without invalidating the history.
 """
 
+import contextvars
 import json
 import os
 import tempfile
@@ -53,6 +54,127 @@ def atomic_write(path, text: str) -> None:
         raise
 
 
+# --- where the three pieces of user state live -----------------------------
+#
+# There are three: the log, the problems you added, and the daily-load overrides.
+# Locally they are files under ~/.lcsr. On a serverless deploy there is no
+# writable disk at all, so the browser holds them and posts them with each
+# request. Nothing above this line knows the difference: plan.py, schedule.py and
+# settings.py all operate on lists and dicts either way.
+
+class FileBackend:
+    """~/.lcsr. What the CLI and `lcsr serve` always use.
+
+    Reads the module-level paths on every call rather than capturing them, so the
+    monkeypatching every test does (store.LOG, curriculum.CUSTOM) keeps working.
+    """
+
+    stateless = False
+
+    def read_log(self) -> str:
+        return LOG.read_text(encoding="utf-8") if LOG.exists() else ""
+
+    def append_log(self, entry: dict) -> None:
+        HOME.mkdir(parents=True, exist_ok=True)
+        with LOG.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+    def read_custom(self) -> list[dict]:
+        from . import curriculum          # late: curriculum imports this module
+        f = curriculum.CUSTOM
+        return json.loads(f.read_text(encoding="utf-8")) if f.exists() else []
+
+    def write_custom(self, rows: list[dict]) -> None:
+        from . import curriculum
+        atomic_write(curriculum.CUSTOM, json.dumps(rows, indent=1, ensure_ascii=False))
+
+    def read_settings(self) -> dict:
+        f = HOME / "settings.json"
+        return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+
+    def write_settings(self, data: dict) -> None:
+        atomic_write(HOME / "settings.json", json.dumps(data, indent=1) + "\n")
+
+
+@dataclass
+class MemoryBackend:
+    """State supplied by the client, for one request, and never retained.
+
+    `appended` collects the log records a write produced. They go back in the
+    response for the browser to persist, which is what keeps the log append-only
+    on the client too: it accumulates the same jsonl the file would have, undo
+    records and pass markers included, so an export still feeds the CLI.
+    """
+
+    stateless = True
+    log: list[dict] = field(default_factory=list)
+    custom: list[dict] = field(default_factory=list)
+    settings: dict = field(default_factory=dict)
+    appended: list[dict] = field(default_factory=list)
+    custom_written: bool = False
+    settings_written: bool = False
+
+    @classmethod
+    def from_payload(cls, state) -> "MemoryBackend":
+        state = state if isinstance(state, dict) else {}
+        log = state.get("log")
+        custom = state.get("custom")
+        settings = state.get("settings")
+        return cls(log=list(log) if isinstance(log, list) else [],
+                   custom=list(custom) if isinstance(custom, list) else [],
+                   settings=dict(settings) if isinstance(settings, dict) else {})
+
+    def read_log(self) -> str:
+        return "\n".join(json.dumps(r, ensure_ascii=False) for r in self.log)
+
+    def append_log(self, entry: dict) -> None:
+        self.log.append(entry)
+        self.appended.append(entry)
+
+    def read_custom(self) -> list[dict]:
+        return list(self.custom)
+
+    def write_custom(self, rows: list[dict]) -> None:
+        self.custom = list(rows)
+        self.custom_written = True
+
+    def read_settings(self) -> dict:
+        return dict(self.settings)
+
+    def write_settings(self, data: dict) -> None:
+        self.settings = dict(data)
+        self.settings_written = True
+
+    def patch(self) -> dict:
+        """What the client must apply to its own copy."""
+        out: dict = {}
+        if self.appended:
+            out["log_append"] = self.appended
+        if self.custom_written:
+            out["custom"] = self.custom
+        if self.settings_written:
+            out["settings"] = self.settings
+        return out
+
+
+# A ContextVar, not a global: it is per-thread and per-task, so the threaded
+# local server and a serverless invocation both get isolation without a lock.
+# Defaulting to None means the CLI needs no changes whatsoever.
+_ACTIVE: contextvars.ContextVar = contextvars.ContextVar("lcsr_backend", default=None)
+
+
+def backend():
+    return _ACTIVE.get() or FileBackend()
+
+
+def use(b):
+    return _ACTIVE.set(b)
+
+
+def release(token) -> None:
+    _ACTIVE.reset(token)
+
+
 @dataclass
 class ProblemState:
     pid: int
@@ -66,9 +188,7 @@ class ProblemState:
 
 def append(entry: dict) -> None:
     with LOCK:
-        HOME.mkdir(parents=True, exist_ok=True)
-        with LOG.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        backend().append_log(entry)
 
 
 def raw_entries() -> list[dict]:
@@ -78,8 +198,6 @@ def raw_entries() -> list[dict]:
     replay is order-dependent -- sort by the attempt date, not by insertion, or
     a backfill would be folded in as if it happened last.
     """
-    if not LOG.exists():
-        return []
     rows = []
     # split("\n"), NOT splitlines(): append() terminates records with "\n", but
     # str.splitlines() also breaks on U+2028, U+2029, U+0085, \v, \f and \x1c-\x1e.
@@ -87,7 +205,7 @@ def raw_entries() -> list[dict]:
     # from Word (which emits U+2028 for a soft line break) would be written as one
     # line and read back as two unparseable halves -- permanently bricking every
     # read path, with the error naming a line number that is not the real boundary.
-    for n, ln in enumerate(LOG.read_text(encoding="utf-8").split("\n"), 1):
+    for n, ln in enumerate(backend().read_log().split("\n"), 1):
         if not ln.strip():
             continue
         try:
@@ -95,8 +213,9 @@ def raw_entries() -> list[dict]:
         except json.JSONDecodeError as e:
             # Name the line. Skipping it silently would drop real attempts and
             # quietly change every metric; a raw JSONDecodeError names nothing.
+            where = LOG if not backend().stateless else "the supplied log"
             raise ValueError(
-                f"{LOG}:{n} is not valid JSON ({e.msg}). Fix or delete that line."
+                f"{where}:{n} is not valid JSON ({e.msg}). Fix or delete that line."
             ) from None
     return sorted(rows, key=_order_key)
 

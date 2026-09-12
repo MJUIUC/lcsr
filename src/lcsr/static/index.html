@@ -518,7 +518,7 @@ details.add[open] summary::before{content:"− "}
   <div class="fside">
     <span class="fmade">Made with <span class="heart">&#9829;</span> by Swapnil</span>
     <span class="flinks">
-      <a href="https://github.com/Swapnil-jain/leetcode-srs" target="_blank"
+      <a href="https://github.com/Swapnil-jain/lcsr" target="_blank"
          rel="noopener noreferrer" title="Source on GitHub" aria-label="Source on GitHub">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.96 0-1.32.47-2.39 1.24-3.23-.12-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.18.77.84 1.24 1.91 1.24 3.23 0 4.63-2.8 5.65-5.48 5.95.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 24 12.5C24 5.87 18.63.5 12 .5Z"/></svg>
       </a>
@@ -557,11 +557,53 @@ let showAhead = false;
 const inFlight = new Set();   // ids with a write in progress, so a double-click cannot double-log
 let preview = null;   // plan for a future day, null when viewing today
 
+/* Where your work lives.
+   Locally the server owns ~/.lcsr and the page holds nothing. On the deployed
+   build there is no writable disk, so this browser is the record: the state
+   goes up with every request and the records to persist come back. The server
+   says which mode it is in, so one page serves both. */
+const STATE_KEY = 'lcsr-state';
+const EMPTY_STATE = {log:[], custom:[], settings:{}};
+let STATELESS = false;
+let STATE = {...EMPTY_STATE};
+
+function readState(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(STATE_KEY));
+    if(raw && typeof raw === 'object') return {...EMPTY_STATE, ...raw};
+  }catch(e){}
+  return {...EMPTY_STATE};
+}
+function writeState(){
+  try{ localStorage.setItem(STATE_KEY, JSON.stringify(STATE)); }
+  catch(e){ toast('This browser will not let the page save your progress.'); }
+}
+function applyPatch(pt){
+  if(!pt) return;
+  // Appended, never replaced: the browser accumulates the same append-only
+  // jsonl the file would have, undo records and pass markers included, so an
+  // export still feeds the CLI.
+  if(pt.log_append) STATE.log = STATE.log.concat(pt.log_append);
+  if(pt.custom)     STATE.custom = pt.custom;
+  if(pt.settings)   STATE.settings = pt.settings;
+  writeState();
+}
+
 async function api(p, body){
-  const r = await fetch(p, body ? {method:'POST',
-    headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)} : {});
+  let opts;
+  if(STATELESS){
+    // Read endpoints answer a POST too; it is the only way to hand over state.
+    opts = {method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({...(body || {}), state: STATE})};
+  }else if(body){
+    opts = {method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(body)};
+  }
+  const r = await fetch(p, opts || {});
   const j = await r.json();
+  if(typeof j.stateless === 'boolean') STATELESS = j.stateless;
   if(!r.ok) throw new Error(j.error || 'request failed');
+  applyPatch(j.state_patch);
   return j;
 }
 /* Three-way theme. prefers-color-scheme alone was not enough: someone whose OS
@@ -1167,7 +1209,7 @@ function evidenceNote(){
   const t = EVIDENCE[tab];
   if(!t) return '';
   return `<div class="evid">${t}
-    <a href="https://github.com/Swapnil-jain/leetcode-srs/blob/main/docs/evidence.md"
+    <a href="https://github.com/Swapnil-jain/lcsr/blob/main/docs/evidence.md"
        target="_blank" rel="noopener noreferrer">Read the evidence</a></div>`;
 }
 
@@ -1454,7 +1496,16 @@ document.addEventListener('click', async e=>{
 window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t&&t!==tab) go(t); });
 
 (async ()=>{
-  plan = await api('/api/plan');
+  // One probe decides the mode. If the answer says stateless, load what this
+  // browser has kept and ask again with it; a first visit just gets an empty
+  // log, which is the right answer for a first visit.
+  const probe = await api('/api/plan');
+  if(probe.stateless){
+    STATE = readState();
+    plan = await api('/api/plan');
+  }else{
+    plan = probe;
+  }
   curric = await api('/api/curriculum');
   await ensureData(tab);
   render();

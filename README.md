@@ -253,4 +253,4 @@ silently producing a short list.
 ---
 
 Made with love by [Swapnil](https://github.com/Swapnil-jain)
-· [GitHub](https://github.com/Swapnil-jain/leetcode-srs)
+· [GitHub](https://github.com/Swapnil-jain/lcsr)

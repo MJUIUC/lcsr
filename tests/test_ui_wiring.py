@@ -143,3 +143,12 @@ def test_long_lists_are_bounded():
     the page into an endless scroll that buries whatever follows it."""
     for view in ("function vProgress()", "function vPool()"):
         assert 'class="scrollbox"' in _block(view), view
+
+
+# --- links out ------------------------------------------------------------
+
+def test_outbound_links_point_at_the_current_repo():
+    """The repo has been renamed once already. A stale link in the footer is
+    invisible until someone clicks it and lands on a 404."""
+    stale = re.findall(r'github\.com/[\w-]+/([\w.-]+)', JS + HTML.read_text(encoding="utf-8"))
+    assert set(stale) <= {"lcsr"}, f"links point at {set(stale) - {'lcsr'}}"

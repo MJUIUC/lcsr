@@ -10,7 +10,8 @@ import json
 from functools import cache
 from pathlib import Path
 
-from .store import HOME, LOCK, atomic_write
+from . import store
+from .store import HOME, LOCK
 
 DATA = Path(__file__).parent / "data"
 CUSTOM = HOME / "custom.json"
@@ -53,9 +54,7 @@ def cues() -> list[dict]:
 
 def custom() -> list[dict]:
     """Not cached: the UI adds problems mid-session and must see them at once."""
-    if not CUSTOM.exists():
-        return []
-    return json.loads(CUSTOM.read_text(encoding="utf-8"))
+    return store.backend().read_custom()
 
 
 def problems() -> dict[int, dict]:
@@ -87,7 +86,7 @@ def add(pid: int, title: str, *, tier: str = "custom", week: int | None = None,
             "url": url_override,
         }
         rows.append(entry)
-        atomic_write(CUSTOM, json.dumps(rows, indent=1, ensure_ascii=False))
+        store.backend().write_custom(rows)
     return entry
 
 

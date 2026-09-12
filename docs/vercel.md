@@ -1,6 +1,7 @@
 # Deploying to Vercel
 
-**Status: proposal. Not implemented.**
+**Status: built.** `api/index.py`, `vercel.json` and `tools/build_public.py`
+are in the repo; this is the record of how it works and why.
 
 Everything else from the public-release plan is built and on `main`. This is the
 part that is not: making the tool run without a filesystem, and putting it on
@@ -69,6 +70,12 @@ than capturing it at import, so it follows whatever the store is pointed at.
 A `ContextVar` rather than a global, because it is per-thread and per-task: the
 threaded local server and a serverless invocation both get isolation without a
 lock. Defaulting to `None` means the CLI needs no changes at all.
+
+> **Do not point Vercel at `lcsr.server:Handler`.** Vercel's build error
+> helpfully suggests exactly that, and it works: it builds, it deploys, and every
+> write then targets `~/.lcsr` on a read-only filesystem. Logging fails, reads
+> come back empty, and the UI looks perfectly fine while doing nothing. The
+> entrypoint is `api/index.py`, which is the same handler with `STATELESS` on.
 
 > **Gotcha to comment at the breaking site.** `LOCK` in `store.py` exists because
 > `lcsr serve` is threaded. Under `MemoryLog` it guards a list private to one

@@ -17,7 +17,7 @@ import json
 from dataclasses import asdict, dataclass, replace
 
 from . import store
-from .store import LOCK, atomic_write
+from .store import LOCK
 
 
 def _file():
@@ -113,11 +113,8 @@ def from_dict(d: dict) -> Settings:
 
 def load() -> Settings:
     """Not cached: the UI changes these mid-session and must see them at once."""
-    f = _file()
-    if not f.exists():
-        return Settings()
     try:
-        return from_dict(json.loads(f.read_text(encoding="utf-8")))
+        return from_dict(store.backend().read_settings())
     except (json.JSONDecodeError, ValueError, TypeError):
         # A hand-edited file that no longer parses must not take the tool down.
         # The curriculum's own load is always a safe thing to fall back to.
@@ -126,7 +123,7 @@ def load() -> Settings:
 
 def save(s: Settings) -> Settings:
     with LOCK:
-        atomic_write(_file(), json.dumps(asdict(s), indent=1) + "\n")
+        store.backend().write_settings(asdict(s))
     return s
 
 
