@@ -209,6 +209,10 @@ def describe(week: int, foundations_remaining: int, s: Settings,
         "is_default": s.is_default(),
         "curriculum": base,
         "effective": daily_quota(week, foundations_remaining, s, sprint),
+        # What the NEXT pass would hand you, computed here rather than as "+1"
+        # in the page: a total cap can absorb the bonus entirely, and promising
+        # an increase that will not arrive is worse than not promising one.
+        "effective_next_pass": daily_quota(week, foundations_remaining, s, sprint + 1),
         "max_per_tier": MAX_PER_TIER,
         "week": week,
         "sprint": sprint,
