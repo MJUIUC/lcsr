@@ -248,6 +248,7 @@ silently producing a short list.
 
 - [`docs/evidence.md`](docs/evidence.md): the literature review this started from
 - [`docs/design.md`](docs/design.md): what was built and what was dropped
+- [`docs/vercel.md`](docs/vercel.md): running it without a filesystem, not yet built
 
 ---
 
