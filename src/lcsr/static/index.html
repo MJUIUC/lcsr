@@ -968,6 +968,10 @@ async function refreshAll(){
   if(hist)   hist   = await api('/api/history');
   if(freq){ freq = await api('/api/frequent');
             if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
+  // The settings screen's "you get" column is the EFFECTIVE quota, which depends
+  // on how many foundations are still unattempted. Logging one changes it, so a
+  // loaded settings view goes stale unless it is refetched with everything else.
+  if(load) load = await api('/api/settings');
   if(preview) preview = await api('/api/plan?date=' + preview.date);
   render();
 }
@@ -979,15 +983,26 @@ async function setDate(iso){
   render({top:true});
 }
 
+// What a tab needs fetched before it can render, in ONE place.
+//
+// GOTCHA: go() and the bootstrap used to carry a copy of this list each, and
+// they drifted the moment a tab was added. Settings went into go()'s copy only,
+// so opening Settings worked and RELOADING the page on Settings left `load`
+// null, threw inside vSettings() before first paint, and showed "Could not
+// reach lcsr" on a server that was answering fine. Any new tab goes here, once.
+async function ensureData(t){
+  if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
+  if(t==='progress')              hist   = await api('/api/history');
+  if(t==='pool' && !freq)         await loadFreq();
+  if(t==='cues' && !cues)         cues   = await api('/api/cues');
+  if(t==='settings')              load   = await api('/api/settings');
+}
+
 async function go(t){
   const prev = tab;
   tab = t; location.hash = t;
   try{
-  if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
-  if(t==='progress') hist = await api('/api/history');
-  if(t==='pool' && !freq){ await loadFreq(); }
-    if(t==='cues' && !cues) cues = await api('/api/cues');
-    if(t==='settings') load = await api('/api/settings');
+    await ensureData(t);
   }catch(err){
     tab = prev; location.hash = prev; toast(err.message); return;
   }
@@ -1158,9 +1173,7 @@ window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t
 (async ()=>{
   plan = await api('/api/plan');
   curric = await api('/api/curriculum');
-  if(tab==='progress') hist = await api('/api/history');
-  if(tab==='cues')     cues = await api('/api/cues');
-  if(tab==='pool'){ await loadFreq(); }
+  await ensureData(tab);
   render();
 })().catch(err => {
   // Without this a failed bootstrap left #nav and #view empty -- a blank page
