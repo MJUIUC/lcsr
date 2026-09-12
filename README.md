@@ -20,6 +20,19 @@ moving on feels productive and does not last. Spacing beats massed practice
 across 839 measured comparisons, and expanding intervals beat fixed ones
 ([the evidence](docs/evidence.md)). 3 / 10 / 30 is an expanding schedule.
 
+![Today](docs/screenshots/today.png)
+
+<table>
+<tr>
+<td width="50%"><a href="docs/screenshots/curriculum.png"><img src="docs/screenshots/curriculum.png" alt="Curriculum"></a><br><sub><b>Curriculum.</b> All 324 problems in the order they are taught, week by week.</sub></td>
+<td width="50%"><a href="docs/screenshots/progress.png"><img src="docs/screenshots/progress.png" alt="Progress"></a><br><sub><b>Progress.</b> The three metrics, the mistake histogram, and every attempt.</sub></td>
+</tr>
+<tr>
+<td width="50%"><a href="docs/screenshots/pool.png"><img src="docs/screenshots/pool.png" alt="Interview pool"></a><br><sub><b>Interview pool.</b> 390 problems from five lists, with a weighted draw.</sub></td>
+<td width="50%"><a href="docs/screenshots/settings.png"><img src="docs/screenshots/settings.png" alt="Settings"></a><br><sub><b>Settings.</b> The daily load, repeat passes, and export.</sub></td>
+</tr>
+</table>
+
 ### The order is the other half
 
 A list of problems is not a curriculum. These 324 run in a deliberate sequence:
