@@ -23,10 +23,10 @@
 :root{
   --brand:#ffa116;
   --bg:#f4f4f5; --panel:#fff; --panel2:#fafafa; --ink:#18181b; --mid:#4b4b52;
-  --muted:#7c7c85; --line:#e3e3e6; --line2:#eeeef0;
+  --muted:#6e6e77; --line:#e3e3e6; --line2:#eeeef0;
   --accent:#a55a00; --accent-soft:#fdf1e0;
   --warn:#8a5a00; --warn-soft:#fdf3e2; --danger:#c62b3f; --ok:#00786a;
-  --easy:#00876b; --medium:#8a5a00; --hard:#c62b3f;
+  --easy:#007f65; --medium:#8a5a00; --hard:#c62b3f;
   --pool:#6d38d6; --pool-soft:#f2ecfe;
   --shadow:0 1px 2px rgba(20,20,20,.05),0 6px 20px rgba(20,20,20,.05);
 }
@@ -34,7 +34,7 @@
    so surfaces separate with borders instead and --shadow goes to none. */
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){
   --bg:#000; --panel:#111; --panel2:#171717; --ink:#f2f2f2; --mid:#a6a6ad;
-  --muted:#6f6f78; --line:#262626; --line2:#1d1d1d;
+  --muted:#86868f; --line:#262626; --line2:#1d1d1d;
   --accent:#ffa116; --accent-soft:#2a1b06;
   --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
   --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
@@ -43,7 +43,7 @@
 }}
 :root[data-theme=dark]{
   --bg:#000; --panel:#111; --panel2:#171717; --ink:#f2f2f2; --mid:#a6a6ad;
-  --muted:#6f6f78; --line:#262626; --line2:#1d1d1d;
+  --muted:#86868f; --line:#262626; --line2:#1d1d1d;
   --accent:#ffa116; --accent-soft:#2a1b06;
   --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
   --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
@@ -68,7 +68,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .brand{display:flex;align-items:baseline;gap:11px;text-decoration:none;min-width:0}
 .mark{font-family:ui-serif,Georgia,serif;font-size:19px;font-weight:600;letter-spacing:-.02em;
   flex:none}
-.mark em{font-style:normal;color:var(--brand)}
+.mark em{font-style:normal;color:var(--accent)}
 .full{font-family:ui-serif,Georgia,serif;font-size:14.5px;font-weight:600;letter-spacing:-.01em;
   color:var(--mid);padding-left:11px;border-left:1px solid var(--line);white-space:nowrap}
 .theme{display:flex;gap:2px;background:var(--line2);border:1px solid var(--line);
@@ -81,7 +81,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .sitefoot .finner{max-width:1040px;margin:0 auto;padding:26px 22px 38px;display:flex;
   gap:14px 30px;flex-wrap:wrap;align-items:baseline}
 .fname{font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
-.fname em{font-style:normal;color:var(--brand)}
+.fname em{font-style:normal;color:var(--accent)}
 .fdesc{font-size:13px;color:var(--muted);line-height:1.7;flex:1;min-width:260px}
 .fwhere{font-size:12px;color:var(--muted);line-height:1.7;flex-basis:100%;
   border-top:1px solid var(--line2);padding-top:14px}
@@ -91,13 +91,13 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .spacer{flex:1}
 .overall{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
 .obar{width:120px;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
-.obar i{display:block;height:100%;background:var(--brand);border-radius:99px}
+.obar i{display:block;height:100%;background:var(--accent);border-radius:99px}
 nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
 nav button{padding:9px 15px 12px;font-size:14px;color:var(--muted);white-space:nowrap;
   border-bottom:2px solid transparent;margin-bottom:-1px;transition:.13s}
 nav button:hover{color:var(--ink)}
-nav button[aria-current=true]{color:var(--ink);font-weight:550;border-bottom-color:var(--brand)}
+nav button[aria-current=true]{color:var(--ink);font-weight:550;border-bottom-color:var(--accent)}
 nav .count{font-size:11px;color:var(--muted);background:var(--line2);border-radius:99px;
   padding:1px 6px;margin-left:6px}
 nav button[aria-current=true] .count{background:var(--accent-soft);color:var(--accent)}
@@ -183,7 +183,7 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .gprog{display:flex;align-items:center;gap:9px;flex:none}
 .gprog span{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted)}
 .gbar{width:64px;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
-.gbar i{display:block;height:100%;background:var(--brand)}
+.gbar i{display:block;height:100%;background:var(--accent)}
 .gbar.full i{background:var(--ok)}
 .gbody{padding:4px 14px 15px;border-top:1px solid var(--line2)}
 .rolelbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
@@ -264,15 +264,15 @@ details.add[open] summary::before{content:"− "}
 .badge.dEasy{color:var(--easy);border-color:color-mix(in srgb,var(--easy) 38%,transparent)}
 .badge.dMedium{color:var(--medium);border-color:color-mix(in srgb,var(--medium) 38%,transparent)}
 .badge.dHard{color:var(--hard);border-color:color-mix(in srgb,var(--hard) 38%,transparent)}
-.badge.n4{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
-.badge.n3{border-color:var(--accent);color:var(--accent)}
+.badge.nmax{background:var(--accent);color:var(--panel);border-color:var(--accent);font-weight:600}
+.badge.nhigh{border-color:var(--accent);color:var(--accent)}
 /* Everything inside .pool swaps the LeetCode orange for the pool's violet. The
    components are unchanged; only the two accent tokens are. The point is that
    this tab must not read as more curriculum, which was the main reason it failed
    to explain itself. */
 .pool{--accent:var(--pool);--accent-soft:var(--pool-soft);--brand:var(--pool)}
-.pool .btn.primary{color:#fff}
-.pool .btn.primary:hover{color:#fff}
+.pool .btn.primary{color:var(--panel)}
+.pool .btn.primary:hover{color:var(--panel)}
 .poolintro{background:var(--panel);border:1px solid var(--line);
   border-left:3px solid var(--pool);border-radius:12px;padding:20px 22px;
   margin-bottom:14px;box-shadow:var(--shadow)}
@@ -395,17 +395,19 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c =>
 const TABS = [
   {k:'today',      label:'Today'},
   {k:'curriculum', label:'Curriculum'},
-  {k:'history',    label:'History'},
+  {k:'progress',   label:'Progress'},
   {k:'pool',       label:'Interview pool'},
   {k:'cues',       label:'Cue table'},
-  {k:'stats',      label:'Stats'},
   {k:'settings',   label:'Settings'},
 ];
 let tab = location.hash.slice(1) || 'today';
-if(tab === 'frequent') tab = 'pool';        // the tab this used to be called
+// Tabs this used to have. Old links and bookmarks keep working.
+if(tab === 'frequent') tab = 'pool';
+if(tab === 'history' || tab === 'stats') tab = 'progress';
 let plan=null, curric=null, hist=null, cues=null, freq=null, load=null;
 let drawn = null;
 const FILT = {diff:new Set(), lists:new Set(), noPaid:false, noSolved:true, noCurric:true};
+let listsInit = false;   // set once, so unticking every source is not undone by a refresh
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
 let showAhead = false;
@@ -691,13 +693,22 @@ function vCues(){
       }).join('')).join('');
 }
 
+async function loadFreq(){
+  freq = await api('/api/frequent');
+  // Every source starts selected, so the chips show what you are looking at
+  // rather than an empty set that silently means "everything". Guarded by
+  // listsInit, or a refresh would undo a deliberate "untick them all".
+  if(!listsInit){ Object.keys(freq.labels).forEach(k=>FILT.lists.add(k)); listsInit = true; }
+  if(!drawn) draw();
+}
+
 function freqPool(){
   return freq.problems.filter(p=>{
     if(FILT.noPaid && p.paid) return false;
     if(FILT.noSolved && p.solved) return false;
     if(FILT.noCurric && p.in_curriculum) return false;
     if(FILT.diff.size && !FILT.diff.has(p.difficulty)) return false;
-    if(FILT.lists.size && !p.lists.some(l=>FILT.lists.has(l))) return false;
+    if(!p.lists.some(l=>FILT.lists.has(l))) return false;
     return true;
   });
 }
@@ -714,6 +725,15 @@ function draw(){
   drawn = pool[pool.length-1];
 }
 
+function nLists(){ return Object.keys(freq.labels).length; }
+function overlapText(n){
+  const t = nLists();
+  return n === t ? `on all ${t} lists` : `${n} of ${t} lists`;
+}
+function overlapClass(n){
+  const t = nLists();
+  return n === t ? 'nmax' : (n >= t - 1 ? 'nhigh' : '');
+}
 function listBadges(p){
   return p.lists.map(l=>`<span class="badge src ${l}">${esc(freq.labels[l])}</span>`).join('');
 }
@@ -728,7 +748,7 @@ function freqRow(p){
     <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
     <span class="badge d${p.difficulty}">${esc(p.difficulty)}</span>
     ${p.paid?'<span class="badge hard">premium</span>':''}
-    <span class="badge n${p.count}">${p.count===4?'on all 4 lists':p.count+' of 4 lists'}</span>
+    <span class="badge ${overlapClass(p.count)}">${overlapText(p.count)}</span>
     ${c?`<span class="badge ok">curriculum${c.week?' W'+c.week:''}</span>`
        :'<span class="badge">not in curriculum</span>'}
     ${logActions(p.solved)}
@@ -747,7 +767,7 @@ function vPool(){
   // drawing from or that it was separate from the curriculum at all.
   const intro = `<div class="poolintro">
     <h2>Interview pool</h2>
-    <p><b>${st.total} problems that interviews repeat</b>, merged from four public lists.</p>
+    <p><b>${st.total} problems that interviews repeat</b>, merged from ${nLists()} public lists.</p>
     <p><b class="apart">Separate from your curriculum.</b> Nothing you do here moves its
       progress or metrics. ${st.in_curriculum} overlap, and every row says which.</p>
     <div class="srcs">${Object.entries(freq.labels).map(([k,v])=>
@@ -777,7 +797,7 @@ function vPool(){
     ${d ? `
       <div class="drawmeta">${listBadges(d)}
         <span class="badge d${d.difficulty}">${esc(d.difficulty)}</span>
-        <span class="badge n${d.count}">${d.count===4?'on all 4 lists':d.count+' of 4 lists'}</span>
+        <span class="badge ${overlapClass(d.count)}">${overlapText(d.count)}</span>
         ${d.curriculum?`<span class="badge ok">in curriculum${d.curriculum.week?' · W'+d.curriculum.week:''}</span>`
                       :'<span class="badge">not in curriculum</span>'}</div>
       <div class="drawtitle"><span class="pid">${d.id}</span>
@@ -807,6 +827,15 @@ function vPool(){
   </div>`;
 }
 
+function vProgress(){
+  // The metrics and the attempt log answered the same question from two tabs:
+  // how it is going, and what produced that. The three numbers first, then the
+  // record behind them.
+  return vStats() + `<div class="sec" style="margin-top:34px"><h2>Every attempt</h2>
+    <span class="hint">newest first${hist ? ` · ${hist.total} logged` : ''}</span></div>`
+    + vHistory();
+}
+
 function vStats(){
   const m = plan.metrics;
   const rate = m.resolve_rate==null ? 'not yet' : Math.round(m.resolve_rate*100)+'%';
@@ -829,7 +858,11 @@ function vStats(){
       `<div><i style="height:${v/mx*52+3}px"></i><small>${esc(k)}<br>${v}</small></div>`).join('')}
   </div></div>` : `<div class="empty">No mistake classes logged yet. They are recorded when you mark a problem stuck.</div>`}
   <div class="foot" style="margin-top:20px">Problems-completed is deliberately not shown.
-  The curriculum names it the easiest metric to watch and the weakest predictor of the three.</div>
+  The curriculum names it the easiest metric to watch and the weakest predictor of the three.</div>`;
+}
+
+function vAddProblem(){
+  return `
   <details class="add">
     <summary>Add a problem</summary>
     <div class="grid">
@@ -842,8 +875,8 @@ function vStats(){
     </div>
     <div class="prow"><button class="btn primary" id="a-save">Add problem</button></div>
     <div class="err" id="a-err"></div>
-    <div class="foot">Saved to <code>~/.lcsr/custom.json</code>, separate from the packaged
-      curriculum so upgrades never overwrite them. Reusing a packaged id overrides that problem.</div>
+    <div class="foot">Kept separate from the packaged curriculum, so an upgrade never
+      overwrites it. Reusing a packaged number overrides that problem.</div>
   </details>`;
 }
 
@@ -897,7 +930,8 @@ function vSettings(){
       ? 'Currently following the curriculum exactly.'
       : 'You have changed the default load.'} Week ${d.week} right now.</span>
   </div>
-  <div class="err" id="set-err"></div>`;
+  <div class="err" id="set-err"></div>
+  ${vAddProblem()}`;
 }
 
 /* ---------------- render ---------------- */
@@ -914,7 +948,7 @@ function renderChrome(){
   $('#nav').innerHTML = TABS.map(t=>
     `<button data-tab="${t.k}" aria-current="${t.k===tab}">${t.label}${
       t.k==='today'&&dueN?`<span class="count">${dueN}</span>`:''}${
-      t.k==='history'&&hist?`<span class="count">${hist.total}</span>`:''}</button>`).join('');
+      t.k==='progress'&&hist?`<span class="count">${hist.total}</span>`:''}</button>`).join('');
 }
 // Re-rendering replaces the whole view, so scroll position has to be restored
 // deliberately. Only a tab change should jump to the top -- revealing a cue,
@@ -922,8 +956,8 @@ function renderChrome(){
 function render(opts={}){
   const y = window.scrollY;
   renderChrome();
-  const v = {today:vToday, curriculum:vCurriculum, history:vHistory,
-             pool:vPool, cues:vCues, stats:vStats, settings:vSettings}[tab] || vToday;
+  const v = {today:vToday, curriculum:vCurriculum, progress:vProgress,
+             pool:vPool, cues:vCues, settings:vSettings}[tab] || vToday;
   $('#view').innerHTML = v();
   window.scrollTo({top: opts.top ? 0 : y});
 }
@@ -950,8 +984,8 @@ async function go(t){
   tab = t; location.hash = t;
   try{
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
-  if(t==='history') hist = await api('/api/history');
-  if(t==='pool' && !freq){ freq = await api('/api/frequent'); if(!drawn) draw(); }
+  if(t==='progress') hist = await api('/api/history');
+  if(t==='pool' && !freq){ await loadFreq(); }
     if(t==='cues' && !cues) cues = await api('/api/cues');
     if(t==='settings') load = await api('/api/settings');
   }catch(err){
@@ -977,8 +1011,8 @@ $('#theme').addEventListener('click', e=>{
 });
 paintThemeSwitch();
 $('#footwhere').textContent =
-  'Everything is recomputed from ~/.lcsr/log.jsonl, an append-only file on this '
-  + 'machine. The page stores nothing of its own, so closing the tab loses nothing.';
+  'Your progress is saved on your own computer, never uploaded. Close the tab '
+  + 'whenever you like, nothing is lost.';
 
 document.addEventListener('click', async e=>{
   // cue reveal
@@ -1124,9 +1158,9 @@ window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t
 (async ()=>{
   plan = await api('/api/plan');
   curric = await api('/api/curriculum');
-  if(tab==='history')  hist = await api('/api/history');
+  if(tab==='progress') hist = await api('/api/history');
   if(tab==='cues')     cues = await api('/api/cues');
-  if(tab==='pool'){ freq = await api('/api/frequent'); if(!drawn) draw(); }
+  if(tab==='pool'){ await loadFreq(); }
   render();
 })().catch(err => {
   // Without this a failed bootstrap left #nav and #view empty -- a blank page

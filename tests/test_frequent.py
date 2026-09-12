@@ -8,8 +8,8 @@ from lcsr import curriculum as cur
 from lcsr import store
 from lcsr.plan import frequent_view
 
-LISTS = {"top150", "lc75", "top100", "striver"}
-PUBLISHED = {"top150": 150, "lc75": 75, "top100": 100}
+LISTS = {"top150", "lc75", "top100", "striver", "neetcode150"}
+PUBLISHED = {"top150": 150, "lc75": 75, "top100": 100, "neetcode150": 150}
 
 
 @pytest.fixture(autouse=True)
@@ -39,8 +39,10 @@ def test_each_problem_names_each_source_at_most_once(pool):
 
 
 def test_list_membership_matches_the_published_sizes(pool):
-    """A2Z self-duplicates (some problems sit under two topics), so it is checked
-    as a floor; the three LeetCode plans have exact published sizes."""
+    """A2Z self-duplicates (18 problems sit under 2 to 4 topics each, 274 entries
+    for 251 problems), so it is checked as a floor. The other four have exact
+    published sizes, and a half-failed fetch shows up here rather than as a
+    quietly shorter pool."""
     counts = Counter(l for p in pool for l in p["lists"])
     for key, n in PUBLISHED.items():
         assert counts[key] == n, f"{key}: {counts[key]} != {n}"
@@ -50,16 +52,37 @@ def test_list_membership_matches_the_published_sizes(pool):
 def test_overlap_count_is_consistent_with_membership(pool):
     for p in pool:
         assert p["count"] == len(p["lists"])
-        assert 1 <= p["count"] <= 4
+        assert 1 <= p["count"] <= len(LISTS)
         assert set(p["lists"]) <= LISTS
 
 
 def test_merging_actually_collapsed_duplicates(pool):
-    """599 raw entries across four lists; anything near that means the merge
-    silently stopped deduplicating."""
+    """749 raw entries across five lists collapse to 390; anything near the raw
+    figure means the merge silently stopped deduplicating."""
     raw = sum(p["count"] for p in pool)
     assert raw > len(pool), "no duplicates collapsed at all"
-    assert len(pool) < 400
+    assert len(pool) < raw * 0.75
+
+
+def test_labels_and_list_keys_agree(pool):
+    """A list key with no label renders as an empty badge; a label with no
+    members means a filter chip that can never match anything."""
+    labels = set(cur.frequent()["labels"])
+    assert labels == LISTS, labels ^ LISTS
+    used = {l for p in pool for l in p["lists"]}
+    assert used == LISTS, LISTS - used
+
+
+def test_no_title_maps_to_two_problems(pool):
+    """Titles are not the dedup key (slugs change, titles repeat), but two rows
+    with the same title and different numbers means the merge matched wrongly."""
+    dupes = [t for t, n in Counter(p["title"] for p in pool).items() if n > 1]
+    assert not dupes, dupes
+
+
+def test_sections_only_name_lists_the_problem_is_actually_on(pool):
+    for p in pool:
+        assert set(p.get("sections", {})) <= set(p["lists"]), p["id"]
 
 
 def test_slugs_are_unique_too(pool):

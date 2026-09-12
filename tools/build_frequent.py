@@ -1,4 +1,4 @@
-"""Build the frequently-asked pool from four public lists.
+"""Build the frequently-asked pool from five public lists.
 
     python tools/build_frequent.py
 
@@ -14,6 +14,12 @@ Sources, and why each needs its own path:
     ("C++ Input / Output"), HackerRank, InterviewBit and SPOJ. Only the LeetCode
     subset is usable here, and it needs slug -> frontend id, which comes from a
     full pull of the problem set.
+  * NeetCode 150 comes from neetcode-gh/leetcode's own .problemSiteData.json,
+    not from a leetcode.com problem list. A public list works today but is one
+    person's list: it can be renamed, made private or deleted, and it carries no
+    categories. The repo is the project's own data, ships the roadmap group as
+    `pattern`, and flags the 150 subset of its ~450 entries with `neetcode150`.
+    (Verified identical to leetcode.com/problem-list/plakya4j: same 150 slugs.)
 
 Deduplication is by LeetCode frontend id, which is the only stable key: titles
 repeat and slugs change. A2Z lists some problems under two topics, so it
@@ -32,9 +38,12 @@ OUT = ROOT / "src" / "lcsr" / "data" / "frequent.json"
 PLANS = {"top150": "top-interview-150", "lc75": "leetcode-75", "top100": "top-100-liked"}
 A2Z = ("https://node.codolio.com/api/question-tracker/v2/sheet/"
        "get-sheet-data-by-slug/strivers-a2z-dsa-sheet")
+NEETCODE = ("https://raw.githubusercontent.com/neetcode-gh/leetcode/main/"
+            ".problemSiteData.json")
 
 LABELS = {"top150": "Top Interview 150", "lc75": "LeetCode 75",
-          "top100": "Top 100 Liked", "striver": "Striver A2Z"}
+          "top100": "Top 100 Liked", "striver": "Striver A2Z",
+          "neetcode150": "NeetCode 150"}
 
 
 def post(url, payload, **headers):
@@ -49,6 +58,24 @@ def get(url, **headers):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", **headers})
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.loads(r.read())
+
+
+def neetcode_150(lc):
+    """The 150 subset of neetcode's own problem data, with its roadmap group.
+
+    `link` is a bare LeetCode slug with a trailing slash ("two-sum/"), so it
+    resolves through the same slug -> frontend id map everything else uses.
+    """
+    out = []
+    for r in get(NEETCODE):
+        if not r.get("neetcode150"):
+            continue
+        hit = lc.get(r["link"].strip("/"))
+        if not hit:
+            continue
+        out.append((int(hit["questionFrontendId"]), hit["titleSlug"], hit["title"],
+                    r.get("pattern") or ""))
+    return out
 
 
 def all_leetcode_problems():
@@ -100,6 +127,11 @@ def main():
         print(f"  {key}: {raw_counts[key]}")
         time.sleep(0.4)
 
+    print("fetching neetcode 150 ...")
+    for pid, slug, title, pattern in neetcode_150(lc):
+        add(pid, slug, title, "neetcode150", pattern)
+    print(f"  neetcode150: {raw_counts['neetcode150']}")
+
     print("fetching striver a2z ...")
     mappings = get(A2Z, Origin="https://codolio.com",
                    Referer="https://codolio.com/")["data"]["mappings"]
@@ -136,6 +168,7 @@ def main():
     assert raw_counts["top150"] == 150, raw_counts["top150"]
     assert raw_counts["lc75"] == 75, raw_counts["lc75"]
     assert raw_counts["top100"] == 100, raw_counts["top100"]
+    assert raw_counts["neetcode150"] == 150, raw_counts["neetcode150"]
     assert raw_counts["striver"] > 250, raw_counts["striver"]
     assert len({r["id"] for r in rows}) == len(rows), "duplicate id survived the merge"
 
