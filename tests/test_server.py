@@ -42,6 +42,15 @@ def client(tmp_path, monkeypatch):
         except urllib.error.HTTPError as e:
             return e.code, json.loads(e.read())
 
+    def raw(path):
+        """The export routes serve csv and ndjson, which `call` would fail to parse."""
+        try:
+            with urllib.request.urlopen(base + path) as r:
+                return r.status, r.read()
+        except urllib.error.HTTPError as e:
+            return e.code, e.read()
+
+    call.raw = raw
     yield call
     httpd.shutdown()
 
@@ -134,8 +143,36 @@ def test_a_problem_still_in_the_ladder_can_be_logged(client):
 
 
 def test_plan_accepts_a_future_date(client):
-    code, p = client("/api/plan?date=2027-01-01")
-    assert code == 200 and p["date"] == "2027-01-01" and p["is_today"] is False
+    when = (date.today() + timedelta(days=120)).isoformat()
+    code, p = client(f"/api/plan?date={when}")
+    assert code == 200 and p["date"] == when and p["is_today"] is False
+    # Only the preview branch produces these: a past date is not_today as well,
+    # so asserting is_today alone tested nothing after the pinned day passed.
+    assert p["ahead"] == [] and p["caught_up"] is False
+
+
+def test_export_jsonl_returns_the_actual_log(client):
+    """This route had no test, and an edit that emptied it survived a green run.
+
+    It read a module-level LOG bound at import, which no fixture could redirect,
+    so any test written against it would have read the developer's own log rather
+    than the temporary one. It reads store.LOG at call time now.
+    """
+    client("/api/log", {"id": 1, "outcome": "solved"})
+    code, raw = client.raw("/api/export.jsonl")
+    assert code == 200
+    lines = [ln for ln in raw.decode().split("\n") if ln.strip()]
+    assert lines, "the raw-log export handed back an empty file"
+    assert [json.loads(ln)["id"] for ln in lines] == [1]
+
+
+def test_export_csv_has_a_row_for_every_problem(client):
+    client("/api/log", {"id": 1, "outcome": "solved"})
+    code, raw = client.raw("/api/export.csv")
+    assert code == 200
+    rows = raw.decode().splitlines()
+    assert len(rows) == TOTAL + 1
+    assert rows[0].startswith("id,title,")
 
 
 def test_plan_rejects_a_bad_date(client):

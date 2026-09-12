@@ -24,7 +24,7 @@ from . import store
 from .plan import (curriculum_view, export_csv, foundations_left, frequent_view,
                    history_view, intake_week, todays_plan)
 from .schedule import SOLVED, STUCK
-from .store import (HOME, LOCK, LOG, MISTAKES, amend, append, current_sprint,
+from .store import (HOME, LOCK, MISTAKES, amend, append, current_sprint,
                     raw_entries,
                     make_entry, replay, start_sprint, undo)
 
@@ -244,7 +244,7 @@ class Handler(BaseHTTPRequestHandler):
         if route.path == "/api/export.jsonl":
             # The raw log, byte for byte. The CSV is a view of it; this is the
             # thing the CLI can read straight back.
-            raw = LOG.read_bytes() if LOG.exists() else b""
+            raw = store.LOG.read_bytes() if store.LOG.exists() else b""
             return self._download(raw, "application/x-ndjson", "lcsr-log.jsonl")
         return self._send(404, {"error": "not found"})
 
