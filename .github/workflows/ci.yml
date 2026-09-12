@@ -23,6 +23,12 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
+      # The UI's date arithmetic is tested by running the real JS under seven
+      # timezones. Without node those tests skip, and the skip is silent, so CI
+      # would report green while covering none of it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
       - run: python -m pip install --upgrade pip
       - run: pip install -e . pytest
       - run: python -m pytest -q

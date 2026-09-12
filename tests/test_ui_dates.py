@@ -9,6 +9,7 @@ server-side test, because the defect was entirely in the browser.
 import json
 import re
 import shutil
+import os
 import subprocess
 from pathlib import Path
 
@@ -31,7 +32,15 @@ CASES = [
     ("2026-11-01", 1, "2026-11-02"),   # US DST fall-back
 ]
 
-pytestmark = pytest.mark.skipif(shutil.which("node") is None,
+# GOTCHA: the guard and the call must agree about where node is. This used to
+# skip on `shutil.which("node")`, which searches the real PATH, and then run with
+# a hardcoded PATH of "/usr/bin:/bin:/opt/homebrew/bin". On any machine where node
+# lives somewhere else -- a CI runner, nvm, a Linux distro -- the guard found it,
+# the test therefore did NOT skip, and the subprocess then died with
+# FileNotFoundError. Resolve once, use that absolute path.
+NODE = shutil.which("node")
+
+pytestmark = pytest.mark.skipif(NODE is None,
                                 reason="node not available to run the UI's JS")
 
 
@@ -48,8 +57,10 @@ def test_add_days_is_timezone_independent(tz):
 const cases = {json.dumps(CASES)};
 console.log(JSON.stringify(cases.map(([iso, n]) => addDays(iso, n))));
 """
-    out = subprocess.run(["node", "-e", script], capture_output=True, text=True,
-                         env={"TZ": tz, "PATH": "/usr/bin:/bin:/opt/homebrew/bin"})
+    # Inherit the environment so node keeps whatever it needs to start; only TZ
+    # is overridden, which is the one variable this test is actually about.
+    out = subprocess.run([NODE, "-e", script], capture_output=True, text=True,
+                         env={**os.environ, "TZ": tz})
     assert out.returncode == 0, out.stderr
     got = json.loads(out.stdout)
     assert got == [want for _, _, want in CASES], f"in {tz}"
