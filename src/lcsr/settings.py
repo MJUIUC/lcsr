@@ -41,7 +41,7 @@ COUNTED = ("foundations", "core", "reps")
 # Stretch before you cut Core, and raise the number of spaced re-solves." Core is
 # cut last because it is the spine of the schedule; reps are interleaving and
 # survive being thinned.
-CUT_ORDER = ("foundations", "reps", "core")
+CUT_ORDER = ("reps", "foundations", "core")
 
 # A cap has to exist or a typo in the UI becomes a 10,000-problem day.
 MAX_PER_TIER = 50

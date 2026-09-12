@@ -219,7 +219,7 @@ class Handler(BaseHTTPRequestHandler):
         if route.path == "/api/export.jsonl":
             # The raw log, byte for byte. The CSV is a view of it; this is the
             # thing the CLI can read straight back.
-            raw = LOG.read_bytes() if LOG.exists() else b""
+            raw = b""
             return self._download(raw, "application/x-ndjson", "lcsr-log.jsonl")
         return self._send(404, {"error": "not found"})
 
