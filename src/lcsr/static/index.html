@@ -81,7 +81,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .sitefoot{border-top:1px solid var(--line);background:var(--panel);margin-top:70px}
 .sitefoot .finner{max-width:1040px;margin:0 auto;padding:26px 22px 34px;display:flex;
   gap:16px 30px;flex-wrap:wrap;align-items:flex-start}
-.fmain{flex:1 1 320px;min-width:0}
+.fmain{flex:1 1 300px;min-width:0;max-width:44ch}
 .fside{display:flex;flex-direction:column;gap:10px;align-items:flex-end;flex:none}
 .fmade{font-size:13px;color:var(--mid);white-space:nowrap}
 .fmade .heart{color:var(--hard);font-style:normal}
@@ -92,9 +92,10 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .flinks a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .flinks svg{width:16px;height:16px;fill:currentColor;display:block}
 @media(max-width:640px){.fside{align-items:flex-start}}
-.fname{font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.fname{display:block;font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;
+  letter-spacing:-.01em;margin-bottom:7px}
 .fname em{font-style:normal;color:var(--accent)}
-.fdesc{font-size:13px;color:var(--muted);line-height:1.7;flex:1;min-width:260px}
+.fdesc{display:block;font-size:13px;color:var(--muted);line-height:1.75;max-width:44ch}
 .fwhere{font-size:12px;color:var(--muted);line-height:1.7;flex-basis:100%;
   border-top:1px solid var(--line2);padding-top:14px}
 @media(max-width:720px){.full{display:none} .overall{display:none}}
@@ -412,8 +413,7 @@ details.add[open] summary::before{content:"− "}
     <span class="fname">LeetCode Spaced Repetition <em>(lcsr)</em></span>
     <span class="fdesc">Miss a problem and it comes back in <b>3 days</b>, then <b>10</b>,
       then <b>30</b>. Solve it cold and it never comes back at all. The 324 problems run in
-      a deliberate order, each pattern's plainest example before its hard variants, so every
-      problem has something to stand on. No streaks, and no problems-solved counter.</span>
+      a deliberate order, each pattern's plainest example before its hard variants.</span>
   </div>
   <div class="fside">
     <span class="fmade">Made with <span class="heart">&#9829;</span> by Swapnil</span>
@@ -929,8 +929,10 @@ function vStats(){
     ${Object.entries(mk).map(([k,v])=>
       `<div><i style="height:${v/mx*52+3}px"></i><small>${esc(k)}<br>${v}</small></div>`).join('')}
   </div></div>` : `<div class="empty">No mistake classes logged yet. They are recorded when you mark a problem stuck.</div>`}
-  <div class="foot" style="margin-top:20px">Problems-completed is deliberately not shown.
-  The curriculum names it the easiest metric to watch and the weakest predictor of the three.</div>`;
+  <div class="foot" style="margin-top:20px">There is no problems-solved count here, on
+  purpose. It is the easiest number to move and the one that tells you least: you can raise
+  it by picking easy problems, and it says nothing about whether you could solve them again
+  cold a month later. That is the question the cold re-solve rate above answers.</div>`;
 }
 
 function vAddProblem(){

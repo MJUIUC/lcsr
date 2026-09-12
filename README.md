@@ -200,9 +200,12 @@ sync and the scheduling rule can change later without invalidating history.
 Scheduling is `src/lcsr/schedule.py`: one pure function, with an exhaustive
 truth table over all 8 states in `tests/test_schedule.py`.
 
-There is no streak counter and no problems-solved metric. The curriculum names
-that one as the weakest predictor of interview performance, and the easiest to
-inflate.
+There is no streak counter and no problems-solved count. Problems-solved is the
+easiest number to move and the one that tells you least: you can raise it by
+picking easy problems, and it says nothing about whether you could solve them
+again cold a month later. That is the question the cold re-solve rate answers,
+and it is the metric the curriculum says actually predicts interview
+performance.
 
 ## The interview pool
 
