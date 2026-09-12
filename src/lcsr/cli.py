@@ -3,12 +3,15 @@
 import argparse
 import sys
 from datetime import date, timedelta
+from pathlib import Path
 
 from . import curriculum as cur
 from . import settings as cfg
-from .plan import foundations_left, intake_week, metrics, todays_plan
+from .plan import (export_csv, foundations_left, intake_week, metrics,
+                   todays_plan)
 from .schedule import SOLVED, STUCK
-from .store import MISTAKES, amend, append, make_entry, replay, undo
+from .store import (LOG, MISTAKES, amend, append, current_sprint, make_entry,
+                    replay, start_sprint, undo)
 
 B, D, R, G, Y, X = "\033[1m", "\033[2m", "\033[31m", "\033[32m", "\033[33m", "\033[0m"
 if not sys.stdout.isatty():
@@ -238,10 +241,12 @@ def cmd_config(a):
         cfg.update(**{k: (None if v == "default" else v) for k, v in named.items()})
 
     attempted = set(replay())
-    d = cfg.describe(intake_week(attempted), foundations_left(attempted), cfg.load())
+    d = cfg.describe(intake_week(attempted), foundations_left(attempted), cfg.load(),
+                     current_sprint())
     eff, curric, st = d["effective"], d["curriculum"], d["settings"]
 
-    print(f"\n{B}daily load{X}  {D}week {d['week']}{X}")
+    sp = f"  {D}pass {d['sprint']} (+{d['pass_bonus']}/day){X}" if d["sprint"] > 1 else ""
+    print(f"\n{B}daily load{X}  {D}week {d['week']}{X}{sp}")
     for tier in ("foundations", "core", "reps"):
         own = st[tier]
         src = f"{D}curriculum{X}" if own is None else f"{Y}you set {own}{X}"
@@ -255,6 +260,33 @@ def cmd_config(a):
     else:
         print(f"\n{D}`lcsr config --core default` clears one, "
               f"`lcsr config --reset` clears all{X}\n")
+
+
+def cmd_sprint(a):
+    """Start another pass over the curriculum, keeping every attempt."""
+    states = replay()
+    done = sum(1 for st in states.values() if st.done)
+    total = len(cur.problems())
+    if done < total and not a.force:
+        left = total - done
+        raise SystemExit(
+            f"{left} of {total} problems are not finished yet.\n"
+            f"Starting a new pass re-offers everything and drops the re-solves\n"
+            f"currently scheduled. Pass --force if that is what you want.")
+    mark = start_sprint()
+    print(f"\n{G}pass {mark['sprint']} started{X}  {D}{mark['date']}{X}")
+    print(f"{D}every problem is on offer again; nothing was deleted.{X}")
+    print(f"{D}new problems a day go up by one. `lcsr today` to begin.{X}\n")
+
+
+def cmd_export(a):
+    text = export_csv() if a.format == "csv" else (
+        LOG.read_text(encoding="utf-8") if LOG.exists() else "")
+    if a.out:
+        Path(a.out).write_text(text, encoding="utf-8")
+        print(f"\n{G}wrote{X} {a.out}  {D}({len(text.splitlines())} lines){X}\n")
+    else:
+        sys.stdout.write(text)
 
 
 def main(argv=None):
@@ -330,6 +362,16 @@ def main(argv=None):
     p.add_argument("--cue")
     p.add_argument("--hard", action="store_true")
     p.set_defaults(fn=cmd_add)
+
+    p = sub.add_parser("sprint", help="start another pass over the curriculum")
+    p.add_argument("--force", action="store_true",
+                   help="start even though the curriculum is not finished")
+    p.set_defaults(fn=cmd_sprint)
+
+    p = sub.add_parser("export", help="export your progress as CSV, or the raw log")
+    p.add_argument("--format", choices=("csv", "jsonl"), default="csv")
+    p.add_argument("--out", help="write to this file instead of stdout")
+    p.set_defaults(fn=cmd_export)
 
     p = sub.add_parser("config", help="show or change how many new problems a day")
     for flag, dest in (("--foundations", "foundations"), ("--core", "core"),

@@ -1,9 +1,13 @@
 # lcsr: LeetCode Spaced Repetition
 
-**A spaced repetition system for LeetCode and DSA interview prep.** Runs the
-daily loop from an 18-week data structures and algorithms curriculum and records
-it: 324 problems, a 20-row pattern cue table, and a `+3d / +10d / +30d` review
-schedule for every problem you got stuck on.
+**A spaced repetition system for LeetCode and DSA interview prep.**
+
+**Miss a problem and it comes back in 3 days, then 10, then 30. Solve it cold and
+it never comes back at all.** Fail it again at any rung and you drop to the
+bottom, because the point is to re-earn the spacing, not to resume it.
+
+That schedule runs over 324 problems in a fixed order, taken from an 18-week
+data structures and algorithms curriculum, plus its 20-row pattern cue table.
 
 Self-hosted, single file of state, no account, no tracking, no dependencies.
 Python CLI plus a local web UI, with light and pitch-dark themes.
@@ -17,14 +21,28 @@ widening intervals, is what moves a pattern from "I read the solution" to "I can
 reach for it cold". The schedule here is the curriculum's own, and the tool
 exists so that following it costs nothing.
 
+### The order is the other half
+
+A list of problems is not a curriculum. These 324 run in a deliberate sequence:
+the plainest example of a pattern always lands before any hard variant of it, so
+every problem has something to stand on.
+
+Where the source curriculum broke its own rule, this fixes it. It taught Max
+Product Subarray without ever teaching max-sum Kadane first, and Find the
+Duplicate without the index-as-hash exemplar it depends on. Ten problems were
+added to close gaps like that, each slotted into its real place in the sequence
+rather than appended to the end, because a base exemplar that arrives after its
+own hard variant teaches backwards.
+
+Reps are interleaved on purpose: second and third problems on patterns from
+earlier weeks, mixed into today rather than drilled in a block, so you have to
+work out which pattern applies instead of being told by the heading.
+
 ### What it does
 
-- **Spaced repetition / SRS scheduling.** Failed problems return at 3, 10 and 30
-  days. Solved cold, they do not return. Fail again at any rung and you drop to
-  the bottom: the point is to re-earn the spacing, not resume it.
+- **Spaced repetition / SRS scheduling**, as above, over every problem you fail.
 - **An 18-week DSA curriculum**, 324 problems across foundations, core, reps and
-  stretch tiers, in a fixed order that teaches base patterns before hard
-  variants.
+  stretch tiers.
 - **A cue table**: what the problem *says*, mapped to the pattern to reach for.
   Self-testable, answers hidden by default.
 - **An interview pool** of 390 problems merged from five well-known lists
@@ -33,6 +51,10 @@ exists so that following it costs nothing.
   time to correct approach, and a mistake-class histogram. No streaks and no
   problems-solved counter, on purpose.
 - **A configurable daily load**, if the curriculum's own pace is wrong for you.
+- **Repeat passes.** Finish the whole thing and start again: every problem goes
+  back on offer, the ladder empties, and the daily intake rises by one. Nothing
+  is deleted, and the old attempts stay in your history and your export.
+- **Export**, to CSV or the raw log, so the record is never trapped in here.
 
 ### Keywords
 
@@ -107,6 +129,8 @@ lcsr cues                        # self-test the cue table; --answers to check
 lcsr week 5                      # one week's blocks, with progress
 lcsr config                      # show the daily load
 lcsr config --core 3 --total 5   # change it; `--core default` clears one
+lcsr sprint                      # start another pass over the curriculum
+lcsr export --out progress.csv   # every problem, every attempt
 ```
 
 Mistake classes: `off-by-one`, `invariant`, `edge-case`, `no-pattern`.
@@ -130,6 +154,35 @@ Leave a tier unset to follow the curriculum. `0` is a real instruction and stops
 that tier being issued at all, which is not the same thing. When a total cap
 bites, reps are cut first, then foundations, then core, which is the
 curriculum's own order for when you are moving too fast.
+
+### Going round again
+
+When the curriculum is finished, start another pass:
+
+```bash
+lcsr sprint          # refuses unless everything is done; --force overrides
+```
+
+Every problem goes back on offer, the `+3 / +10 / +30` ladder empties, and new
+problems per day go up by one. **Nothing is deleted.** A pass is one more line in
+the append-only log, so every attempt from every pass stays in Progress and in
+your export; earlier work simply stops being what you are scheduled on.
+
+Corrections stay inside the pass you are in: `undo` and `amend` will not reach
+back into a finished one.
+
+### Export
+
+```bash
+lcsr export                      # CSV to stdout
+lcsr export --out progress.csv   # or to a file
+lcsr export --format jsonl       # the raw append-only log
+```
+
+The CSV has one row per problem, all 324, attempted or not: tier, week, status,
+current due date, then one column group per attempt with its date, outcome,
+mistake class, which pass it belonged to, and your note. Both are in **Settings**
+in the UI too.
 
 ## How it works
 
@@ -196,3 +249,8 @@ silently producing a short list.
 
 - [`docs/evidence.md`](docs/evidence.md): the literature review this started from
 - [`docs/design.md`](docs/design.md): what was built and what was dropped
+
+---
+
+Made with love by [Swapnil](https://github.com/Swapnil-jain)
+· [GitHub](https://github.com/Swapnil-jain/leetcode-srs)

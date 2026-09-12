@@ -118,17 +118,25 @@ def _order_key(r: dict):
     return (r.get("date", ""), when)
 
 
-def entries() -> list[dict]:
+def _live(with_marks: bool) -> list[dict]:
     """Attempts that still stand, with retractions applied.
 
     Undo appends a retraction rather than deleting a line: the file stays
     append-only, so a mis-logged attempt is recoverable and the record of what
     actually happened is never rewritten underneath you. A retraction cancels
     the most recent surviving attempt at that problem.
+
+    Sprint markers carry no `id`, so they are skipped unless asked for. Every
+    caller that reads r["id"] would raise on one otherwise, and there are a
+    dozen of those.
     """
     alive: list[dict | None] = []
     positions: dict[int, list[int]] = {}
     for r in raw_entries():
+        if "sprint" in r:
+            if with_marks:
+                alive.append(r)          # index bookkeeping below still lines up
+            continue
         pid = r["id"]
         if r.get("undo"):
             if positions.get(pid):
@@ -137,6 +145,53 @@ def entries() -> list[dict]:
         positions.setdefault(pid, []).append(len(alive))
         alive.append(r)
     return [r for r in alive if r is not None]
+
+
+def entries() -> list[dict]:
+    """Every surviving attempt, all passes. This is the history."""
+    return _live(False)
+
+
+def stream() -> list[dict]:
+    """Surviving attempts plus sprint markers, in order. This is what replays."""
+    return _live(True)
+
+
+def make_sprint(n: int, on: date) -> dict:
+    return {"ts": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "date": on.isoformat(), "sprint": n}
+
+
+def current_sprint() -> int:
+    """Which pass through the curriculum you are on. 1 until you start another."""
+    marks = [r["sprint"] for r in raw_entries() if "sprint" in r]
+    return marks[-1] if marks else 1
+
+
+def start_sprint() -> dict:
+    """Begin another pass, without deleting anything.
+
+    A marker in the log, not a flag in settings: where you are in the curriculum
+    is a record, and settings are a preference that falls back to defaults when
+    the file will not parse. A sprint boundary that vanished on a corrupt
+    settings.json would silently re-offer the entire curriculum.
+    """
+    with LOCK:
+        mark = make_sprint(current_sprint() + 1, date.today())
+        append(mark)
+        return mark
+
+
+def current_entries() -> list[dict]:
+    """Attempts belonging to the pass in progress.
+
+    Sliced by position rather than by date: a new pass can start on a day that
+    already has attempts logged against the old one, and those belong to the old
+    one.
+    """
+    rows = stream()
+    cut = max((i for i, r in enumerate(rows) if "sprint" in r), default=-1)
+    return [r for r in rows[cut + 1:] if "sprint" not in r]
 
 
 def make_undo(pid: int, on: date) -> dict:
@@ -156,7 +211,7 @@ def amend(pid: int, outcome: str, mistake: str | None = None,
     append-only and the correction is visible rather than silent.
     """
     with LOCK:
-        live = [r for r in entries() if r["id"] == pid]
+        live = [r for r in current_entries() if r["id"] == pid]
         if not live:
             raise ValueError(f"{pid} has no logged attempt to change")
         last = live[-1]
@@ -177,18 +232,30 @@ def amend(pid: int, outcome: str, mistake: str | None = None,
 
 def undo(pid: int) -> dict:
     with LOCK:
-        live = [r for r in entries() if r["id"] == pid]
+        # current_entries(), not entries(): correcting a button-press belongs to
+        # the pass you are in. Reaching back into a finished pass would rewrite
+        # history that is already being reported as done.
+        live = [r for r in current_entries() if r["id"] == pid]
         if not live:
-            raise ValueError(f"{pid} has no logged attempt to undo")
+            raise ValueError(f"{pid} has no logged attempt to undo in this pass")
         last = live[-1]
         append(make_undo(pid, date.fromisoformat(last["date"])))
         return last
 
 
 def replay(rows: list[dict] | None = None) -> dict[int, ProblemState]:
-    rows = entries() if rows is None else rows
+    """Fold the log into per-problem schedule state.
+
+    A sprint marker empties the state: a new pass means nothing is solved yet and
+    the ladder starts over. The attempts before it are not discarded, they are
+    just not what you are being scheduled on any more.
+    """
+    rows = stream() if rows is None else rows
     states: dict[int, ProblemState] = {}
     for r in rows:
+        if "sprint" in r:
+            states = {}
+            continue
         st = states.setdefault(r["id"], ProblemState(pid=r["id"]))
         nxt = advance(st.box, r["outcome"])
         d = date.fromisoformat(r["date"])

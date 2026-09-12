@@ -46,6 +46,14 @@ CUT_ORDER = ("reps", "foundations", "core")
 # A cap has to exist or a typo in the UI becomes a 10,000-problem day.
 MAX_PER_TIER = 50
 
+# Each pass after the first adds this many new problems a day, onto core. Core
+# because it is the only tier present in every week, and because a second pass
+# over material you have already seen is exactly when you can carry more. The
+# bonus is part of the curriculum's load for the pass, so it lands BEFORE your
+# overrides and before the cap: setting core yourself still wins, and a total
+# cap still caps.
+PASS_BONUS_PER_SPRINT = 1
+
 
 # Per-day intake of NEW problems, from the load the curriculum states for itself:
 # "~4-5/day in weeks 1-3 (the foundations are quick), ~3/day in weeks 4-11,
@@ -151,12 +159,13 @@ def trim_to_total(q: dict[str, int], total: int) -> dict[str, int]:
 
 
 def daily_quota(week: int, foundations_remaining: int,
-                s: Settings | None = None) -> dict[str, int]:
+                s: Settings | None = None, sprint: int = 1) -> dict[str, int]:
     """The whole rule for how many new problems a day offers, in one place.
 
-    Order matters and is the reason this is one function rather than four:
+    Order matters and is the reason this is one function rather than five:
 
-    1. the curriculum's load for that week;
+    0. the curriculum's load for that week, plus the pass bonus;
+    1. (see 0);
     2. foundations stay alive while any remain, because intake_week() is derived
        from CORE progress and allowance() zeroes foundations from week 4 -- so
        finishing weeks 1-3's core would otherwise strand every remaining
@@ -173,6 +182,7 @@ def daily_quota(week: int, foundations_remaining: int,
     """
     s = s or Settings()
     q = dict(allowance(week))
+    q["core"] += PASS_BONUS_PER_SPRINT * max(0, sprint - 1)
 
     if s.foundations is None:
         if not q["foundations"] and foundations_remaining:
@@ -189,13 +199,18 @@ def daily_quota(week: int, foundations_remaining: int,
     return q
 
 
-def describe(week: int, foundations_remaining: int, s: Settings) -> dict:
+def describe(week: int, foundations_remaining: int, s: Settings,
+             sprint: int = 1) -> dict:
     """What the settings screen needs: the inputs, the defaults, and the result."""
+    base = dict(allowance(week))
+    base["core"] += PASS_BONUS_PER_SPRINT * max(0, sprint - 1)
     return {
         "settings": asdict(s),
         "is_default": s.is_default(),
-        "curriculum": allowance(week),
-        "effective": daily_quota(week, foundations_remaining, s),
+        "curriculum": base,
+        "effective": daily_quota(week, foundations_remaining, s, sprint),
         "max_per_tier": MAX_PER_TIER,
         "week": week,
+        "sprint": sprint,
+        "pass_bonus": PASS_BONUS_PER_SPRINT * max(0, sprint - 1),
     }

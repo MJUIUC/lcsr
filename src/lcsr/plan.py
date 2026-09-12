@@ -11,11 +11,17 @@ from . import curriculum as cur
 from . import settings as cfg
 from .schedule import SOLVED
 from .settings import allowance          # re-exported: part of plan's surface
-from .store import entries, replay
+from .store import (current_entries, current_sprint, entries, raw_entries,
+                    replay, stream)
 
 
 def day_one() -> date | None:
-    rows = entries()
+    """Day 1 of the pass in progress, not of the log.
+
+    After starting a second pass, "day 47" of a finished run is not a useful
+    thing to print above a week-1 queue.
+    """
+    rows = current_entries()
     return date.fromisoformat(rows[0]["date"]) if rows else None
 
 
@@ -58,7 +64,7 @@ def intake_week(attempted: set[int]) -> int:
 
 
 def last_activity() -> date | None:
-    rows = entries()
+    rows = current_entries()
     return date.fromisoformat(rows[-1]["date"]) if rows else None
 
 
@@ -70,7 +76,7 @@ def pace(on: date, window: int = 14) -> dict:
     matters is the rate, and the rate is measurable.
     """
     first_seen: dict[int, str] = {}
-    for r in entries():
+    for r in current_entries():
         first_seen.setdefault(r["id"], r["date"])
     start = (on - timedelta(days=window - 1)).isoformat()
     started = sum(1 for d in first_seen.values() if start <= d <= on.isoformat())
@@ -109,8 +115,9 @@ def todays_plan(on: date | None = None) -> dict:
     today = date.today()
     on = on or today
     states = replay()
-    rows = entries()
+    rows = current_entries()
     attempted = set(states)
+    sprint = current_sprint()
     # ONE notion of week: where you are in the material. The calendar week was a
     # second, competing one -- it drove the label while progress drove the
     # content, so finishing week 1's seven core problems in two days reported
@@ -127,7 +134,7 @@ def todays_plan(on: date | None = None) -> dict:
         truth table. Recomputed per call rather than cached because
         foundations_left() shrinks as the day is worked.
         """
-        return cfg.daily_quota(week, foundations_left(attempted), prefs)
+        return cfg.daily_quota(week, foundations_left(attempted), prefs, sprint)
     is_future = on > today
 
     first_seen: dict[int, str] = {}
@@ -260,16 +267,18 @@ def todays_plan(on: date | None = None) -> dict:
         "resolves_today": sum(1 for r in rows if r["date"] == on.isoformat()
                               and first_seen.get(r["id"]) != on.isoformat()),
         "caught_up": (not sections and not due) and not is_future and not paused,
-        "load": cfg.describe(wk, foundations_left(attempted), prefs),
+        "sprint": sprint,
+        "load": cfg.describe(wk, foundations_left(attempted), prefs, sprint),
         "metrics": metrics(on),
     }
 
 
 def metrics(on: date | None = None) -> dict:
     """The three the curriculum names. 'Problems completed' is deliberately absent."""
-    all_rows = entries()
+    all_rows = current_entries()
     if not all_rows:
-        return {"attempted": 0, "total": len(cur.problems())}
+        return {"attempted": 0, "total": len(cur.problems()),
+                "sprint": current_sprint(), "lifetime_attempts": len(entries())}
     # Scope to the curriculum. The log also carries attempts at frequent-only
     # problems, and folding those in would inflate "attempted" past the total and
     # quietly move the cold re-solve rate -- the metric the curriculum says
@@ -277,7 +286,8 @@ def metrics(on: date | None = None) -> dict:
     curric = cur.problems()
     rows = [r for r in all_rows if r["id"] in curric]
     if not rows:
-        return {"attempted": 0, "total": len(curric)}
+        return {"attempted": 0, "total": len(curric),
+                "sprint": current_sprint(), "lifetime_attempts": len(entries())}
     states = {k: v for k, v in replay(all_rows).items() if k in curric}
 
     # Cold re-solve rate: of attempts that were NOT the first at that problem,
@@ -301,6 +311,11 @@ def metrics(on: date | None = None) -> dict:
         "approach_avg": (sum(approach) / len(approach)) if approach else None,
         "day": max(1, ((on or date.today()) - day_one()).days + 1),
         "week": intake_week(set(replay())),
+        # Scoped to the pass in progress, like everything else here. The lifetime
+        # figure is kept alongside so starting a new pass never looks like
+        # losing the work.
+        "sprint": current_sprint(),
+        "lifetime_attempts": len(entries()),
     }
 
 
@@ -407,11 +422,15 @@ def history_view() -> dict:
         })
     # Only the most recent surviving attempt at a problem can be undone --
     # retraction cancels the latest, so offering it on an older row would
-    # silently remove a different attempt than the one you clicked.
+    # silently remove a different attempt than the one you clicked. And only
+    # within the pass in progress: undo() refuses to reach into a finished one,
+    # so offering the button there would just produce an error.
+    undoable = {(r["id"], r.get("ts")) for r in current_entries()}
     latest: dict[int, dict] = {}
     for d in sorted(days):
         for e in days[d]:
-            latest[e["id"]] = e
+            if (e["id"], e.get("ts")) in undoable:
+                latest[e["id"]] = e
     for e in latest.values():
         e["can_undo"] = True
 
@@ -423,7 +442,73 @@ def history_view() -> dict:
             "solved": sum(1 for e in es if e["outcome"] == SOLVED),
             "stuck": sum(1 for e in es if e["outcome"] != SOLVED),
         })
-    return {"days": out, "total": len(rows)}
+    return {"days": out, "total": len(rows), "sprint": current_sprint(),
+            # Rendered as a divider between passes, so a run that starts over
+            # does not read as one long undifferentiated log.
+            "sprints": [{"n": r["sprint"], "date": r["date"]}
+                        for r in raw_entries() if "sprint" in r]}
+
+
+# --- export -----------------------------------------------------------------
+
+def export_table() -> tuple[list[str], list[list]]:
+    """One row per curriculum problem, one column group per attempt.
+
+    Deliberately the WHOLE log, every pass, not the current one: this is the
+    thing you keep when you stop using the tool, and a pass boundary is a column
+    rather than a filter. Problems never attempted are included too, because
+    "what have I not touched" is most of the question being asked.
+    """
+    rows_by_pid: dict[int, list[dict]] = {}
+    sprint_at: dict[str, int] = {}
+    n = 1
+    for r in stream():
+        if "sprint" in r:
+            n = r["sprint"]
+            continue
+        rows_by_pid.setdefault(r["id"], []).append({**r, "sprint": n})
+
+    states = replay()
+    widest = max((len(v) for v in rows_by_pid.values()), default=0)
+
+    head = ["id", "title", "tier", "week", "block", "hard", "url",
+            "status", "attempts", "box", "due", "first_attempt", "last_attempt"]
+    for i in range(1, widest + 1):
+        head += [f"attempt_{i}_date", f"attempt_{i}_outcome",
+                 f"attempt_{i}_mistake", f"attempt_{i}_pass", f"attempt_{i}_note"]
+
+    out = []
+    for p in sorted(cur.problems().values(), key=lambda x: x["order"]):
+        pid = p["id"]
+        att = rows_by_pid.get(pid, [])
+        st = states.get(pid)
+        row = [
+            pid, p["title"], p["tier"], p["week"] or "", p["block"],
+            "yes" if p.get("hard") else "no", cur.url(pid),
+            ("done" if st.done else "learning") if st else "new",
+            len(att),
+            "" if not st or st.box is None else st.box,
+            st.due.isoformat() if st and st.due else "",
+            att[0]["date"] if att else "",
+            att[-1]["date"] if att else "",
+        ]
+        for a in att:
+            row += [a["date"], a["outcome"], a.get("mistake") or "",
+                    a["sprint"], (a.get("note") or "").replace("\n", " ")]
+        row += [""] * (len(head) - len(row))
+        out.append(row)
+    return head, out
+
+
+def export_csv() -> str:
+    import csv
+    import io
+    head, rows = export_table()
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\n")
+    w.writerow(head)
+    w.writerows(rows)
+    return buf.getvalue()
 
 
 def frequent_view() -> dict:

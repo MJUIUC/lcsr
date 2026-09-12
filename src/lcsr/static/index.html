@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LeetCode Spaced Repetition</title>
-<meta name="description" content="Runs the 18-week DSA curriculum's daily loop and records
-  it: 324 problems, the cue table, and the +3d / +10d / +30d rule. No streaks.">
+<meta name="description" content="Miss a problem and it comes back in 3 days, then 10, then
+  30. Solve it cold and it never does. 324 LeetCode problems in a deliberate order, base
+  pattern before hard variant. No streaks, no problems-solved counter.">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="LeetCode Spaced Repetition">
-<meta property="og:description" content="Run the 18-week DSA curriculum's daily loop, and
-  record it. No streaks, no problems-solved counter.">
+<meta property="og:description" content="Wrong answers come back at 3, 10 and 30 days.
+  Right ones do not. 324 problems in an order that builds.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ffa116'/><path d='M20.5 8.5 12 16l8.5 7.5' fill='none' stroke='%23151515' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 <script>
 (function(){try{var t=localStorage.getItem('lcsr-theme');
@@ -78,8 +79,19 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .theme button:hover{color:var(--ink)}
 .theme button[aria-pressed=true]{background:var(--panel);color:var(--ink);font-weight:550}
 .sitefoot{border-top:1px solid var(--line);background:var(--panel);margin-top:70px}
-.sitefoot .finner{max-width:1040px;margin:0 auto;padding:26px 22px 38px;display:flex;
-  gap:14px 30px;flex-wrap:wrap;align-items:baseline}
+.sitefoot .finner{max-width:1040px;margin:0 auto;padding:26px 22px 34px;display:flex;
+  gap:16px 30px;flex-wrap:wrap;align-items:flex-start}
+.fmain{flex:1 1 320px;min-width:0}
+.fside{display:flex;flex-direction:column;gap:10px;align-items:flex-end;flex:none}
+.fmade{font-size:13px;color:var(--mid);white-space:nowrap}
+.fmade .heart{color:var(--hard);font-style:normal}
+.flinks{display:flex;gap:6px}
+.flinks a{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;
+  border:1px solid var(--line);color:var(--muted);transition:.13s}
+.flinks a:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.flinks a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.flinks svg{width:16px;height:16px;fill:currentColor;display:block}
+@media(max-width:640px){.fside{align-items:flex-start}}
 .fname{font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
 .fname em{font-style:normal;color:var(--accent)}
 .fdesc{font-size:13px;color:var(--muted);line-height:1.7;flex:1;min-width:260px}
@@ -216,6 +228,11 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .h .undo:hover{border-color:var(--danger);color:var(--danger);background:none}
 .hnote{margin-top:8px;padding:9px 12px;background:var(--panel2);border-radius:8px;
   font-size:13px;color:var(--mid);border-left:2px solid var(--line)}
+.passmark{display:flex;align-items:center;gap:12px;margin:26px 2px 16px;
+  font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  font-weight:600}
+.passmark i{flex:1;height:1px;background:var(--line)}
+.passmark .pm2{color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none}
 
 /* ---------- cues ---------- */
 .cue{background:var(--panel);border:1px solid var(--line);border-radius:11px;
@@ -391,9 +408,22 @@ details.add[open] summary::before{content:"− "}
 <main id="view"></main>
 
 <footer class="sitefoot"><div class="finner">
-  <span class="fname">LeetCode Spaced Repetition <em>(lcsr)</em></span>
-  <span class="fdesc">Runs the 18-week DSA curriculum's daily loop and records it.
-    324 problems, the cue table, and the +3d / +10d / +30d rule. No streaks.</span>
+  <div class="fmain">
+    <span class="fname">LeetCode Spaced Repetition <em>(lcsr)</em></span>
+    <span class="fdesc">Miss a problem and it comes back in <b>3 days</b>, then <b>10</b>,
+      then <b>30</b>. Solve it cold and it never comes back at all. The 324 problems run in
+      a deliberate order, each pattern's plainest example before its hard variants, so every
+      problem has something to stand on. No streaks, and no problems-solved counter.</span>
+  </div>
+  <div class="fside">
+    <span class="fmade">Made with <span class="heart">&#9829;</span> by Swapnil</span>
+    <span class="flinks">
+      <a href="https://github.com/Swapnil-jain/leetcode-srs" target="_blank"
+         rel="noopener noreferrer" title="Source on GitHub" aria-label="Source on GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.96 0-1.32.47-2.39 1.24-3.23-.12-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.18.77.84 1.24 1.91 1.24 3.23 0 4.63-2.8 5.65-5.48 5.95.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 24 12.5C24 5.87 18.63.5 12 .5Z"/></svg>
+      </a>
+    </span>
+  </div>
   <span class="fwhere" id="footwhere"></span>
 </div></footer>
 
@@ -420,6 +450,7 @@ let plan=null, curric=null, hist=null, cues=null, freq=null, load=null;
 let drawn = null;
 const FILT = {diff:new Set(), lists:new Set(), noPaid:false, noSolved:true, noCurric:true};
 let listsInit = false;   // set once, so unticking every source is not undone by a refresh
+let sprintArmed = false; // starting a new pass is two clicks, never one
 const draft = {};        // id -> {mistake, note}
 const revealed = new Set();
 let showAhead = false;
@@ -668,7 +699,21 @@ function vCurriculum(){
 
 function vHistory(){
   if(!hist.days.length) return `<div class="empty"><b>Nothing logged yet</b>Attempts appear here as you record them.</div>`;
-  return hist.days.map(d=>`
+  // Days run newest first, so a pass that began on date D divides the entries
+  // above it from those below. Without this the log of a second run reads as
+  // one undifferentiated list in which everything is somehow solved twice.
+  const marks = (hist.sprints || []).slice().sort((a,b)=> a.date < b.date ? 1 : -1);
+  const shown = new Set();
+  return hist.days.map(d=>{
+    let head = '';
+    for(const m of marks){
+      if(m.date >= d.date && !shown.has(m.n)){
+        shown.add(m.n);
+        head += `<div class="passmark"><span>Pass ${m.n} started</span><i></i>
+          <span class="pm2">${esc(m.date)}</span></div>`;
+      }
+    }
+    return head + `
     <div class="day">
       <div class="dayhead">
         <span class="daydate">${d.date}</span>
@@ -689,7 +734,8 @@ function vHistory(){
           </div>
           ${e.note?`<div class="hnote">${esc(e.note)}</div>`:''}
         </div>`).join('')}
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function vCues(){
@@ -909,9 +955,9 @@ function vAddProblem(){
 function vSettings(){
   const d = load, s = d.settings, c = d.curriculum, e = d.effective;
   const TIERS = [
-    ['foundations','Foundations','Prerequisite fluency. The curriculum runs these in weeks 1 to 3, and they stay on offer until none are left.'],
-    ['core','Core','The spine of the schedule. Cut this last.'],
-    ['reps','Reps','Interleaved practice, spread across weeks rather than massed.'],
+    ['foundations','Foundations','The basics every later pattern assumes you already have. Front-loaded into weeks 1 to 3, and kept on offer after that until you have worked through all of them, so racing ahead on core cannot leave them behind.'],
+    ['core','Core','The pattern being taught that week, in the order the curriculum teaches it: the plainest example of a pattern before any hard variant of it. Cut this last.'],
+    ['reps','Reps','Second and third problems on patterns from earlier weeks, mixed into today rather than drilled in a block. Mixing them is the point: you have to work out which pattern applies instead of being told by the heading.'],
   ];
   const row = ([k,label,hint]) => `
     <div class="setrow">
@@ -957,12 +1003,65 @@ function vSettings(){
       : 'You have changed the default load.'} Week ${d.week} right now.</span>
   </div>
   <div class="err" id="set-err"></div>
+  ${vPasses()}
+  ${vExport()}
   ${vAddProblem()}`;
+}
+
+function vPasses(){
+  const m = plan.metrics, d = load;
+  const done = curric ? curric.overall.done : 0;
+  const total = curric ? curric.overall.total : m.total;
+  const finished = total && done >= total;
+  const left = Math.max(0, total - done);
+  return `
+  <div class="sec" style="margin-top:38px"><h2>Passes</h2>
+    <span class="hint">going round again when you reach the end</span></div>
+  <div class="poolintro" style="border-left-color:var(--brand)">
+    <p>You are on <b>pass ${d.sprint}</b>. ${finished
+      ? 'Every problem is finished.'
+      : `<b>${done}</b> of <b>${total}</b> finished, <b>${left}</b> still to go.`}</p>
+    <p>Starting a new pass puts every problem back on offer and empties the
+      3 / 10 / 30 ladder. <b>Nothing is deleted.</b> Every attempt you have ever logged
+      stays in Progress and in your export; it just stops being what you are scheduled on.
+      New problems a day go up by one with each pass.</p>
+    ${finished ? '' : `<p class="apart" style="color:var(--warn)">Starting now also drops
+      the re-solves currently scheduled, because those belong to this pass.</p>`}
+  </div>
+  <div class="prow">
+    <button class="btn ${finished?'primary':'warn'}" id="sprint-go"
+      data-armed="${sprintArmed}">${sprintArmed
+        ? `Yes, start pass ${d.sprint + 1}`
+        : `Start pass ${d.sprint + 1}`}</button>
+    ${sprintArmed?'<button class="btn" id="sprint-cancel">Cancel</button>':''}
+    <span class="hint">${sprintArmed
+      ? 'This cannot be undone from here, though nothing is lost.'
+      : 'You will be asked to confirm.'}</span>
+  </div>`;
+}
+
+function vExport(){
+  return `
+  <div class="sec" style="margin-top:38px"><h2>Export</h2>
+    <span class="hint">your record, in a form nothing here owns</span></div>
+  <div class="poolintro" style="border-left-color:var(--brand)">
+    <p><b>Progress table (CSV).</b> One row per problem across all ${plan.metrics.total} of
+      them, attempted or not, with its tier, week, status and current due date, then one
+      column group per attempt: the date, the outcome, the mistake class, which pass it
+      belonged to, and your note. Opens in any spreadsheet.</p>
+    <p><b>Raw log (JSONL).</b> The append-only file itself, byte for byte, retractions and
+      pass markers included. This is the one the CLI reads back.</p>
+  </div>
+  <div class="prow">
+    <a class="btn primary" href="/api/export.csv" download>Download CSV</a>
+    <a class="btn" href="/api/export.jsonl" download>Download raw log</a>
+  </div>`;
 }
 
 /* ---------------- render ---------------- */
 function renderChrome(){
-  $('#daychip').innerHTML = `day ${plan.day} · week ${plan.week}${
+  $('#daychip').innerHTML = `${plan.sprint > 1 ? 'pass ' + plan.sprint + ' · ' : ''}`
+    + `day ${plan.day} · week ${plan.week}${
       plan.block ? ' · ' + esc(plan.block) : ''} · `
     + `<strong style="color:${plan.caught_up?'var(--ok)':'var(--ink)'}">`
     + `${plan.done_today}/${plan.target_today}</strong> today`;
@@ -1176,6 +1275,23 @@ document.addEventListener('click', async e=>{
 });
 
 document.addEventListener('click', async e=>{
+  if(e.target.id==='sprint-cancel'){ sprintArmed = false; return render(); }
+  if(e.target.id==='sprint-go'){
+    if(!sprintArmed){ sprintArmed = true; return render(); }
+    try{
+      const r = await api('/api/sprint', {});
+      sprintArmed = false;
+      // Everything is derived from the log, and the log just changed shape:
+      // refetch the lot rather than patch pieces of it.
+      load = await api('/api/settings');
+      plan = await api('/api/plan');
+      curric = await api('/api/curriculum');
+      if(hist) hist = await api('/api/history');
+      toast(`pass ${r.sprint} started, nothing was deleted`);
+      go('today');
+    }catch(err){ $('#set-err').textContent = err.message; }
+    return;
+  }
   if(e.target.id==='set-save' || e.target.id==='set-reset'){
     $('#set-err').textContent = '';
     try{

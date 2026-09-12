@@ -20,10 +20,11 @@ from pathlib import Path
 
 from . import curriculum as cur
 from . import settings as cfg
-from .plan import (curriculum_view, foundations_left, frequent_view, history_view,
-                   intake_week, todays_plan)
+from .plan import (curriculum_view, export_csv, foundations_left, frequent_view,
+                   history_view, intake_week, todays_plan)
 from .schedule import SOLVED, STUCK
-from .store import HOME, LOCK, MISTAKES, amend, append, make_entry, replay, undo
+from .store import (HOME, LOCK, LOG, MISTAKES, amend, append, current_sprint,
+                    make_entry, replay, start_sprint, undo)
 
 INDEX = Path(__file__).parent / "static" / "index.html"
 
@@ -194,6 +195,14 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, cur.cues())
         if route.path == "/api/settings":
             return self._send(200, self._load_view())
+        if route.path == "/api/export.csv":
+            return self._download(export_csv().encode("utf-8"),
+                                  "text/csv; charset=utf-8", "lcsr-progress.csv")
+        if route.path == "/api/export.jsonl":
+            # The raw log, byte for byte. The CSV is a view of it; this is the
+            # thing the CLI can read straight back.
+            raw = LOG.read_bytes() if LOG.exists() else b""
+            return self._download(raw, "application/x-ndjson", "lcsr-log.jsonl")
         return self._send(404, {"error": "not found"})
 
     def do_POST(self):
@@ -216,6 +225,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, self._log(body))
             if self.path == "/api/add":
                 return self._send(200, self._add(body))
+            if self.path == "/api/sprint":
+                mark = start_sprint()
+                return self._send(200, {"ok": True, "sprint": mark["sprint"],
+                                        "date": mark["date"]})
             if self.path == "/api/settings":
                 # Absent key means "leave alone"; an explicit null clears that
                 # override back to the curriculum's own load. They are different
@@ -287,6 +300,15 @@ class Handler(BaseHTTPRequestHandler):
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
 
+    def _download(self, raw: bytes, ctype: str, filename: str):
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(raw)))
+        self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(raw)
+
     def _load_view(self):
         """Settings plus the day they produce.
 
@@ -296,7 +318,7 @@ class Handler(BaseHTTPRequestHandler):
         """
         attempted = set(replay())
         return cfg.describe(intake_week(attempted), foundations_left(attempted),
-                            cfg.load())
+                            cfg.load(), current_sprint())
 
     def _add(self, body):
         title = (body.get("title") or "").strip()
