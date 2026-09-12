@@ -25,6 +25,7 @@ from .plan import (curriculum_view, export_csv, foundations_left, frequent_view,
                    history_view, intake_week, todays_plan)
 from .schedule import SOLVED, STUCK
 from .store import (HOME, LOCK, LOG, MISTAKES, amend, append, current_sprint,
+                    raw_entries,
                     make_entry, replay, start_sprint, undo)
 
 INDEX = Path(__file__).parent / "static" / "index.html"
@@ -254,28 +255,57 @@ class Handler(BaseHTTPRequestHandler):
     READ_PATHS = ("/api/plan", "/api/curriculum", "/api/history",
                   "/api/frequent", "/api/cues")
 
+    def _route(self, body) -> str:
+        """Which endpoint this POST means.
+
+        GOTCHA: a Vercel rewrite gives the function the DESTINATION path, so every
+        request arrives as /api/index and self.path tells you nothing about what
+        was asked for. Everything 404'd. The client names the endpoint in the body
+        instead, which is true regardless of how any host rewrites, and self.path
+        stays the fallback for the local server and for curl.
+        """
+        op = body.get("op")
+        if isinstance(op, str) and op.startswith("/api/"):
+            return op
+        return self.path
+
     def _is_read(self, body) -> bool:
-        if self.path in self.READ_PATHS:
+        path = self._route(body)
+        if path in self.READ_PATHS:
             return True
-        return (self.path == "/api/settings"
+        return (path == "/api/settings"
                 and not any(k in body for k in self.SETTING_KEYS))
 
     def _post_routes(self, body):
+        path = self._route(body)
         try:
             # The read endpoints answer a POST too, because that is the only way
             # a stateless client can hand over its state. Same code, same shapes.
             if self._is_read(body):
                 q = f"?date={body['date']}" if body.get("date") else ""
-                return self._get(urlparse(self.path + q))
-            if self.path == "/api/log":
+                return self._get(urlparse(path + q))
+            if path == "/api/log":
                 return self._send(200, self._log(body))
-            if self.path == "/api/add":
+            if path == "/api/export":
+                # Same bytes the GET download serves, but as JSON, because a
+                # stateless client cannot GET a file the server cannot build.
+                fmt = "jsonl" if body.get("format") == "jsonl" else "csv"
+                if fmt == "jsonl":
+                    text = "\n".join(json.dumps(r, ensure_ascii=False)
+                                     for r in raw_entries())
+                    text = text + "\n" if text else ""
+                else:
+                    text = export_csv()
+                return self._send(200, {"ok": True, "format": fmt, "text": text,
+                                        "filename": f"lcsr-progress.csv" if fmt == "csv"
+                                                    else "lcsr-log.jsonl"})
+            if path == "/api/add":
                 return self._send(200, self._add(body))
-            if self.path == "/api/sprint":
+            if path == "/api/sprint":
                 mark = start_sprint()
                 return self._send(200, {"ok": True, "sprint": mark["sprint"],
                                         "date": mark["date"]})
-            if self.path == "/api/settings":
+            if path == "/api/settings":
                 # Absent key means "leave alone"; an explicit null clears that
                 # override back to the curriculum's own load. They are different
                 # instructions and the UI sends both.
@@ -286,7 +316,7 @@ class Handler(BaseHTTPRequestHandler):
                                   ("foundations", "core", "reps", "daily_total")
                                   if k in body})
                 return self._send(200, self._load_view())
-            if self.path == "/api/amend":
+            if path == "/api/amend":
                 pid = problem_id(body)
                 cur.loggable(pid)
                 outcome = STUCK if body.get("outcome") == STUCK else SOLVED
@@ -300,7 +330,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"ok": True, "id": pid, "was": was["outcome"],
                                         "now": outcome, "date": was["date"],
                                         "due": st.due.isoformat() if st.due else None})
-            if self.path == "/api/undo":
+            if path == "/api/undo":
                 pid = problem_id(body)
                 was = undo(pid)
                 st = replay().get(pid)

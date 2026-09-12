@@ -8,6 +8,10 @@
   30. Solve it cold and it never does. 324 LeetCode problems in a deliberate order, base
   pattern before hard variant. No streaks, no problems-solved counter.">
 <meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://leetcode-srs-khaki.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://leetcode-srs-khaki.vercel.app/">
+<meta name="twitter:card" content="summary">
 <meta property="og:title" content="LeetCode Spaced Repetition">
 <meta property="og:description" content="Wrong answers come back at 3, 10 and 30 days.
   Right ones do not. 324 problems in an order that builds.">
@@ -15,6 +19,17 @@
 <script>
 (function(){try{var t=localStorage.getItem('lcsr-theme');
   if(t&&t!=='system')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+// Vercel Web Analytics, in its no-bundler form. Page views only; it never sees your
+// log, which never leaves this browser. Skipped on localhost, where the endpoint
+// does not exist and would 404 in the console on every run.
+(function(){
+  var h = location.hostname;
+  if(h === 'localhost' || h === '127.0.0.1' || h === '' || h === '[::1]') return;
+  window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };
+  var s = document.createElement('script');
+  s.defer = true; s.src = '/_vercel/insights/script.js';
+  document.head.appendChild(s);
+})();
 </script>
 <style>
 /* LeetCode-flavoured. --brand is the LeetCode orange and is used for FILLS;
@@ -589,18 +604,31 @@ function applyPatch(pt){
   writeState();
 }
 
+// On the deployed build every /api/* request is rewritten to one function, which
+// sees the destination path and not the one asked for. So the endpoint travels in
+// the body as `op` and the URL is always the same.
+const API_ONE = '/api/index';
+
+/* One request shape, both modes.
+   Reads used to be GETs. On the deployed build a rewrite sends every /api/* path
+   to one function, which then sees /api/index and nothing matched: the very first
+   call 404'd and the page showed "Could not reach lcsr". So the endpoint travels
+   in the body and the URL never varies.
+
+   `state` is attached only once the server has said it is stateless. That is what
+   keeps the LOCAL server writing to ~/.lcsr: a body carrying state switches it to
+   the in-memory backend, so sending state before knowing the mode would quietly
+   stop the CLI's own server from saving anything. */
 async function api(p, body){
-  let opts;
-  if(STATELESS){
-    // Read endpoints answer a POST too; it is the only way to hand over state.
-    opts = {method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({...(body || {}), state: STATE})};
-  }else if(body){
-    opts = {method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify(body)};
-  }
-  const r = await fetch(p, opts || {});
-  const j = await r.json();
+  const [route, query] = p.split('?');
+  const payload = {...(body || {}), op: route};
+  if(query && query.startsWith('date=')) payload.date = decodeURIComponent(query.slice(5));
+  if(STATELESS) payload.state = STATE;
+  const r = await fetch(API_ONE, {method:'POST',
+    headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  let j;
+  try{ j = await r.json(); }
+  catch(e){ throw new Error(`server sent a ${r.status} with no JSON body`); }
   if(typeof j.stateless === 'boolean') STATELESS = j.stateless;
   if(!r.ok) throw new Error(j.error || 'request failed');
   applyPatch(j.state_patch);
@@ -1192,8 +1220,8 @@ function vExport(){
     <p><b>Raw log.</b> The append-only file itself, which is what the CLI reads back.</p>
   </div>
   <div class="prow">
-    <a class="btn primary" href="/api/export.csv" download>Download CSV</a>
-    <a class="btn" href="/api/export.jsonl" download>Download raw log</a>
+    <button class="btn primary" data-export="csv">Download CSV</button>
+    <button class="btn" data-export="jsonl">Download raw log</button>
   </div>`;
 }
 
@@ -1312,6 +1340,30 @@ document.addEventListener('click', async e=>{
   // cue reveal
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  const ex = e.target.closest('[data-export]');
+  if(ex){
+    const kind = ex.dataset.export;
+    try{
+      let text, name;
+      if(STATELESS){
+        // The server has no copy of your log here, so the export is built from
+        // this browser's own state rather than fetched.
+        const r = await api('/api/export', {format: kind});
+        text = r.text; name = r.filename;
+      }else{
+        const r = await fetch(kind === 'csv' ? '/api/export.csv' : '/api/export.jsonl');
+        if(!r.ok) throw new Error('export failed');
+        text = await r.text();
+        name = kind === 'csv' ? 'lcsr-progress.csv' : 'lcsr-log.jsonl';
+      }
+      const url = URL.createObjectURL(new Blob([text],
+        {type: kind === 'csv' ? 'text/csv' : 'application/x-ndjson'}));
+      const a = document.createElement('a');
+      a.href = url; a.download = name; document.body.appendChild(a); a.click();
+      a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }catch(err){ toast(err.message); }
+    return;
+  }
   const tu = e.target.closest('[data-toast-undo]');
   if(tu){
     const id = +tu.dataset.toastUndo;

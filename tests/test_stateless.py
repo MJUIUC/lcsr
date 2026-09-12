@@ -222,3 +222,28 @@ def test_settings_post_is_a_read_or_a_write_by_payload():
     assert not H("/api/settings")._is_read({"reset": True})
     assert H("/api/plan")._is_read({"state": {}, "core": 3})
     assert not H("/api/log")._is_read({"state": {}})
+
+
+def test_routing_survives_a_rewrite_that_hides_the_path():
+    """Vercel rewrites /api/* to one function, which then sees /api/index.
+
+    Routing on self.path alone meant nothing matched and the first request the
+    page made came back 404 "not found", which the UI reports as "Could not
+    reach lcsr" against a server that is answering fine.
+    """
+    from lcsr.server import Handler
+
+    class H(Handler):
+        def __init__(self, path):
+            self.path = path
+
+    assert H("/api/index")._route({"op": "/api/plan"}) == "/api/plan"
+    assert H("/api/index")._is_read({"op": "/api/plan"})
+    assert not H("/api/index")._is_read({"op": "/api/log"})
+    assert not H("/api/index")._is_read({"op": "/api/settings", "core": 3})
+    # A body without op falls back to the real path, which is the local server.
+    assert H("/api/plan")._route({}) == "/api/plan"
+    # op is only honoured when it names an api route, so it cannot be used to
+    # reach anything else.
+    assert H("/api/index")._route({"op": "../../etc/passwd"}) == "/api/index"
+    assert H("/api/index")._route({"op": 12}) == "/api/index"

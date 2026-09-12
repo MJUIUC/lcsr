@@ -1,5 +1,11 @@
 # lcsr: LeetCode Spaced Repetition
 
+### [→ Try it live](https://leetcode-srs-khaki.vercel.app)
+
+No sign-up. Your progress stays in your own browser and never reaches a server.
+Or run it locally with the CLI below, where it lives in a plain file you own.
+
+
 **A spaced repetition system for LeetCode and DSA interview prep.**
 
 **Miss a problem and it comes back in 3 days, then 10, then 30. Solve it cold and
