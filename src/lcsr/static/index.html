@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LeetCode Spaced Repetition</title>
-<meta name="description" content="Runs the daily loop from the 18-week DSA curriculum and
-  records it: 322 problems, the cue table, and the +3d / +10d / +30d rule for problems you
-  got stuck on.">
+<meta name="description" content="Runs the 18-week DSA curriculum's daily loop and records
+  it: 322 problems, the cue table, and the +3d / +10d / +30d rule. No streaks.">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="LeetCode Spaced Repetition">
 <meta property="og:description" content="Run the 18-week DSA curriculum's daily loop, and
@@ -359,9 +358,8 @@ details.add[open] summary::before{content:"− "}
 
 <footer class="sitefoot"><div class="finner">
   <span class="fname">LeetCode Spaced Repetition <em>(lcsr)</em></span>
-  <span class="fdesc">Runs the daily loop from the 18-week DSA curriculum and records it.
-    All 322 problems, the cue table, and the curriculum's +3d / +10d / +30d rule for
-    problems you got stuck on. No streaks, and no problems-solved counter.</span>
+  <span class="fdesc">Runs the 18-week DSA curriculum's daily loop and records it.
+    322 problems, the cue table, and the +3d / +10d / +30d rule. No streaks.</span>
   <span class="fwhere" id="footwhere"></span>
 </div></footer>
 
@@ -726,15 +724,9 @@ function vPool(){
   // drawing from or that it was separate from the curriculum at all.
   const intro = `<div class="poolintro">
     <h2>Interview pool</h2>
-    <p><b>${st.total} problems that interviews actually repeat</b>, merged from four public
-      lists and deduplicated by LeetCode number. 599 raw entries collapse to ${st.total},
-      because the lists overlap heavily and Striver's alone files 18 problems under two
-      topics.</p>
-    <p><b class="apart">This is separate from your 18-week curriculum.</b> Drawing here,
-      and solving what you draw, never changes your curriculum progress, its totals, or any
-      of the three metrics. The only crossing point is read-only:
-      <b>${st.in_curriculum}</b> of these are already in your curriculum and
-      <b>${st.only_here}</b> are not, and every row tells you which.</p>
+    <p><b>${st.total} problems that interviews repeat</b>, merged from four public lists.</p>
+    <p><b class="apart">Separate from your curriculum.</b> Nothing you do here moves its
+      progress or metrics. ${st.in_curriculum} overlap, and every row says which.</p>
     <div class="srcs">${Object.entries(freq.labels).map(([k,v])=>
       `<span class="srcpill"><i></i>${esc(v)} <b>${counts[k]||0}</b></span>`).join('')}</div>
   </div>`;
@@ -777,8 +769,7 @@ function vPool(){
           pool.length ? 'Press draw' : 'Nothing matches these filters'}</div>`}
     <div class="prow">
       <button class="btn primary" id="f-draw">${d?'Draw again':'Draw a problem'}</button>
-      <span class="hint"><b>${pool.length}</b> in the pool, weighted by how many of the four
-        lists a problem is on, so the ones every list agrees about come up most.</span>
+      <span class="hint"><b>${pool.length}</b> in the pool, weighted by list overlap.</span>
     </div>
   </div>`;
 
