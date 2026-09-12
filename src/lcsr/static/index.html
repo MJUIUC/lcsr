@@ -144,6 +144,18 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 .btn.primary:hover{opacity:.88;color:#1a1200;background:var(--brand)}
 .pcue{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);font-style:italic;
   margin-top:-4px}
+/* The cue names the pattern, so on an unattempted problem it is the answer.
+   Blurred until asked for. user-select:none matters: blurred text is still
+   selectable, and a stray drag-select would hand over the thing being hidden. */
+.pcue.veil{display:flex;align-items:baseline;gap:9px;width:100%;text-align:left}
+.cuetag{font:600 10px ui-monospace,Menlo,monospace;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);flex:none;font-style:normal}
+.cuetext{transition:filter .16s ease}
+.veiled .cuetext{filter:blur(4.5px);opacity:.7;user-select:none}
+.cuehint{font-size:11px;font-style:normal;color:var(--accent);flex:none;white-space:nowrap;
+  margin-left:auto}
+.pcue.veil:hover .cuehint{text-decoration:underline}
+.pcue.veil:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:7px}
 .pmeta{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);margin-top:-4px}
 .pmeta .ok{color:var(--ok)} .pmeta .w{color:var(--warn)}
 
@@ -500,6 +512,20 @@ function logActions(solved){
     </span>`;
 }
 
+// Cues are veiled per problem, in memory. Deliberately not persisted: a new
+// session should start covered, because the cost of re-revealing one is a click
+// and the cost of a cue you did not mean to read is the problem itself.
+const unveiled = new Set();
+
+function cueRow(p){
+  const open = unveiled.has(p.id);
+  return `<button type="button" class="pcue veil ${open ? '' : 'veiled'}"
+      data-veil="${p.id}" aria-pressed="${open}"
+      aria-label="${open ? 'Hide' : 'Reveal'} the cue for problem ${p.id}"
+    ><span class="cuetag">cue</span><span class="cuetext">${esc(p.cue)}</span>${
+      open ? '' : '<span class="cuehint">click to reveal</span>'}</button>`;
+}
+
 function pRow(p, o={}){
   const st = p.state || {};
   const late = o.late;
@@ -522,7 +548,7 @@ function pRow(p, o={}){
       <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
       ${badges}${acts}
     </div>
-    ${o.cue && p.cue ? `<div class="pcue">cue: ${esc(p.cue)}</div>` : ''}
+    ${o.cue && p.cue ? cueRow(p) : ''}
     ${meta}
     ${o.readonly ? '' : logPanel(p, st.status === 'done')}
   </div>`;
@@ -1033,6 +1059,21 @@ document.addEventListener('click', async e=>{
   // cue reveal
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  const veil = e.target.closest('[data-veil]');
+  if(veil){
+    const id = +veil.dataset.veil;
+    if(unveiled.has(id)) unveiled.delete(id); else unveiled.add(id);
+    const open = unveiled.has(id);
+    // Toggled in place rather than via render(): a full re-render would discard
+    // whatever is typed in an open note panel on the same card.
+    veil.classList.toggle('veiled', !open);
+    veil.setAttribute('aria-pressed', open);
+    veil.setAttribute('aria-label', `${open ? 'Hide' : 'Reveal'} the cue for problem ${id}`);
+    veil.querySelector('.cuehint')?.remove();
+    if(!open) veil.insertAdjacentHTML('beforeend',
+      '<span class="cuehint">click to reveal</span>');
+    return;
+  }
   if(e.target.id==='d-next' || e.target.id==='d-prev'){
     return setDate(addDays((preview || plan).date, e.target.id==='d-next' ? 1 : -1));
   }

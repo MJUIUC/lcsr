@@ -76,3 +76,44 @@ def test_legacy_hashes_still_resolve_to_real_tabs():
     for old, new in re.findall(r"tab === '(\w+)'.*?tab = '(\w+)'", JS):
         assert new in TAB_KEYS, f"#{old} redirects to #{new}, which is not a tab"
         assert old not in TAB_KEYS, f"#{old} redirects but is still a live tab"
+
+
+# --- the cue veil ---------------------------------------------------------
+
+def _click_listener() -> str:
+    """The big delegated click handler, the one with the card actions in it."""
+    i = JS.index("const card = e.target.closest('.p'); if(!card) return;")
+    start = JS.rindex("document.addEventListener('click'", 0, i)
+    return JS[start:i]
+
+
+def test_the_cue_veil_is_handled_before_the_card_handler():
+    """The veil button sits inside a .p card and carries no data-act.
+
+    The card handler bails on `if(!card) return` and then matches on data-act, so
+    a veil click reaching it falls through every branch and silently does
+    nothing. It has to be caught by an earlier return.
+    """
+    assert "closest('[data-veil]')" in _click_listener(), \
+        "the cue veil is handled at or after the card handler, so clicks do nothing"
+
+
+def test_cues_are_veiled_by_default():
+    """`unveiled` starts empty and cueRow adds the class when the id is absent,
+    so a problem is covered until it is asked for. A default of 'revealed' would
+    hand over the pattern on every page load."""
+    assert "const unveiled = new Set();" in JS
+    body = _block("function cueRow(p)")
+    assert "unveiled.has(p.id)" in body
+    assert "veiled" in body
+
+
+def test_only_today_passes_cues_to_a_row():
+    """pRow renders the cue only when asked, and only the Today view asks.
+
+    If the curriculum view ever passes cue:true, every cue in the course is on
+    one scrollable page, which is the opposite of the point.
+    """
+    assert "cueRow(p)" in _block("function pRow(p, o={})")
+    curric = _block("function vCurriculum()")
+    assert "cue:true" not in curric.replace(" ", ""), "vCurriculum now leaks cues"
