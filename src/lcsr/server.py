@@ -19,7 +19,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from . import curriculum as cur
-from .plan import curriculum_view, frequent_view, history_view, todays_plan
+from . import settings as cfg
+from .plan import (curriculum_view, foundations_left, frequent_view, history_view,
+                   intake_week, todays_plan)
 from .schedule import SOLVED, STUCK
 from .store import HOME, LOCK, MISTAKES, amend, append, make_entry, replay, undo
 
@@ -190,6 +192,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, frequent_view())
         if route.path == "/api/cues":
             return self._send(200, cur.cues())
+        if route.path == "/api/settings":
+            return self._send(200, self._load_view())
         return self._send(404, {"error": "not found"})
 
     def do_POST(self):
@@ -212,6 +216,17 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, self._log(body))
             if self.path == "/api/add":
                 return self._send(200, self._add(body))
+            if self.path == "/api/settings":
+                # Absent key means "leave alone"; an explicit null clears that
+                # override back to the curriculum's own load. They are different
+                # instructions and the UI sends both.
+                if body.get("reset"):
+                    cfg.reset()
+                else:
+                    cfg.update(**{k: body[k] for k in
+                                  ("foundations", "core", "reps", "daily_total")
+                                  if k in body})
+                return self._send(200, self._load_view())
             if self.path == "/api/amend":
                 pid = problem_id(body)
                 cur.loggable(pid)
@@ -271,6 +286,17 @@ class Handler(BaseHTTPRequestHandler):
         st = replay()[pid]
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
+
+    def _load_view(self):
+        """Settings plus the day they produce.
+
+        The effective mix is computed here rather than in the page, because a
+        cap that silently zeroes a tier is exactly the thing a user needs shown
+        back to them, and the rule for it lives in settings.daily_quota().
+        """
+        attempted = set(replay())
+        return cfg.describe(intake_week(attempted), foundations_left(attempted),
+                            cfg.load())
 
     def _add(self, body):
         title = (body.get("title") or "").strip()

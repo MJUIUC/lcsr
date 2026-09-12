@@ -8,23 +8,10 @@ from collections import Counter
 from datetime import date, timedelta
 
 from . import curriculum as cur
+from . import settings as cfg
 from .schedule import SOLVED
+from .settings import allowance          # re-exported: part of plan's surface
 from .store import entries, replay
-
-# Per-day intake of NEW problems, from the load the curriculum states for itself:
-# "~4-5/day in weeks 1-3 (the foundations are quick), ~3/day in weeks 4-11,
-# ~3-4/day in weeks 12-16, plus the spaced re-solves." Reps start in week 3.
-#
-# Due re-solves are deliberately NOT counted against this. They are mandatory and
-# the curriculum lists them as additional to the daily intake.
-def allowance(week: int) -> dict[str, int]:
-    if week <= 2:
-        return {"foundations": 3, "core": 2, "reps": 0, "custom": 2}
-    if week == 3:
-        return {"foundations": 3, "core": 2, "reps": 1, "custom": 2}
-    if week <= 11:
-        return {"foundations": 0, "core": 2, "reps": 1, "custom": 2}
-    return {"foundations": 0, "core": 2, "reps": 2, "custom": 2}
 
 
 def day_one() -> date | None:
@@ -131,20 +118,16 @@ def todays_plan(on: date | None = None) -> dict:
     # of; there is a sequence and a rate.
     wk = intake_week(attempted)
 
-    def quota_for(week: int) -> dict:
-        """allowance(), with foundations kept alive while any remain.
+    prefs = cfg.load()
 
-        One tier's progress must not zero another's. intake_week() is derived
-        from CORE progress, and allowance() drops foundations to 0 from week 4 --
-        so finishing weeks 1-3's core stranded all remaining foundations exactly
-        the way the calendar bug did, just via a different route. Foundations are
-        prerequisites; they stop being offered when they are done, not when the
-        core has moved on.
+    def quota_for(week: int) -> dict:
+        """The curriculum's load, the foundations keep-alive, and your overrides.
+
+        All four rules are composed by settings.daily_quota(), which has the
+        truth table. Recomputed per call rather than cached because
+        foundations_left() shrinks as the day is worked.
         """
-        q = dict(allowance(week))
-        if not q["foundations"] and foundations_left(attempted):
-            q["foundations"] = min(3, foundations_left(attempted))
-        return q
+        return cfg.daily_quota(week, foundations_left(attempted), prefs)
     is_future = on > today
 
     first_seen: dict[int, str] = {}
@@ -277,6 +260,7 @@ def todays_plan(on: date | None = None) -> dict:
         "resolves_today": sum(1 for r in rows if r["date"] == on.isoformat()
                               and first_seen.get(r["id"]) != on.isoformat()),
         "caught_up": (not sections and not due) and not is_future and not paused,
+        "load": cfg.describe(wk, foundations_left(attempted), prefs),
         "metrics": metrics(on),
     }
 

@@ -287,6 +287,28 @@ details.add[open] summary::before{content:"− "}
   background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:4px 11px}
 .srcpill i{width:7px;height:7px;border-radius:99px;background:var(--pool);flex:none}
 .srcpill b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+/* ---------- settings ---------- */
+.setcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:6px 20px;box-shadow:var(--shadow);margin-bottom:16px}
+.setrow{display:grid;grid-template-columns:1fr 88px 118px;gap:16px;align-items:center;
+  padding:15px 0;border-bottom:1px solid var(--line2)}
+.setrow:last-child{border-bottom:none}
+.setrow.total{border-top:2px solid var(--line);border-bottom:none}
+.setlab b{display:block;font-size:14px;font-weight:600}
+.setlab span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.55}
+.setrow input{text-align:center;font-variant-numeric:tabular-nums}
+.seteff{font:600 13px ui-monospace,Menlo,monospace;text-align:right;color:var(--ink)}
+.seteff em{font-style:normal;font-weight:400;color:var(--muted);font-size:11.5px;
+  display:block;margin-top:2px;letter-spacing:.03em}
+.seteff.zero{color:var(--warn)}
+.sethead{display:grid;grid-template-columns:1fr 88px 118px;gap:16px;padding:14px 0 0;
+  font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:600}
+.sethead span:nth-child(2),.sethead span:nth-child(3){text-align:center}
+.sethead span:nth-child(3){text-align:right}
+@media(max-width:560px){
+  .setrow,.sethead{grid-template-columns:1fr 72px 92px;gap:10px}
+}
 .drawlead{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
   margin-bottom:11px;font-weight:600}
 .psec{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.7}
@@ -377,10 +399,11 @@ const TABS = [
   {k:'pool',       label:'Interview pool'},
   {k:'cues',       label:'Cue table'},
   {k:'stats',      label:'Stats'},
+  {k:'settings',   label:'Settings'},
 ];
 let tab = location.hash.slice(1) || 'today';
 if(tab === 'frequent') tab = 'pool';        // the tab this used to be called
-let plan=null, curric=null, hist=null, cues=null, freq=null;
+let plan=null, curric=null, hist=null, cues=null, freq=null, load=null;
 let drawn = null;
 const FILT = {diff:new Set(), lists:new Set(), noPaid:false, noSolved:true, noCurric:true};
 const draft = {};        // id -> {mistake, note}
@@ -824,6 +847,59 @@ function vStats(){
   </details>`;
 }
 
+function vSettings(){
+  const d = load, s = d.settings, c = d.curriculum, e = d.effective;
+  const TIERS = [
+    ['foundations','Foundations','Prerequisite fluency. The curriculum runs these in weeks 1 to 3, and they stay on offer until none are left.'],
+    ['core','Core','The spine of the schedule. Cut this last.'],
+    ['reps','Reps','Interleaved practice, spread across weeks rather than massed.'],
+  ];
+  const row = ([k,label,hint]) => `
+    <div class="setrow">
+      <span class="setlab"><b>${label}</b><span>${hint}</span></span>
+      <input type="number" min="0" max="${d.max_per_tier}" data-set="${k}"
+             value="${s[k] ?? ''}" placeholder="${c[k]}" aria-label="${label} per day">
+      <span class="seteff ${e[k]===0?'zero':''}">${e[k]}<em>${
+        s[k]===null ? 'curriculum' : 'you set '+s[k]}</em></span>
+    </div>`;
+  const total = ['foundations','core','reps'].reduce((a,k)=>a+e[k],0);
+  const capped = s.daily_total !== null && total >= s.daily_total;
+
+  return `
+  <div class="sec"><h2>Daily load</h2>
+    <span class="hint">how many new problems a day, before due re-solves</span></div>
+  <div class="poolintro" style="border-left-color:var(--brand)">
+    <p>The curriculum states a load for itself and that is what you get by default.
+      Leave a box empty to follow it, or type a number to override it.
+      <b>0 is a real setting</b> and stops that tier being issued at all.</p>
+    <p>Due re-solves are never capped by any of this. They are mandatory, and the
+      curriculum counts them as additional to the day's new problems.</p>
+  </div>
+
+  <div class="setcard">
+    <div class="sethead"><span>Tier</span><span>Per day</span><span>You get</span></div>
+    ${TIERS.map(row).join('')}
+    <div class="setrow total">
+      <span class="setlab"><b>Cap the whole day</b><span>An upper limit across all three.
+        Reps are cut first, then foundations, then core, which is the curriculum's own
+        order when you are moving too fast.</span></span>
+      <input type="number" min="0" max="${d.max_per_tier}" data-set="daily_total"
+             value="${s.daily_total ?? ''}" placeholder="none" aria-label="Total per day">
+      <span class="seteff ${total===0?'zero':''}">${total}<em>${
+        capped ? 'at the cap' : 'total'}</em></span>
+    </div>
+  </div>
+
+  <div class="prow">
+    <button class="btn primary" id="set-save">Save</button>
+    <button class="btn" id="set-reset" ${d.is_default?'disabled':''}>Follow the curriculum</button>
+    <span class="hint">${d.is_default
+      ? 'Currently following the curriculum exactly.'
+      : 'You have changed the default load.'} Week ${d.week} right now.</span>
+  </div>
+  <div class="err" id="set-err"></div>`;
+}
+
 /* ---------------- render ---------------- */
 function renderChrome(){
   $('#daychip').innerHTML = `day ${plan.day} · week ${plan.week}${
@@ -847,7 +923,7 @@ function render(opts={}){
   const y = window.scrollY;
   renderChrome();
   const v = {today:vToday, curriculum:vCurriculum, history:vHistory,
-             pool:vPool, cues:vCues, stats:vStats}[tab] || vToday;
+             pool:vPool, cues:vCues, stats:vStats, settings:vSettings}[tab] || vToday;
   $('#view').innerHTML = v();
   window.scrollTo({top: opts.top ? 0 : y});
 }
@@ -877,6 +953,7 @@ async function go(t){
   if(t==='history') hist = await api('/api/history');
   if(t==='pool' && !freq){ freq = await api('/api/frequent'); if(!drawn) draw(); }
     if(t==='cues' && !cues) cues = await api('/api/cues');
+    if(t==='settings') load = await api('/api/settings');
   }catch(err){
     tab = prev; location.hash = prev; toast(err.message); return;
   }
@@ -1009,6 +1086,28 @@ document.addEventListener('click', async e=>{
 });
 
 document.addEventListener('click', async e=>{
+  if(e.target.id==='set-save' || e.target.id==='set-reset'){
+    $('#set-err').textContent = '';
+    try{
+      if(e.target.id==='set-reset'){
+        load = await api('/api/settings', {reset:true});
+      }else{
+        // An empty box is an explicit null: follow the curriculum for that tier.
+        // It is not the same instruction as 0, which stops the tier entirely.
+        const body = {};
+        document.querySelectorAll('[data-set]').forEach(i=>{
+          const v = i.value.trim();
+          body[i.dataset.set] = v === '' ? null : Number(v);
+        });
+        load = await api('/api/settings', body);
+      }
+      plan = await api('/api/plan');     // target_today moves with the load
+      if(preview) preview = await api('/api/plan?date=' + preview.date);
+      toast('daily load saved');
+      render();
+    }catch(err){ $('#set-err').textContent = err.message; }
+    return;
+  }
   if(e.target.id!=='a-save') return;
   $('#a-err').textContent='';
   try{

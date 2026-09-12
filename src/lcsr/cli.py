@@ -5,7 +5,8 @@ import sys
 from datetime import date, timedelta
 
 from . import curriculum as cur
-from .plan import metrics, todays_plan
+from . import settings as cfg
+from .plan import foundations_left, intake_week, metrics, todays_plan
 from .schedule import SOLVED, STUCK
 from .store import MISTAKES, amend, append, make_entry, replay, undo
 
@@ -225,6 +226,37 @@ def cmd_status(a):
         print(f"\n{D}down{X}   {D}start it with `lcsr up`{X}\n")
 
 
+def cmd_config(a):
+    """Show or change the daily load."""
+    named = {k: getattr(a, k) for k in ("foundations", "core", "reps", "daily_total")
+             if getattr(a, k) is not None}
+    if a.reset:
+        cfg.reset()
+    elif named:
+        # "default" is how you clear one override from a shell, since there is no
+        # way to pass null through argparse and 0 is a real, different value.
+        cfg.update(**{k: (None if v == "default" else v) for k, v in named.items()})
+
+    attempted = set(replay())
+    d = cfg.describe(intake_week(attempted), foundations_left(attempted), cfg.load())
+    eff, curric, st = d["effective"], d["curriculum"], d["settings"]
+
+    print(f"\n{B}daily load{X}  {D}week {d['week']}{X}")
+    for tier in ("foundations", "core", "reps"):
+        own = st[tier]
+        src = f"{D}curriculum{X}" if own is None else f"{Y}you set {own}{X}"
+        print(f"  {tier:<12} {B}{eff[tier]}{X}   {D}curriculum says {curric[tier]}{X}  {src}")
+    total = sum(eff[t] for t in ("foundations", "core", "reps"))
+    cap = "" if st["daily_total"] is None else f"   {Y}capped at {st['daily_total']}{X}"
+    print(f"  {'total':<12} {B}{total}{X}{cap}")
+    if d["is_default"]:
+        print(f"\n{D}following the curriculum's own load. "
+              f"change it with `lcsr config --core 3`{X}\n")
+    else:
+        print(f"\n{D}`lcsr config --core default` clears one, "
+              f"`lcsr config --reset` clears all{X}\n")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="lcsr", description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -298,6 +330,14 @@ def main(argv=None):
     p.add_argument("--cue")
     p.add_argument("--hard", action="store_true")
     p.set_defaults(fn=cmd_add)
+
+    p = sub.add_parser("config", help="show or change how many new problems a day")
+    for flag, dest in (("--foundations", "foundations"), ("--core", "core"),
+                       ("--reps", "reps"), ("--total", "daily_total")):
+        p.add_argument(flag, dest=dest, default=None,
+                       help="a number, or `default` to follow the curriculum")
+    p.add_argument("--reset", action="store_true", help="clear every override")
+    p.set_defaults(fn=cmd_config)
 
     a = ap.parse_args(argv)
     try:
