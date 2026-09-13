@@ -10,8 +10,10 @@ left the page dead on reload with an error that blamed the server.
 import pathlib
 import re
 
+from _html import tag_blocks
+
 HTML = pathlib.Path(__file__).resolve().parent.parent / "src" / "lcsr" / "static" / "index.html"
-JS = re.findall(r"<script>(.*?)</script>", HTML.read_text(encoding="utf-8"), re.S)[-1]
+JS = tag_blocks(HTML.read_text(encoding="utf-8"), "script")[-1]
 
 
 def _block(start: str) -> str:

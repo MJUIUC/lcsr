@@ -18,8 +18,10 @@ import re
 
 import pytest
 
+from _html import tag_blocks
+
 HTML = pathlib.Path(__file__).resolve().parent.parent / "src" / "lcsr" / "static" / "index.html"
-CSS = re.search(r"<style>(.*?)</style>", HTML.read_text(encoding="utf-8"), re.S).group(1)
+CSS = tag_blocks(HTML.read_text(encoding="utf-8"), "style")[0]
 
 BODY, LARGE = 4.5, 3.0
 
