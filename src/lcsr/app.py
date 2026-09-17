@@ -312,6 +312,7 @@ class LcsrAPI:
         result = self.log({'id': pid, 'outcome': SOLVED, 'approach_min': am})
         self._close_timer()
         self._refresh_main()
+        self._focus_main()
         return result
 
     def timer_timeout(self, args: dict) -> dict:
@@ -324,20 +325,20 @@ class LcsrAPI:
         # the user can still pick a mistake class and add a note before
         # committing. The main window handles the actual /log call.
         self._refresh_main(prefill_stuck=pid, approach_min=am)
-        # Video search runs in background; timer window transitions to results.
-        try:
-            p = cur.get(pid)
-            title = p.get("title", str(pid))
-        except KeyError:
-            title = str(pid)
-        results = self._youtube_search(f"{title} leetcode solution")
-        return {"ok": True, "id": pid, "results": results}
+        self._focus_main()
+        return {"ok": True, "id": pid}
+
+    def close_timer(self, args: dict | None = None) -> dict:
+        """Close the timer popup and bring the main window back into focus."""
+        self._close_timer()
+        self._focus_main()
+        return {"ok": True}
 
     def video_search(self, args: dict) -> list:
         return self._youtube_search(args.get('query', ''))
 
-    def open_leetcode(self, url: str) -> dict:
-        webbrowser.open(url)
+    def open_leetcode(self, args: dict) -> dict:
+        webbrowser.open(args.get('url', ''))
         return {"ok": True}
 
     # ------------------------------------------------------------ prefs
@@ -355,6 +356,13 @@ class LcsrAPI:
         return prefs_mod.set(key, value)
 
     # ------------------------------------------------------------ internals
+
+    def _focus_main(self):
+        if self._main_win is not None:
+            try:
+                self._main_win.show()
+            except Exception:
+                pass
 
     def _close_timer(self):
         if self._timer_win is not None:
