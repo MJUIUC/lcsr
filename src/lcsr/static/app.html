@@ -163,11 +163,21 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 .dot.done{background:var(--ok)} .dot.learning{background:var(--warn)}
 .pid{font:500 12.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);
   min-width:42px;text-align:right;flex:none}
-.ptitle{flex:1;min-width:0;font-size:14.5px;font-weight:500}
+.ptitle-wrap{flex:1;min-width:0}
 .arrow{color:var(--muted);font-size:12px;flex:none}
 .pchevron{flex:none;font-size:13px;color:var(--muted);padding:2px 4px;
   transition:transform .15s;line-height:1}
 .p.open .pchevron{transform:rotate(90deg)}
+.ptitle{flex:1;min-width:0;font-size:14.5px;font-weight:500;cursor:pointer}
+.ptitle:hover{color:var(--accent)}
+.p.isdone .ptitle{cursor:default}
+.p.readonly .ptitle{cursor:default}
+.yt-link{display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+  padding:7px 13px;border-radius:8px;font-size:13px;font-weight:550;
+  background:color-mix(in srgb,var(--danger) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--danger) 35%,transparent);
+  color:var(--danger);text-decoration:none;transition:.13s}
+.yt-link:hover{background:color-mix(in srgb,var(--danger) 20%,transparent)}
 .badge{font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;
   border-radius:99px;border:1px solid var(--line);color:var(--muted);flex:none;white-space:nowrap}
 .badge.hard{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
@@ -694,13 +704,16 @@ function relDay(iso){
 // No "Log as solved" — the timer is the only solved path.
 function stuckPanel(p){
   if(!(draft[p.id]||{}).open) return '';
+  const ytQuery = encodeURIComponent((p.title||p.id) + ' leetcode solution');
+  const ytUrl = 'https://www.youtube.com/results?search_query=' + ytQuery;
   const chips = `<div class="lbl" style="margin-top:13px">Mistake class</div>
     <div class="chips">${(plan?.mistakes||[]).map(m=>
       `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`
     ).join('')}</div>`;
   return `<div class="panel" data-panel>
     <div class="phead2">Stuck means it returns in 3 days, then 10, then 30.</div>
-    <div class="lbl">Note: the cue, then the pattern</div>
+    <a class="yt-link" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; View solutions on YouTube</a>
+    <div class="lbl" style="margin-top:13px">Note: the cue, then the pattern</div>
     <textarea data-note placeholder="one line, in your own words">${esc((draft[p.id]||{}).note||'')}</textarea>
     ${chips}
     <div class="prow">
@@ -759,11 +772,13 @@ function pRow(p, o={}){
 
   return `
   <div class="${cls}" data-id="${p.id}" data-url="${esc(p.url)}">
-    <div class="phead" ${!inert ? `data-start-timer="${p.id}"` : ''}>
+    <div class="phead" data-expand="${p.id}">
       <span class="dot ${st.status||'new'}"></span>
       <span class="pid">${p.id}</span>
       ${p.immediately_after_prev?'<span class="arrow" title="solve immediately after the previous problem">&#8618;</span>':''}
-      <span class="ptitle">${esc(p.title)}</span>
+      <span class="ptitle-wrap">
+        <span class="ptitle" ${!inert ? `data-start-timer="${p.id}" title="Start timed attempt"` : ''}>${esc(p.title)}</span>
+      </span>
       ${badges}
       <span class="pchevron" data-chevron="${p.id}">&#9656;</span>
     </div>
@@ -1358,6 +1373,14 @@ function openTimer(id, title, url){
 }
 
 /* ---------------- events ---------------- */
+// Route all target=_blank links through open_leetcode so pywebview
+// always opens them in the real browser, never inside the webview.
+document.addEventListener('click', e=>{
+  const a = e.target.closest('a[target="_blank"]');
+  if(!a) return;
+  e.preventDefault();
+  window.pywebview.api.open_leetcode({url: a.href}).catch(()=>{});
+});
 document.addEventListener('input', e=>{
   const card = e.target.closest('.p');
   if(card && e.target.matches('[data-note]')){
@@ -1390,28 +1413,24 @@ document.addEventListener('click', async e=>{
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
 
-  // chevron: toggle accordion, load description lazily
-  const chevron = e.target.closest('[data-chevron]');
-  if(chevron){
-    const id = +chevron.dataset.chevron;
-    const card = e.target.closest('.p');
-    if(openCards.has(id)){ openCards.delete(id); } else { openCards.add(id); }
-    render();
-    // Lazy description fetch after render so the placeholder is visible first.
-    if(openCards.has(id)) loadDescriptionInto(id);
+  // title: start timer (unsolved, non-readonly only)
+  const titleEl = e.target.closest('[data-start-timer]');
+  if(titleEl){
+    const card = titleEl.closest('.p');
+    const id = +titleEl.dataset.startTimer;
+    const title = titleEl.textContent.trim();
+    const url = card.dataset.url || '';
+    openTimer(id, title, url);
     return;
   }
 
-  // header row: start timer (unsolved, non-readonly cards only)
-  const header = e.target.closest('[data-start-timer]');
+  // anywhere else on the header (or chevron): toggle accordion
+  const header = e.target.closest('[data-expand]');
   if(header){
-    // Don't start timer if user clicked the chevron (handled above).
-    if(e.target.closest('[data-chevron]')) return;
-    const card = header.closest('.p');
-    const id = +header.dataset.startTimer;
-    const title = card.querySelector('.ptitle')?.textContent?.trim() || '';
-    const url = card.dataset.url || '';
-    openTimer(id, title, url);
+    const id = +header.dataset.expand;
+    if(openCards.has(id)){ openCards.delete(id); } else { openCards.add(id); }
+    render();
+    if(openCards.has(id)) loadDescriptionInto(id);
     return;
   }
   const ex = e.target.closest('[data-export]');
