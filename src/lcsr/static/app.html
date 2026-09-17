@@ -1370,6 +1370,12 @@ document.addEventListener('change', e=>{
     e.target.value = setTimerMinutes(+e.target.value);
   }
 });
+// Also save on input so a re-render triggered before blur doesn't discard the value.
+document.addEventListener('input', e=>{
+  if(e.target.id === 'timer-min' && e.target.value){
+    setTimerMinutes(+e.target.value);
+  }
+});
 
 $('#nav').addEventListener('click', e=>{
   const b=e.target.closest('[data-tab]'); if(b) go(b.dataset.tab);
