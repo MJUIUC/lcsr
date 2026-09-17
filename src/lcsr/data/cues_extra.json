@@ -4,160 +4,257 @@
   "says": "sorted array: find a pair or triple with a given sum",
   "reach_for": "Two pointers from both ends",
   "because": "Sortedness is the enabling property: moving left can only raise the sum, moving right can only lower it, so each step eliminates a whole row of the search space. Unsorted, this is a hashmap problem instead.",
-  "problems": [167, 15, 42]
+  "problems": [
+   167,
+   15,
+   42
+  ]
  },
  {
   "group": "Window vs prefix sum vs two pointers",
   "says": "subarray or substring of a size that is given to you",
   "reach_for": "Fixed window",
   "because": "The size is not being searched for, so there is no shrink condition: add the entering element, remove the leaving element, and slide.",
-  "problems": [643, 1456]
+  "problems": [
+   643,
+   1456
+  ]
  },
  {
   "group": "Window vs prefix sum vs two pointers",
-  "says": "longest or shortest subarray such that\u2026, all values non-negative",
+  "says": "longest or shortest subarray such that…, all values non-negative",
   "reach_for": "Variable window, shrink while invalid",
   "because": "Non-negativity is what makes shrinking sound: extending can only push the sum up, shrinking can only pull it down, so the window has a monotone relationship with the constraint. Negatives destroy this and force a prefix-sum approach.",
-  "problems": [209, 3, 424]
+  "problems": [
+   209,
+   3,
+   424
+  ]
  },
  {
   "group": "Window vs prefix sum vs two pointers",
   "says": "count subarrays summing to exactly k, and negatives are possible",
   "reach_for": "Prefix sum + hashmap: a window cannot work",
-  "because": "Negatives destroy the monotonicity a window needs; extending can lower the sum and shrinking can raise it, so no two-pointer invariant holds. A prefix-sum lets you ask \u2018how many earlier prefix sums equal current \u2212 k?\u2019 in O(1) per step.",
-  "problems": [560, 523, 974]
+  "because": "Negatives destroy the monotonicity a window needs; extending can lower the sum and shrinking can raise it, so no two-pointer invariant holds. A prefix-sum lets you ask ‘how many earlier prefix sums equal current − k?’ in O(1) per step.",
+  "problems": [
+   560,
+   523,
+   974
+  ]
  },
  {
   "group": "Window vs prefix sum vs two pointers",
   "says": "exactly K distinct / exactly K odd numbers",
-  "reach_for": "atMost(K) \u2212 atMost(K\u22121)",
-  "because": "\u2018Exactly\u2019 is not directly windowable, but \u2018at most\u2019 is monotone in window length: adding elements never decreases the distinct count, so a valid shrink condition exists. Subtract atMost(K\u22121) from atMost(K) to isolate the exact count.",
-  "problems": [930, 992]
+  "reach_for": "atMost(K) − atMost(K−1)",
+  "because": "‘Exactly’ is not directly windowable, but ‘at most’ is monotone in window length: adding elements never decreases the distinct count, so a valid shrink condition exists. Subtract atMost(K−1) from atMost(K) to isolate the exact count.",
+  "problems": [
+   930,
+   992
+  ]
  },
  {
   "group": "Window vs prefix sum vs two pointers",
   "says": "max or min over every window of a fixed size k",
   "reach_for": "Monotonic deque, not a heap",
-  "because": "A heap gives you the max but cannot evict the element that just left the window; a heap update would be O(n) per step. The deque maintains a decreasing sequence of indices so the front is always the window\u2019s maximum and eviction is O(1).",
-  "problems": [239, 1438]
+  "because": "A heap gives you the max but cannot evict the element that just left the window; a heap update would be O(n) per step. The deque maintains a decreasing sequence of indices so the front is always the window’s maximum and eviction is O(1).",
+  "problems": [
+   239,
+   1438
+  ]
  },
  {
   "group": "Window vs prefix sum vs two pointers",
   "says": "in-place removal, partition, or reversal over one array",
   "reach_for": "Two pointers in the same direction: a slow write index behind a fast read index",
   "because": "There is no interval invariant here, so it is not a window at all; nothing is being summed or counted across a range. The slow pointer marks where the next valid element should land; the fast pointer scans ahead to find it.",
-  "problems": [26, 283, 75]
+  "problems": [
+   26,
+   283,
+   75
+  ]
  },
  {
   "group": "DP vs greedy",
   "says": "return the best value, and you can say why a local choice is safe",
   "reach_for": "Greedy",
   "because": "The test is the exchange argument: can any optimal solution be transformed to agree with the greedy choice without getting worse? If yes, greedy is correct. If you cannot construct that argument, reach for DP instead.",
-  "problems": [55, 435]
+  "problems": [
+   55,
+   435
+  ]
  },
  {
   "group": "DP vs greedy",
   "says": "a locally worse choice can pay off later",
   "reach_for": "DP: and the state must carry whatever the choice affects",
   "because": "Greedy fails exactly when choices interact across steps. That interaction is the state: whatever a future step needs to know about what you did, encode it explicitly in the DP dimension.",
-  "problems": [198, 300]
+  "problems": [
+   198,
+   300
+  ]
  },
  {
   "group": "DP vs greedy",
   "says": "how many ways / count the arrangements",
   "reach_for": "DP, never greedy",
   "because": "Greedy returns one solution. Counting needs every branch aggregated, which is what the DP recurrence does: the count at state s is the sum of the counts at every state that transitions to s.",
-  "problems": [70, 518]
+  "problems": [
+   70,
+   518
+  ]
  },
  {
   "group": "DP vs greedy",
   "says": "fewest coins or steps to reach a target, denominations arbitrary",
   "reach_for": "DP over the target",
-  "because": "Largest-first is only safe for canonical coin systems. With arbitrary denominations a greedy pick can block a shorter path; the DP over every target amount 0\u2026T finds the true minimum by checking every denomination at each step.",
-  "problems": [322, 518]
+  "because": "Largest-first is only safe for canonical coin systems. With arbitrary denominations a greedy pick can block a shorter path; the DP over every target amount 0…T finds the true minimum by checking every denomination at each step.",
+  "problems": [
+   322,
+   518
+  ]
  },
  {
   "group": "DP vs greedy",
   "says": "intervals: keep the most non-overlapping ones",
   "reach_for": "Greedy, sorting by END",
   "because": "Earliest finishing time leaves the most room for everything after it, and that exchange argument is exact: any optimal solution that does not pick the earliest-ending interval can be modified to do so without losing a slot.",
-  "problems": [435]
+  "problems": [
+   435
+  ]
  },
  {
   "group": "DP vs greedy",
-  "says": "\u201cwith a cooldown\u201d, \u201cat most k transactions\u201d",
+  "says": "“with a cooldown”, “at most k transactions”",
   "reach_for": "DP as a state machine",
-  "because": "The constraint is a mode you are in rather than a quantity you accumulate, so the recurrence branches on which state you are transitioning from. Cooldown adds a \u2018resting\u2019 state; transaction limits add a count dimension.",
-  "problems": [309, 123]
+  "because": "The constraint is a mode you are in rather than a quantity you accumulate, so the recurrence branches on which state you are transitioning from. Cooldown adds a ‘resting’ state; transaction limits add a count dimension.",
+  "problems": [
+   309,
+   123
+  ]
  },
  {
   "group": "DP vs backtracking",
   "says": "return ALL subsets / permutations / valid paths",
   "reach_for": "Backtracking",
   "because": "You need the objects themselves, so the output is exponential and no table can compress it. Backtracking generates each object once, pruning branches that cannot lead to valid completions.",
-  "problems": [78, 46]
+  "problems": [
+   78,
+   46
+  ]
  },
  {
   "group": "DP vs backtracking",
   "says": "return the COUNT, or the BEST, of those same objects",
   "reach_for": "DP",
   "because": "You need only an aggregate, so overlapping subproblems can be collapsed rather than re-expanded. The exponential search space becomes polynomial because each subproblem is solved once and its answer reused.",
-  "problems": [322, 300, 1143]
+  "problems": [
+   322,
+   300,
+   1143
+  ]
  },
  {
   "group": "Which search",
   "says": "shortest path, every edge costs 1",
   "reach_for": "BFS: multi-source if there are several origins",
   "because": "Uniform cost makes layer order the same as distance order, so first arrival is optimal and no relaxation is needed. Multi-source BFS initialises the queue with all sources simultaneously, giving the distance to the nearest source in one pass.",
-  "problems": [994, 542, 1091]
+  "problems": [
+   994,
+   542,
+   1091
+  ]
  },
  {
   "group": "Which search",
   "says": "shortest path with weights, but at most k hops",
-  "reach_for": "Bellman\u2013Ford / DP over hop count: NOT Dijkstra",
+  "reach_for": "Bellman–Ford / DP over hop count: NOT Dijkstra",
   "because": "Dijkstra finalises a node the first time it is popped, which is wrong once a longer path with fewer hops is preferable. The hop limit is a second dimension: dp[k][v] = cheapest cost to reach v in exactly k steps.",
-  "problems": [787]
+  "problems": [
+   787
+  ]
  },
  {
   "group": "Which search",
-  "says": "\u201cminimise the maximum\u201d, \u201cmaximise the minimum\u201d, \u201clargest k that still works\u201d",
+  "says": "“minimise the maximum”, “maximise the minimum”, “largest k that still works”",
   "reach_for": "Binary search on the answer + a feasibility check",
   "because": "The answer is monotone (if k is feasible then everything easier is too), so you can binary-search the value space and reduce the problem to a yes/no feasibility check at each midpoint. The check is usually a greedy or a linear scan.",
-  "problems": [875, 1011]
+  "problems": [
+   875,
+   1011
+  ]
  },
  {
   "group": "Which structure",
   "says": "top k from a stream, or n is huge and k is small",
   "reach_for": "Heap of size k",
-  "because": "Sorting is n log n and needs all the data at once; a k-heap is n log k and works online. For top-k largest, keep a min-heap of size k: if the new element beats the heap\u2019s minimum, evict and insert.",
-  "problems": [215, 703, 347]
+  "because": "Sorting is n log n and needs all the data at once; a k-heap is n log k and works online. For top-k largest, keep a min-heap of size k: if the new element beats the heap’s minimum, evict and insert.",
+  "problems": [
+   215,
+   703,
+   347
+  ]
  },
  {
   "group": "Which structure",
   "says": "prefix matching across many words",
   "reach_for": "Trie",
   "because": "A hashset answers exact membership only. Prefixes need the shared structure a trie provides: all words with the same prefix share the same root-to-node path, so a prefix query is a single traversal rather than scanning every word.",
-  "problems": [208, 211]
+  "problems": [
+   208,
+   211
+  ]
  },
  {
   "group": "Which structure",
-  "says": "\u201care these connected\u201d, \u201cmerge these groups\u201d, and no path is asked for",
+  "says": "“are these connected”, “merge these groups”, and no path is asked for",
   "reach_for": "Union-find",
   "because": "It answers connectivity without producing a path, which is why it beats BFS/DFS when you only need the yes/no and need to handle many merge operations cheaply. Path compression and union by rank make both operations nearly O(1) amortised.",
-  "problems": [684, 721]
+  "problems": [
+   684,
+   721
+  ]
  },
  {
   "group": "Which structure",
   "says": "array of n values that all lie in the range [1,n]: find what is missing or duplicated, in O(1) extra space",
-  "reach_for": "Use the index as the hash: put each value at position value\u22121, or negate the slot it points to",
+  "reach_for": "Use the index as the hash: put each value at position value−1, or negate the slot it points to",
   "because": "The constraint that values fit the index range is the whole hint: the array can act as its own presence table. Negating a slot marks a value as seen without a separate array; a missing positive after the pass is the answer.",
-  "problems": [287, 268]
+  "problems": [
+   287,
+   268
+  ]
  },
  {
   "group": "Arithmetic",
-  "says": "compute a\u207f, or divide/multiply without using the operator, with n as large as 1e9",
+  "says": "compute aⁿ, or divide/multiply without using the operator, with n as large as 1e9",
   "reach_for": "Halve the exponent: square and recurse, handling the odd step",
   "because": "Linear repetition is 1e9 operations; halving is 30. Distinct from binary search on the answer: here you are computing a value, not searching for one. The odd-step handler (multiply by base once) is the only branch.",
   "problems": []
+ },
+ {
+  "group": "Recursive decomposition",
+  "says": "process a number or expression by its structure: digits group in chunks, operators have precedence, brackets nest",
+  "reach_for": "Recursion with a base case per unit: solve the smallest chunk directly, combine upward",
+  "because": "The problem has natural size boundaries that define the recursion. A number splits into groups of three digits with scale words (thousands, millions); an expression splits at operators by precedence; brackets define nesting depth. Identify the smallest unit that resolves directly, write one level of the recursion, and trust the call stack for the rest. A stack can simulate this when the recursion is too deep or when an iterative pass is clearer.",
+  "problems": [
+   {
+    "id": 273,
+    "title": "Integer to English Words",
+    "url": "https://leetcode.com/problems/integer-to-english-words/",
+    "hard": true
+   },
+   {
+    "id": 224,
+    "title": "Basic Calculator",
+    "url": "https://leetcode.com/problems/basic-calculator/",
+    "hard": true
+   },
+   {
+    "id": 227,
+    "title": "Basic Calculator II",
+    "url": "https://leetcode.com/problems/basic-calculator-ii/",
+    "hard": false
+   }
+  ]
  }
 ]

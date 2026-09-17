@@ -85,7 +85,7 @@ def test_cues_merge_curriculum_and_added():
     from lcsr.curriculum import cues
     cues.cache_clear()
     rows = cues()
-    assert len(rows) == 43                       # 20 from the PDF + 23 added
+    assert len(rows) == 44                       # 20 from the PDF + 24 added
     assert all(c.get("group") for c in rows)     # every row is grouped
     assert {c["source"] for c in rows} == {"curriculum", "added"}
     # added rows must explain the discrimination, that is their whole point
