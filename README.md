@@ -81,6 +81,16 @@ The timer is the authority. There is no Solved button on the card.
 - Solved cards are inert — once done, move on
 - Skip removed — the timer governs, not avoidance
 
+### Attempt notes with Markdown
+
+Both the solved and stuck paths collect an optional note after each attempt.
+Notes support full Markdown — headers, bold, lists, fenced code blocks with
+syntax highlighting. They are stored in the log alongside the outcome and
+visible in the Progress tab and inline in the problem card's history.
+
+Previous notes for a problem are shown as expandable cards before the note
+textarea, so you can review what tripped you up last time.
+
 ### Enriched cue table
 
 The 20-row cue table from the curriculum is extended to 44 entries:
@@ -190,18 +200,25 @@ You can also run these flags manually without `dev.sh`:
 
 ## How the timer works
 
-1. Open a problem card (click the header to expand)
-2. Read the description, recall the cue
-3. Click **Start timed attempt** — timer popup opens, LeetCode opens in browser
-4. On the timer:
-   - **Pause** — freeze the clock once per attempt
-   - **Done** — solved before the buzzer; logged immediately, app comes to focus
-   - **I'm Stuck** — declare stuck early; no alarm, timer closes, stuck panel opens
-   - **Natural timeout** — alarm fires, timer closes, stuck panel opens
-5. On the stuck panel:
-   - **View solutions on YouTube** link (highlighted)
-   - Pick a mistake class, add a note
-   - **Log as stuck** — returns in 3 days, then 10, then 30
+1. Click a problem card header to expand it — shows the description fetched
+   from LeetCode, the cue, tier, and a link to the problem page
+2. Click **Start timed attempt** — the timer popup opens in the top-left
+   corner and LeetCode opens in your real browser simultaneously
+3. On the timer:
+   - **Pause** — freeze the clock; one pause allowed per attempt
+   - **Done** — you solved it before the buzzer
+   - **I'm Stuck** — declare stuck early; no alarm, closes immediately
+   - **Natural timeout** — alarm fires, closes immediately
+4. After **Done** — the app comes to focus, the problem card shows a
+   **solved panel**: green header, YouTube solutions link, note textarea,
+   **Save note** or **Skip**. Logging happens on Save or Skip.
+5. After **I'm Stuck** or timeout — the app comes to focus, the problem
+   card shows a **stuck panel**: YouTube solutions link, mistake class chips,
+   note textarea, **Log as stuck** or **Cancel**.
+
+**Notes** support Markdown — headers, bold, bullet lists, fenced code blocks
+with syntax highlighting. Previous attempt notes are shown as expandable
+cards above the note textarea so you can see your history before writing.
 
 Timer length defaults to 25 minutes (the curriculum's own number). Change it
 in **Settings → Timed attempts**.
