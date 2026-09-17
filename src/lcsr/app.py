@@ -501,12 +501,11 @@ def main():
 
     def _on_start():
         # Rename the Dock entry from 'Python 3.x' to 'lcsr'.
-        # Must run inside the GUI event loop, which is why it goes in func=.
+        # NSProcessInfo.setProcessName_ is the reliable runtime approach --
+        # mutating infoDictionary() is ignored on modern macOS.
         try:
             import AppKit
-            info = AppKit.NSBundle.mainBundle().infoDictionary()
-            info['CFBundleName'] = 'lcsr'
-            info['CFBundleDisplayName'] = 'lcsr'
+            AppKit.NSProcessInfo.processInfo().setProcessName_('lcsr')
         except Exception:
             pass
 
