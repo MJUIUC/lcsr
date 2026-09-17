@@ -1218,6 +1218,9 @@ function vSettings(){
       <span class="seteff"></span>
     </div>
   </div>
+  <div class="prow">
+    <button class="btn primary" id="timer-save">Save</button>
+  </div>
 
   ${vPasses()}
   ${vExport()}
@@ -1389,11 +1392,7 @@ document.addEventListener('input', e=>{
     (draft[id] = draft[id] || {}).note = e.target.value;
   }
 });
-document.addEventListener('input', e=>{
-  if(e.target.id === 'timer-min' && e.target.value){
-    setTimerMinutes(+e.target.value);
-  }
-});
+
 
 $('#nav').addEventListener('click', e=>{
   const b=e.target.closest('[data-tab]'); if(b) go(b.dataset.tab);
@@ -1584,6 +1583,12 @@ document.addEventListener('click', async e=>{
       toast('daily load saved');
       render();
     }catch(err){ $('#set-err').textContent = err.message; }
+    return;
+  }
+  if(e.target.id==='timer-save'){
+    const v = +($('#timer-min')?.value);
+    if(v) setTimerMinutes(v);
+    toast('timer length saved', {good:true});
     return;
   }
   if(e.target.id!=='a-save') return;
