@@ -499,6 +499,17 @@ def main():
     )
     api._main_win = main_win
 
+    def _on_start():
+        # Rename the Dock entry from 'Python 3.x' to 'lcsr'.
+        # Must run inside the GUI event loop, which is why it goes in func=.
+        try:
+            import AppKit
+            info = AppKit.NSBundle.mainBundle().infoDictionary()
+            info['CFBundleName'] = 'lcsr'
+            info['CFBundleDisplayName'] = 'lcsr'
+        except Exception:
+            pass
+
     # start() blocks until all windows are closed.
-    # icon= sets the macOS Dock icon (and taskbar icon on other platforms).
-    webview.start(debug=False, icon=str(STATIC / "icon.png"))
+    # icon= sets the macOS Dock icon; func= runs after the GUI loop starts.
+    webview.start(func=_on_start, debug=False, icon=str(STATIC / "icon.png"))
