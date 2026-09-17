@@ -165,6 +165,9 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 .ptitle a{text-decoration:none;border-bottom:1px solid transparent}
 .ptitle a:hover{color:var(--accent);border-bottom-color:currentColor}
 .arrow{color:var(--muted);font-size:12px;flex:none}
+.timerbtn{flex:none;font-size:12px;line-height:1;padding:2px 6px;border-radius:6px;
+  border:1px solid var(--line);color:var(--muted);margin-left:2px;transition:.13s}
+.timerbtn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
 .badge{font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;
   border-radius:99px;border:1px solid var(--line);color:var(--muted);flex:none;white-space:nowrap}
 .badge.hard{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
@@ -754,7 +757,10 @@ function pRow(p, o={}){
       <span class="dot ${st.status||'new'}"></span>
       <span class="pid">${p.id}</span>
       ${p.immediately_after_prev?'<span class="arrow" title="solve immediately after the previous problem">↳</span>':''}
-      <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
+      <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>${
+        o.readonly ? '' : `<button type="button" class="timerbtn" data-timer="${p.id}"
+          data-timer-title="${esc(p.title)}" data-timer-url="${esc(p.url)}"
+          title="Open with a timed attempt">&#9201;</button>`}</span>
       ${badges}${acts}
     </div>
     ${o.cue && p.cue ? cueRow(p) : ''}
@@ -1125,6 +1131,19 @@ function vAddProblem(){
   </details>`;
 }
 
+// Timer length is a per-browser UI preference stored in localStorage,
+// the same way theme is. Not part of the server-synced settings.
+const TIMER_MIN_KEY = 'lcsr-timer-min';
+function timerMinutes(){
+  let v;
+  try{ v = parseFloat(localStorage.getItem(TIMER_MIN_KEY)); }catch(e){ v = NaN; }
+  return (Number.isFinite(v) && v > 0) ? v : 25;
+}
+function setTimerMinutes(v){
+  const n = Math.max(1, Math.min(180, Math.round(v) || 25));
+  try{ localStorage.setItem(TIMER_MIN_KEY, n); }catch(e){}
+  return n;
+}
 function vSettings(){
   const d = load, s = d.settings, c = d.curriculum, e = d.effective;
   const TIERS = [
@@ -1171,6 +1190,17 @@ function vSettings(){
       : 'You have changed the default load.'} Week ${d.week} right now.</span>
   </div>
   <div class="err" id="set-err"></div>
+
+  <div class="sec"><h2>Timed attempts</h2>
+    <span class="hint">how long the popup counts down before it calls a problem stuck</span></div>
+  <div class="setcard">
+    <div class="setrow">
+      <span class="setlab"><b>Timer length</b><span>Minutes before the buzzer. The curriculum calls for 25.</span></span>
+      <input type="number" min="1" max="180" id="timer-min" value="${timerMinutes()}" aria-label="Timer length in minutes">
+      <span class="seteff"></span>
+    </div>
+  </div>
+
   ${vPasses()}
   ${vExport()}
   ${vAddProblem()}`;
@@ -1321,12 +1351,23 @@ async function go(t){
   render({top:true});
 }
 
+/* ---------------- timed attempts ---------------- */
+function openTimer(id, title, url){
+  window.pywebview.api.open_timer({id, title, url, timer_min: timerMinutes()})
+    .catch(err => toast(err.message || 'Could not open the timer.'));
+}
+
 /* ---------------- events ---------------- */
 document.addEventListener('input', e=>{
   const card = e.target.closest('.p');
   if(card && e.target.matches('[data-note]')){
     const id = +card.dataset.id;
     (draft[id] = draft[id] || {}).note = e.target.value;
+  }
+});
+document.addEventListener('change', e=>{
+  if(e.target.id === 'timer-min'){
+    e.target.value = setTimerMinutes(+e.target.value);
   }
 });
 
@@ -1348,6 +1389,11 @@ document.addEventListener('click', async e=>{
   // cue reveal
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  const timerBtn = e.target.closest('[data-timer]');
+  if(timerBtn){
+    openTimer(+timerBtn.dataset.timer, timerBtn.dataset.timerTitle, timerBtn.dataset.timerUrl);
+    return;
+  }
   const ex = e.target.closest('[data-export]');
   if(ex){
     const kind = ex.dataset.export;
