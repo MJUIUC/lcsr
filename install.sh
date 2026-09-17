@@ -41,14 +41,16 @@ echo ""
 
 # ── 1. check python ─────────────────────────────────────────────────────────
 info "Checking Python version..."
-# Prefer pyenv's python if available, fall back to whatever python3 is on PATH.
-if command -v pyenv &>/dev/null && pyenv which python3 &>/dev/null; then
-  PY_BIN="$(pyenv which python3)"
-elif command -v python3 &>/dev/null; then
-  PY_BIN="$(command -v python3)"
-else
-  die "python3 not found. Install Python 3.10+ from https://python.org and try again."
+# Prefer pyenv's shim if available, fall back to system python3.
+# Explicitly exclude the repo's own .venv so we use the real interpreter.
+if command -v pyenv &>/dev/null; then
+  PY_BIN="$(pyenv which python3 2>/dev/null || true)"
 fi
+if [ -z "${PY_BIN:-}" ] || [[ "$PY_BIN" == "${VENV}"* ]]; then
+  PY_BIN="$(PATH="$(echo "$PATH" | tr ':' '\n' | grep -v "${VENV}" | tr '\n' ':')" \
+            command -v python3 2>/dev/null || true)"
+fi
+[ -z "${PY_BIN:-}" ] && die "python3 not found. Install Python 3.10+ from https://python.org and try again."
 
 PY_VERSION="$("$PY_BIN" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
 PY_MAJOR="${PY_VERSION%%.*}"
