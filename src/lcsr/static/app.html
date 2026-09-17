@@ -1222,45 +1222,68 @@ function vHistory(){
         <span class="dayrel">${relDay(d.date)}</span>
         <span class="daytally">${d.solved} solved${d.stuck?` · ${d.stuck} stuck`:''}</span>
       </div>
-      ${d.entries.map(e=>{
-        const isEditorial = e.outcome === 'editorial';
-        const isNote = e.outcome === 'note';
-        // note-only entries: show as a standalone note card, no attempt row
-        if(isNote){
-          return e.note ? `<div class="hnote" style="margin-bottom:6px">${noteExpandHtml(e.note, e.ts||e.date, 'note', e.id, true)}</div>` : '';
-        }
-        const outcomeClass = e.outcome==='solved'?'ok': isEditorial?'editorial':'late';
-        const dotClass = e.outcome==='solved'?'done': isEditorial?'':'learning';
-        const practiceBtn = e.outcome==='stuck'
-          ? `<div style="margin-top:10px">
-              <button class="btn" style="font-size:12px"
-                data-practice-editorial="${e.id}"
-                data-practice-title="${esc(e.title||'')}"
-                data-practice-url="${esc(e.url||'')}">Re-attempt post editorial</button>
-              <div style="font-size:11.5px;color:var(--muted);margin-top:5px">
-                Timed re-attempt after reviewing the solution. Does not affect
-                your score or schedule &mdash; logged for reference only.
-              </div>
-            </div>`
-          : '';
-        return `<div class="h">
-          <div class="hhead">
-            <span class="dot ${dotClass}"></span>
-            <span class="pid">${e.id}</span>
-            <span class="ptitle">${e.url?`<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title)}</span>
-            ${e.hard?'<span class="badge hard">hard</span>':''}
-            <span class="badge">${esc(e.tier)}${e.week?' · W'+e.week:''}</span>
-            <span class="badge ${outcomeClass}">${isEditorial?'re-attempt':e.outcome}</span>
-            ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
+${(()=>{
+        // Split day entries into attempts and notes. Notes are grouped under
+        // the attempt for the same problem on the same day. Orphan notes
+        // (no matching attempt that day) render standalone at the end.
+        const attempts = d.entries.filter(e=>e.outcome !== 'note');
+        // Build a map: pid -> [note entries] for this day
+        const notesByPid = {};
+        d.entries.filter(e=>e.outcome==='note' && e.note).forEach(e=>{
+          (notesByPid[e.id] = notesByPid[e.id]||[]).push(e);
+        });
+        const usedPids = new Set();
 
-            <button class="btn quiet" style="font-size:11px;margin-left:auto;flex:none"
-              data-add-note-entry="${e.id}"
-              data-note-entry-title="${esc(e.title||'')}">+ Note</button>
-          </div>
-          ${e.note?`<div class="hnote">${noteExpandHtml(e.note, e.ts||e.date, e.outcome, e.id, true)}</div>`:''}
-          ${practiceBtn}
-        </div>`;
-      }).join('')}
+        const attemptRows = attempts.map(e=>{
+          const isEditorial = e.outcome === 'editorial';
+          const outcomeClass = e.outcome==='solved'?'ok': isEditorial?'editorial':'late';
+          const dotClass = e.outcome==='solved'?'done': isEditorial?'':'learning';
+          const practiceBtn = e.outcome==='stuck'
+            ? `<div style="margin-top:10px">
+                <button class="btn" style="font-size:12px"
+                  data-practice-editorial="${e.id}"
+                  data-practice-title="${esc(e.title||'')}"
+                  data-practice-url="${esc(e.url||'')}">Re-attempt post editorial</button>
+                <div style="font-size:11.5px;color:var(--muted);margin-top:5px">
+                  Timed re-attempt after reviewing the solution. Does not affect
+                  your score or schedule &mdash; logged for reference only.
+                </div>
+              </div>`
+            : '';
+          // Collect notes for this problem on this day and mark as used.
+          const dayNotes = notesByPid[e.id] || [];
+          if(dayNotes.length) usedPids.add(e.id);
+          const notesHtml = dayNotes
+            .map(n=>noteExpandHtml(n.note, n.ts||n.date, 'note', n.id, true))
+            .join('');
+          return `<div class="h">
+            <div class="hhead">
+              <span class="dot ${dotClass}"></span>
+              <span class="pid">${e.id}</span>
+              <span class="ptitle">${e.url?`<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title)}</span>
+              ${e.hard?'<span class="badge hard">hard</span>':''}
+              <span class="badge">${esc(e.tier)}${e.week?' &middot; W'+e.week:''}</span>
+              <span class="badge ${outcomeClass}">${isEditorial?'re-attempt':e.outcome}</span>
+              ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
+              <button class="btn quiet" style="font-size:11px;margin-left:auto;flex:none"
+                data-add-note-entry="${e.id}"
+                data-note-entry-title="${esc(e.title||'')}">+ Note</button>
+            </div>
+            ${e.note?`<div class="hnote">${noteExpandHtml(e.note, e.ts||e.date, e.outcome, e.id, true)}</div>`:''}
+            ${notesHtml ? `<div class="hnote">${notesHtml}</div>` : ''}
+            ${practiceBtn}
+          </div>`;
+        }).join('');
+
+        // Orphan notes: pid has no attempt row on this day
+        const orphanRows = Object.entries(notesByPid)
+          .filter(([pid])=>!usedPids.has(+pid))
+          .map(([,notes])=>notes.map(n=>
+            `<div class="hnote" style="margin-bottom:6px">${noteExpandHtml(n.note, n.ts||n.date, 'note', n.id, true)}</div>`
+          ).join('')).join('');
+
+        return attemptRows + orphanRows;
+      })()}
     </div>`;
   }).join('');
 }
