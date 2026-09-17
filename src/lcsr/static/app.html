@@ -739,6 +739,9 @@ function cueRow(p){
 
 // Accordion open state lives in a Set so it survives re-renders.
 const openCards = new Set();
+// Fetched descriptions keyed by problem id. Populated lazily on first expand
+// and reused on subsequent renders so re-renders don't reset to Loading.
+const descCache = new Map();
 
 function pRow(p, o={}){
   const st = p.state || {};
@@ -758,9 +761,10 @@ function pRow(p, o={}){
   if(done) meta = `<div class="pmeta"><span class="ok">&#10003; solved</span> &middot; ${st.attempts} attempt${st.attempts>1?'s':''}${st.last?' &middot; last '+relDay(st.last):''}</div>`;
   else if(st.status==='learning' && st.due) meta = `<div class="pmeta"><span class="w">returns ${st.due}</span> &middot; ${relDay(st.due)} &middot; ${st.attempts} attempt${st.attempts>1?'s':''}</div>`;
 
-  // Accordion body: description placeholder (filled lazily), cue, meta, stuck panel.
+  // Accordion body: use cached description if available, else loading placeholder.
+  const cachedDesc = descCache.get(p.id);
   const bodyContent = isOpen ? `
-    <div class="pdesc pdesc-loading" id="pdesc-${p.id}">Loading&hellip;</div>
+    <div class="pdesc ${cachedDesc !== undefined ? '' : 'pdesc-loading'}" id="pdesc-${p.id}">${cachedDesc !== undefined ? cachedDesc : 'Loading&hellip;'}</div>
     <div class="pdetails">
       ${p.tier ? `<span>${esc(p.tier)}${p.week?' &middot; W'+p.week:''}</span>` : ''}
       <a href="${esc(p.url)}" target="_blank" rel="noopener">View on LeetCode &rarr;</a>
@@ -1610,19 +1614,22 @@ window._lcsrTimerSolved = async function({id}){
   try{ await refreshAll(); }catch(e){ toast(e.message); }
 };
 function loadDescriptionInto(id){
+  // Already cached -- render() will have used it, nothing to do.
+  if(descCache.has(id)) return;
   const card = document.querySelector(`.p[data-id="${id}"]`);
-  const el = document.getElementById('pdesc-'+id);
-  if(!el) return;
   const url = card?.dataset.url || '';
   window.pywebview.api.get_description({id, url}).then(r=>{
-    const target = document.getElementById('pdesc-'+id);
-    if(!target) return;
-    target.classList.remove('pdesc-loading');
-    if(r && r.html) target.innerHTML = r.html;
-    else target.textContent = '';
+    const html = (r && r.html) ? r.html : '';
+    descCache.set(id, html);
+    // Patch the DOM directly so we don't need a full re-render.
+    const el = document.getElementById('pdesc-'+id);
+    if(!el) return;
+    el.classList.remove('pdesc-loading');
+    el.innerHTML = html;
   }).catch(()=>{
-    const target = document.getElementById('pdesc-'+id);
-    if(target){ target.classList.remove('pdesc-loading'); target.textContent = ''; }
+    descCache.set(id, '');
+    const el = document.getElementById('pdesc-'+id);
+    if(el){ el.classList.remove('pdesc-loading'); el.textContent = ''; }
   });
 }
 
