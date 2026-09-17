@@ -583,13 +583,12 @@ const TABS = [
   {k:'today',      label:'Today'},
   {k:'curriculum', label:'Curriculum'},
   {k:'progress',   label:'Progress'},
-  {k:'pool',       label:'Interview pool'},
   {k:'cues',       label:'Cue table'},
   {k:'settings',   label:'Settings'},
 ];
 let tab = location.hash.slice(1) || 'today';
 // Tabs this used to have. Old links and bookmarks keep working.
-if(tab === 'frequent') tab = 'pool';
+if(tab === 'frequent' || tab === 'pool') tab = 'today';
 if(tab === 'history' || tab === 'stats') tab = 'progress';
 let plan=null, curric=null, hist=null, cues=null, freq=null, load=null;
 let drawn = null;
@@ -1318,7 +1317,7 @@ function render(opts={}){
   const y = window.scrollY;
   renderChrome();
   const v = {today:vToday, curriculum:vCurriculum, progress:vProgress,
-             pool:vPool, cues:vCues, settings:vSettings}[tab] || vToday;
+             cues:vCues, settings:vSettings}[tab] || vToday;
   $('#view').innerHTML = v() + evidenceNote();
   window.scrollTo({top: opts.top ? 0 : y});
 }
@@ -1327,8 +1326,7 @@ async function refreshAll(){
   plan = await api('/api/plan');
   if(curric) curric = await api('/api/curriculum');
   if(hist)   hist   = await api('/api/history');
-  if(freq){ freq = await api('/api/frequent');
-            if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
+
   // The settings screen's "you get" column is the EFFECTIVE quota, which depends
   // on how many foundations are still unattempted. Logging one changes it, so a
   // loaded settings view goes stale unless it is refetched with everything else.
@@ -1354,7 +1352,6 @@ async function setDate(iso){
 async function ensureData(t){
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
   if(t==='progress')              hist   = await api('/api/history');
-  if(t==='pool' && !freq)         await loadFreq();
   if(t==='cues' && !cues)         cues   = await api('/api/cues');
   if(t==='settings')              load   = await api('/api/settings');
 }
