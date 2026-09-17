@@ -1248,10 +1248,16 @@ function vHistory(){
         const outcomeClass = e.outcome==='solved'?'ok': isEditorial?'editorial':'late';
         const dotClass = e.outcome==='solved'?'done': isEditorial?'':'learning';
         const practiceBtn = e.outcome==='stuck'
-          ? `<button class="btn quiet" style="font-size:12px;margin-top:8px"
-               data-practice-editorial="${e.id}"
-               data-practice-title="${esc(e.title||'')}"
-               data-practice-url="${esc(e.url||'')}">Practice with editorial</button>`
+          ? `<div style="margin-top:10px">
+              <button class="btn" style="font-size:12px"
+                data-practice-editorial="${e.id}"
+                data-practice-title="${esc(e.title||'')}"
+                data-practice-url="${esc(e.url||'')}">Re-attempt post editorial</button>
+              <div style="font-size:11.5px;color:var(--muted);margin-top:5px">
+                Timed re-attempt after reviewing the solution. Does not affect
+                your score or schedule &mdash; logged for reference only.
+              </div>
+            </div>`
           : '';
         return `<div class="h">
           <div class="hhead">
@@ -1819,28 +1825,28 @@ function paintFooterWhere(){
 }
 
 document.addEventListener('click', async e=>{
-  // inline note expand toggle
-  const toggleNote = e.target.closest('[data-toggle-note]');
-  if(toggleNote){
-    toggleNoteExpand(toggleNote.closest('[data-note-expand]'));
-    return;
-  }
-
-  // edit note button -- opens full-window note editor
+  // Edit note button: checked first so it isn't swallowed by the toggle
+  // handler -- the Edit button lives inside data-toggle-note and closest()
+  // would match the head div before matching the button otherwise.
   const editNoteBtn = e.target.closest('[data-edit-note]');
   if(editNoteBtn){
-    e.stopPropagation(); // don't also toggle the expand
     const pid = +editNoteBtn.dataset.editNote;
     const ts = editNoteBtn.dataset.editTs;
     const outcome = editNoteBtn.dataset.editOutcome;
     const card = editNoteBtn.closest('.h, .p');
     const title = card?.querySelector('.ptitle')?.textContent?.trim() || String(pid);
-    // Fetch the full note text fresh
     window.pywebview.api.get_notes({id: pid}).then(notes=>{
       const n = notes.find(x=>x.ts===ts) || notes[notes.length-1];
       if(n) openNoteEditor({pid, outcome: n.outcome, ts: n.ts, note: n.note,
                             title, returnTab: tab});
     }).catch(()=>{ toast('Could not load note.'); });
+    return;
+  }
+
+  // Inline note expand toggle (only when Edit button was not clicked)
+  const toggleNote = e.target.closest('[data-toggle-note]');
+  if(toggleNote){
+    toggleNoteExpand(toggleNote.closest('[data-note-expand]'));
     return;
   }
 
