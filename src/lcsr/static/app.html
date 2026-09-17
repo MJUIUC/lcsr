@@ -1,0 +1,1596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeetCode Spaced Repetition</title>
+<meta name="description" content="Miss a problem and it comes back in 3 days, then 10, then
+  30. Solve it cold and it never does. 324 LeetCode problems in a deliberate order, base
+  pattern before hard variant. No streaks, no problems-solved counter.">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://leetcode-srs-khaki.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://leetcode-srs-khaki.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta property="og:title" content="LeetCode Spaced Repetition">
+<meta property="og:description" content="Wrong answers come back at 3, 10 and 30 days.
+  Right ones do not. 324 problems in an order that builds.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ffa116'/><path d='M20.5 8.5 12 16l8.5 7.5' fill='none' stroke='%23151515' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<script>
+(function(){try{var t=localStorage.getItem('lcsr-theme');
+  if(t&&t!=='system')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+// Vercel Web Analytics, in its no-bundler form. Page views only; it never sees your
+// log, which never leaves this browser. Skipped on localhost, where the endpoint
+// does not exist and would 404 in the console on every run.
+(function(){
+  var h = location.hostname;
+  if(h === 'localhost' || h === '127.0.0.1' || h === '' || h === '[::1]') return;
+  window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };
+  var s = document.createElement('script');
+  s.defer = true; s.src = '/_vercel/insights/script.js';
+  document.head.appendChild(s);
+})();
+</script>
+<style>
+/* LeetCode-flavoured. --brand is the LeetCode orange and is used for FILLS;
+   --accent is the text-safe variant of it, because #ffa116 on white is ~2:1 and
+   fails contrast for anything you have to read. Difficulty colours are
+   LeetCode's own, so Easy/Medium/Hard mean the same here as on the site. */
+:root{
+  --brand:#ffa116;
+  --bg:#f4f4f5; --panel:#fff; --panel2:#fafafa; --ink:#18181b; --mid:#4b4b52;
+  --muted:#6e6e77; --line:#e3e3e6; --line2:#eeeef0;
+  --accent:#a55a00; --accent-soft:#fdf1e0;
+  --warn:#8a5a00; --warn-soft:#fdf3e2; --danger:#c62b3f; --ok:#00786a;
+  --easy:#007f65; --medium:#8a5a00; --hard:#c62b3f;
+  --pool:#6d38d6; --pool-soft:#f2ecfe;
+  --gold:#9a6a00;
+  --toast-bg:#00695c; --toast-ink:#fff; --toast-btn:#fff; --toast-btn-ink:#00443b;
+  --shadow:0 1px 2px rgba(20,20,20,.05),0 6px 20px rgba(20,20,20,.05);
+}
+/* Pitch dark: a real #000, not a charcoal. Shadows do not read against black,
+   so surfaces separate with borders instead and --shadow goes to none. */
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#000; --panel:#111; --panel2:#171717; --ink:#f2f2f2; --mid:#a6a6ad;
+  --muted:#86868f; --line:#262626; --line2:#1d1d1d;
+  --accent:#ffa116; --accent-soft:#2a1b06;
+  --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
+  --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
+  --pool:#a78bfa; --pool-soft:#1c1233;
+  --gold:#ffc93c;
+  --toast-bg:#00b8a3; --toast-ink:#04211d; --toast-btn:#04211d;
+  --toast-btn-ink:#7ff0dc;
+  --shadow:none;
+}}
+:root[data-theme=dark]{
+  --bg:#000; --panel:#111; --panel2:#171717; --ink:#f2f2f2; --mid:#a6a6ad;
+  --muted:#86868f; --line:#262626; --line2:#1d1d1d;
+  --accent:#ffa116; --accent-soft:#2a1b06;
+  --warn:#ffb800; --warn-soft:#241b04; --danger:#ff375f; --ok:#00b8a3;
+  --easy:#00b8a3; --medium:#ffb800; --hard:#ff375f;
+  --pool:#a78bfa; --pool-soft:#1c1233;
+  --gold:#ffc93c;
+  --toast-bg:#00b8a3; --toast-ink:#04211d; --toast-btn:#04211d;
+  --toast-btn-ink:#7ff0dc;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 ui-sans-serif,-apple-system,"SF Pro Text",Inter,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:ui-serif,Georgia,"Iowan Old Style",serif;font-weight:600;
+  letter-spacing:-.012em;margin:0}
+a{color:inherit}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ---------- shell ---------- */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(1.6) blur(12px);border-bottom:1px solid var(--line)}
+.top .inner{max-width:1040px;margin:0 auto;padding:0 22px}
+.brandrow{display:flex;align-items:center;gap:13px;padding:16px 0 12px}
+.brand{display:flex;align-items:baseline;gap:11px;text-decoration:none;flex:none}
+.mark{font-family:ui-serif,Georgia,serif;font-size:19px;font-weight:600;letter-spacing:-.02em;
+  flex:none}
+.mark em{font-style:normal;color:var(--accent)}
+.full{font-family:ui-serif,Georgia,serif;font-size:14.5px;font-weight:600;letter-spacing:-.01em;
+  color:var(--mid);padding-left:11px;border-left:1px solid var(--line);white-space:nowrap}
+.theme{display:flex;gap:2px;background:var(--line2);border:1px solid var(--line);
+  border-radius:8px;padding:2px;flex:none}
+.theme button{font-size:11.5px;padding:4px 10px;border-radius:6px;color:var(--muted);
+  transition:.13s}
+.theme button:hover{color:var(--ink)}
+.theme button[aria-pressed=true]{background:var(--panel);color:var(--ink);font-weight:550}
+.sitefoot{border-top:1px solid var(--line);background:var(--panel);margin-top:70px}
+.sitefoot .finner{max-width:1040px;margin:0 auto;padding:26px 22px 34px;display:flex;
+  gap:16px 30px;flex-wrap:wrap;align-items:flex-start}
+.fmain{flex:1 1 300px;min-width:0;max-width:92ch}
+.fside{display:flex;flex-direction:column;gap:9px;align-items:flex-end;flex:none;
+  margin-left:auto;text-align:right}
+.fmade{font-size:13px;color:var(--mid);white-space:nowrap}
+.fmade .heart{color:var(--hard);font-style:normal}
+.flinks{display:flex;gap:6px}
+.flinks a{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;
+  border:1px solid var(--line);color:var(--muted);transition:.13s}
+.flinks a:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.flinks a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.flinks svg{width:16px;height:16px;fill:currentColor;display:block}
+.fname{display:block;font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;
+  letter-spacing:-.01em;margin-bottom:7px}
+.fname em{font-style:normal;color:var(--accent)}
+.fdesc{font-size:13px;color:var(--muted);line-height:1.75;max-width:92ch}
+.fdesc>span{display:block}
+.fwhere{font-size:12px;color:var(--muted);line-height:1.7;flex-basis:100%;
+  border-top:1px solid var(--line2);padding-top:14px}
+.daychip{font-size:12px;color:var(--mid);background:var(--panel);border:1px solid var(--line);
+  padding:3px 10px;border-radius:99px;white-space:nowrap}
+.spacer{flex:1}
+.overall{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
+.obar{width:120px;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
+.obar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{padding:9px 15px 12px;font-size:14px;color:var(--muted);white-space:nowrap;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:.13s}
+nav button:hover{color:var(--ink)}
+nav button[aria-current=true]{color:var(--ink);font-weight:550;border-bottom-color:var(--accent)}
+nav .count{font-size:11px;color:var(--muted);background:var(--line2);border-radius:99px;
+  padding:1px 6px;margin-left:6px}
+nav button[aria-current=true] .count{background:var(--accent-soft);color:var(--accent)}
+main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
+
+/* ---------- generic ---------- */
+.sec{margin:0 0 10px;display:flex;align-items:baseline;gap:10px}
+.sec h2{font-size:15px}
+.sec .hint{font-size:12.5px;color:var(--muted)}
+.sec.due h2{color:var(--warn)}
+.stack{display:flex;flex-direction:column;gap:7px;margin-bottom:30px}
+.empty{color:var(--muted);font-size:14px;padding:44px 0;text-align:center;
+  border:1px dashed var(--line);border-radius:12px}
+.empty b{display:block;color:var(--ink);font-weight:550;margin-bottom:5px}
+
+/* ---------- problem row ---------- */
+.p{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  box-shadow:var(--shadow);overflow:hidden;transition:.13s}
+.p:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.p.due{border-left:3px solid var(--warn)}
+.p.isdone{opacity:.62;box-shadow:none}
+.p.isdone .ptitle a{text-decoration:line-through;text-decoration-color:var(--muted)}
+.phead{display:flex;align-items:center;gap:11px;padding:11px 14px}
+.dot{width:7px;height:7px;border-radius:99px;background:var(--line);flex:none}
+.dot.done{background:var(--ok)} .dot.learning{background:var(--warn)}
+.pid{font:500 12.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);
+  min-width:42px;text-align:right;flex:none}
+.ptitle{flex:1;min-width:0;font-size:14.5px}
+.ptitle a{text-decoration:none;border-bottom:1px solid transparent}
+.ptitle a:hover{color:var(--accent);border-bottom-color:currentColor}
+.arrow{color:var(--muted);font-size:12px;flex:none}
+.badge{font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;
+  border-radius:99px;border:1px solid var(--line);color:var(--muted);flex:none;white-space:nowrap}
+.badge.hard{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
+.badge.late{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,transparent);
+  background:var(--warn-soft)}
+.badge.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.pacts{display:flex;gap:6px;flex:none}
+.btn{font-size:12.5px;padding:5px 12px;border-radius:7px;border:1px solid var(--line);
+  color:var(--mid);transition:.13s}
+.btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.btn.warn:hover{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.btn.quiet{color:var(--muted);border-color:transparent}
+.btn.quiet:hover{color:var(--ink);border-color:var(--line);background:var(--panel2)}
+.badge.aside-b{color:var(--muted);border-style:dashed}
+.grp[data-key=skipped] .p{opacity:.72}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#1a1200;font-weight:550}
+.btn.primary:hover{opacity:.88;color:#1a1200;background:var(--brand)}
+.pcue{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);font-style:italic;
+  margin-top:-4px}
+/* The cue names the pattern, so on an unattempted problem it is the answer.
+   Blurred until asked for. user-select:none matters: blurred text is still
+   selectable, and a stray drag-select would hand over the thing being hidden. */
+.pcue.veil{display:flex;align-items:baseline;gap:9px;width:100%;text-align:left}
+.cuetag{font:600 10px ui-monospace,Menlo,monospace;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);flex:none;font-style:normal}
+.cuetext{transition:filter .16s ease}
+.veiled .cuetext{filter:blur(4.5px);opacity:.7;user-select:none}
+.cuehint{font-size:11px;font-style:normal;color:var(--accent);flex:none;white-space:nowrap;
+  margin-left:auto}
+.pcue.veil:hover .cuehint{text-decoration:underline}
+.pcue.veil:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:7px}
+.pmeta{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);margin-top:-4px}
+.pmeta .ok{color:var(--ok)} .pmeta .w{color:var(--warn)}
+
+/* ---------- log panel ---------- */
+.panel{border-top:1px solid var(--line2);background:var(--panel2);padding:13px 14px}
+.lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px}
+.chip{font-size:12.5px;padding:5px 12px;border-radius:99px;border:1px solid var(--line);
+  color:var(--muted);transition:.13s}
+.chip:hover{border-color:var(--warn);color:var(--warn)}
+.chip[aria-pressed=true]{border-color:var(--warn);color:var(--warn);background:var(--warn-soft);
+  font-weight:550}
+textarea,input,select{font:inherit;font-size:13.5px;width:100%;padding:8px 11px;
+  border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+textarea{resize:vertical;min-height:52px}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft)}
+.prow{display:flex;gap:8px;margin-top:11px;align-items:center}
+
+/* ---------- curriculum ---------- */
+.grp{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  margin-bottom:9px;box-shadow:var(--shadow);overflow:hidden}
+.grp[open]{border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
+.grp summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;
+  align-items:center;gap:13px}
+.grp summary::-webkit-details-marker{display:none}
+.grp summary:hover{background:var(--panel2)}
+.wk{font:600 11px ui-monospace,Menlo,monospace;letter-spacing:.04em;color:var(--accent);
+  background:var(--accent-soft);padding:4px 8px;border-radius:6px;flex:none;min-width:40px;
+  text-align:center}
+.gtitles{flex:1;min-width:0}
+.gtitle{font-family:ui-serif,Georgia,serif;font-size:15.5px;font-weight:600;
+  letter-spacing:-.01em}
+.gsub{font-size:12.5px;color:var(--muted);margin-top:2px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.gprog{display:flex;align-items:center;gap:9px;flex:none}
+.gprog span{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted)}
+.gbar{width:64px;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
+.gbar i{display:block;height:100%;background:var(--accent)}
+.gbar.full i{background:var(--ok)}
+.gbody{padding:4px 14px 15px;border-top:1px solid var(--line2)}
+.rolelbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  margin:15px 0 8px;font-weight:600}
+.gbody .p{box-shadow:none;background:var(--panel2)}
+.note{font-size:13.5px;color:var(--mid);padding:14px 2px;line-height:1.65}
+
+/* ---------- history ---------- */
+.day{margin-bottom:11px}
+.dayhead{display:flex;align-items:baseline;gap:11px;margin:0 2px 8px}
+.daydate{font-family:ui-serif,Georgia,serif;font-size:15px;font-weight:600}
+.dayrel{font-size:12.5px;color:var(--muted)}
+.daytally{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.h{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 14px;
+  margin-bottom:6px;box-shadow:var(--shadow)}
+.hhead{display:flex;align-items:center;gap:11px}
+.h .undo{margin-left:auto;flex:none;font-size:12px;padding:4px 10px}
+.h .undo:hover{border-color:var(--danger);color:var(--danger);background:none}
+.hnote{margin-top:8px;padding:9px 12px;background:var(--panel2);border-radius:8px;
+  font-size:13px;color:var(--mid);border-left:2px solid var(--line)}
+.passmark{display:flex;align-items:center;gap:12px;margin:26px 2px 16px;
+  font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  font-weight:600}
+.passmark i{flex:1;height:1px;background:var(--line)}
+.passmark .pm2{color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none}
+
+/* ---------- cues ---------- */
+.cue{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:13px 15px;margin-bottom:6px;box-shadow:var(--shadow);display:flex;
+  align-items:center;gap:14px;cursor:pointer}
+.cue:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.cuen{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted);flex:none}
+.cuel{flex:1;font-size:14.5px}
+.cuer{flex:1;font-size:14px;color:var(--accent);font-weight:500}
+.cuewhy{flex:1 1 100%;font-size:13px;color:var(--mid);line-height:1.6;
+  border-top:1px solid var(--line2);padding-top:11px;margin-top:2px}
+.cuer.hidden{color:var(--muted);font-weight:400;font-style:italic;opacity:.55}
+
+/* ---------- stats ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;
+  margin-bottom:26px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:15px;
+  box-shadow:var(--shadow)}
+.card b{display:block;font-family:ui-serif,Georgia,serif;font-size:26px;font-weight:600;
+  letter-spacing:-.02em;line-height:1.15}
+.card span{font-size:11.5px;color:var(--muted);display:block;margin-top:4px}
+.card small{font-size:11px;color:var(--muted)}
+.hist{display:flex;align-items:flex-end;gap:10px;height:96px;margin-top:14px}
+.hist div{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px}
+.hist i{display:block;width:100%;max-width:88px;background:var(--warn);
+  border-radius:5px 5px 0 0;min-height:3px}
+.hist small{font-size:10.5px;color:var(--muted);text-align:center}
+details.add{margin-top:14px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:15px;box-shadow:var(--shadow)}
+details.add summary{cursor:pointer;font-size:14px;font-weight:550;list-style:none}
+details.add summary::-webkit-details-marker{display:none}
+details.add summary::before{content:"+ ";color:var(--accent)}
+details.add[open] summary::before{content:"− "}
+.grid{display:grid;grid-template-columns:104px 1fr;gap:10px;margin-top:15px;align-items:center}
+.grid label{font-size:12.5px;color:var(--muted)}
+.err{color:var(--danger);font-size:13px;margin-top:10px}
+.foot{margin-top:34px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.drawacts{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;border:none!important;
+  box-shadow:none!important;background:none!important;border-radius:0!important}
+.drawacts .panel{flex:1 1 100%;border-radius:10px;border:1px solid var(--line);margin-top:4px}
+.drawbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
+.drawmeta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.drawtitle{font-family:ui-serif,Georgia,serif;font-size:23px;font-weight:600;
+  letter-spacing:-.02em;display:flex;gap:11px;align-items:baseline;flex-wrap:wrap}
+.drawtitle a{text-decoration:none;border-bottom:2px solid var(--accent-soft)}
+.drawtitle a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.drawtitle .pid{font-size:14px;min-width:auto}
+.drawsub{font-size:13px;color:var(--muted);margin-top:6px}
+.filters{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:15px;box-shadow:var(--shadow)}
+.filters .chips{margin-bottom:14px}
+.filters .chips:last-child{margin-bottom:0}
+.badge.src{border-color:color-mix(in srgb,var(--accent) 30%,transparent);color:var(--accent)}
+.badge.gold{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--gold);
+  border-color:color-mix(in srgb,var(--gold) 50%,transparent);
+  background:linear-gradient(160deg,color-mix(in srgb,var(--gold) 20%,transparent),
+             color-mix(in srgb,var(--gold) 5%,transparent))}
+.crown{width:10px;height:10px;fill:currentColor;flex:none;margin-top:-1px}
+.badge.dEasy{color:var(--easy);border-color:color-mix(in srgb,var(--easy) 38%,transparent)}
+.badge.dMedium{color:var(--medium);border-color:color-mix(in srgb,var(--medium) 38%,transparent)}
+.badge.dHard{color:var(--hard);border-color:color-mix(in srgb,var(--hard) 38%,transparent)}
+.badge.nmax{background:var(--accent);color:var(--panel);border-color:var(--accent);font-weight:600}
+.badge.nhigh{border-color:var(--accent);color:var(--accent)}
+/* Everything inside .pool swaps the LeetCode orange for the pool's violet. The
+   components are unchanged; only the two accent tokens are. The point is that
+   this tab must not read as more curriculum, which was the main reason it failed
+   to explain itself. */
+.pool{--accent:var(--pool);--accent-soft:var(--pool-soft)}
+.poolintro{background:var(--panel);border:1px solid var(--line);
+  border-left:3px solid var(--pool);border-radius:12px;padding:20px 22px;
+  margin-bottom:14px;box-shadow:var(--shadow)}
+.poolintro h2{font-size:19px;margin-bottom:10px}
+.poolintro p{margin:0 0 9px;font-size:13.5px;color:var(--mid);line-height:1.68;max-width:76ch}
+.poolintro p:last-of-type{margin-bottom:0}
+.poolintro b{color:var(--ink);font-weight:600}
+.poolintro .apart{color:var(--pool)}
+.srcs{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px;padding-top:14px;
+  border-top:1px solid var(--line2)}
+.srcpill{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--mid);
+  background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:4px 11px}
+.srcpill i{width:7px;height:7px;border-radius:99px;background:var(--pool);flex:none}
+.srcpill b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+/* ---------- settings ---------- */
+.setcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:6px 20px;box-shadow:var(--shadow);margin-bottom:16px}
+.setrow{display:grid;grid-template-columns:1fr 88px 118px;gap:16px;align-items:center;
+  padding:15px 0;border-bottom:1px solid var(--line2)}
+.setrow:last-child{border-bottom:none}
+.setrow.total{border-top:2px solid var(--line);border-bottom:none}
+.setlab b{display:block;font-size:14px;font-weight:600}
+.setlab span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.55}
+.setrow input{text-align:center;font-variant-numeric:tabular-nums}
+.seteff{font:600 13px ui-monospace,Menlo,monospace;text-align:right;color:var(--ink)}
+.seteff em{font-style:normal;font-weight:400;color:var(--muted);font-size:11.5px;
+  display:block;margin-top:2px;letter-spacing:.03em}
+.seteff.zero{color:var(--warn)}
+.sethead{display:grid;grid-template-columns:1fr 88px 118px;gap:16px;padding:14px 0 0;
+  font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:600}
+.sethead span:nth-child(2),.sethead span:nth-child(3){text-align:center}
+.sethead span:nth-child(3){text-align:right}
+/* A short, true line per tab about why the mechanism is the way it is, plus a
+   link to the literature review. One implementation, appended by render(), so
+   it cannot drift into six slightly different versions. */
+.evid{margin:36px 0 0;padding:12px 16px;border-left:2px solid var(--accent);
+  background:var(--panel2);border-radius:0 9px 9px 0;font-size:12.5px;
+  color:var(--muted);line-height:1.7;max-width:76ch}
+.evid a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;
+  white-space:nowrap}
+.evid a:hover{border-bottom-color:currentColor}
+/* A list of 390 rows, or every attempt ever, is not something to scroll the
+   page through. Bounded and scrolled in place, so the page keeps its shape and
+   the section after it stays reachable. */
+.scrollbox{max-height:min(620px,72vh);overflow-y:auto;overscroll-behavior:contain;
+  border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--panel2);
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.scrollbox::-webkit-scrollbar{width:11px}
+.scrollbox::-webkit-scrollbar-track{background:transparent}
+.scrollbox::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;
+  border:3px solid var(--panel2)}
+.scrollbox::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+.scrollbox .stack{margin-bottom:0}
+.scrollbox .p,.scrollbox .h{background:var(--panel)}
+.lead{margin:0 0 14px;font-size:13.5px;color:var(--mid);line-height:1.7;max-width:80ch}
+.lead b{color:var(--ink);font-weight:600}
+.lead .apart{color:var(--pool)}
+.drawlead{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:11px;font-weight:600}
+.phead2{font-size:13px;color:var(--mid);margin-bottom:13px;padding-bottom:11px;
+  border-bottom:1px solid var(--line)}
+.phead2 b{color:var(--ink);font-weight:600}
+.btn[aria-expanded=true]{border-color:var(--warn);color:var(--warn);background:var(--warn-soft);
+  font-weight:550}
+.pacebar{display:flex;gap:26px;flex-wrap:wrap;padding:12px 15px;margin-bottom:18px;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);font-size:13px;color:var(--mid)}
+.pacebar b{color:var(--ink);font-weight:600}
+.pacebar em{font-style:normal;color:var(--muted);font-size:12px}
+.drift{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 28%,transparent);
+  color:var(--warn);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:14px}
+.drift b{color:inherit}
+.paused{background:var(--panel);border:1px solid var(--danger);border-radius:12px;
+  padding:17px 19px;margin-bottom:18px;box-shadow:var(--shadow)}
+.paused b{display:block;font-family:ui-serif,Georgia,serif;font-size:16px;color:var(--danger);
+  margin-bottom:6px}
+.paused span{font-size:13px;color:var(--mid);line-height:1.6}
+.morehint{font-size:12.5px;color:var(--muted);padding:4px 2px 0;margin-top:-20px;
+  margin-bottom:26px}
+.stepper{display:flex;align-items:center;gap:9px;margin-bottom:18px}
+.stepper .btn{min-width:34px;text-align:center}
+.stepper .btn[disabled]{opacity:.35;cursor:default}
+.stepper .btn[disabled]:hover{border-color:var(--line);color:var(--mid);background:none}
+.stepdate{font-family:ui-serif,Georgia,serif;font-size:15px;font-weight:600}
+.stepdate em{font-style:normal;font-weight:400;color:var(--muted);font-size:13px}
+.preview{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);
+  color:var(--warn);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:20px}
+.doneday{display:flex;align-items:center;gap:16px;background:var(--panel);
+  border:1px solid color-mix(in srgb,var(--ok) 32%,var(--line));border-radius:12px;
+  padding:20px 22px;box-shadow:var(--shadow)}
+.doneday .tick{width:34px;height:34px;border-radius:99px;background:var(--accent-soft);
+  color:var(--ok);display:grid;place-items:center;font-size:17px;flex:none}
+.doneday b{display:block;font-family:ui-serif,Georgia,serif;font-size:16.5px;margin-bottom:3px}
+.doneday span{display:block;font-size:13px;color:var(--mid)}
+.doneday .quiet{font-size:12.5px;color:var(--muted);margin-top:5px;max-width:52ch}
+.doneday button{margin-left:auto;flex:none}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
+  display:flex;align-items:center;gap:12px;max-width:calc(100vw - 28px);
+  background:var(--panel);color:var(--ink);border:1px solid var(--line);
+  padding:9px 10px 9px 18px;border-radius:99px;font-size:13.5px;
+  box-shadow:0 8px 28px rgba(0,0,0,.3);opacity:0;transition:.25s;pointer-events:none;z-index:60}
+/* Success is green, and it is the only toast you can act on, so it is the only
+   one that carries a button. Errors keep the neutral panel colour. */
+.toast.good{background:var(--toast-bg);color:var(--toast-ink);border-color:transparent}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast span{min-width:0}
+.tundo{flex:none;font:inherit;font-size:12.5px;font-weight:600;padding:6px 15px;
+  border-radius:99px;background:var(--toast-btn);color:var(--toast-btn-ink);
+  border:1px solid transparent;transition:.13s}
+.tundo:hover{opacity:.85}
+.tundo:focus-visible{outline:2px solid var(--toast-btn-ink);outline-offset:2px}
+
+/* ---------- responsive ----------
+   Every width rule lives here, at the END of the stylesheet, and nowhere else.
+   GOTCHA: a media query placed ABOVE the rule it overrides loses to it on source
+   order alone, at equal specificity and with no warning. `.overall{display:none}`
+   sat four lines above `.overall{display:flex}` and did nothing, so the progress
+   bar stayed on a 390px phone and pushed the whole header off-screen. */
+
+/* iPad portrait and narrower: the header stops being one row. */
+@media(max-width:900px){
+  .brandrow{flex-wrap:wrap;gap:10px 12px}
+  .spacer{flex:1 1 0}
+  .obar{width:88px}
+}
+/* The product name spelled out is the first thing to go. */
+@media(max-width:720px){
+  .full{display:none}
+}
+@media(max-width:640px){
+  .top .inner{padding:0 14px}
+  main{padding:20px 14px 30px}
+  .brandrow{padding:12px 0 9px}
+  .overall{display:none}
+  /* A problem row becomes: number and title, then badges, then the actions on
+     their own line. Without wrap the title was squeezed into a 60px column and
+     the buttons fell off the right edge entirely. */
+  .phead{flex-wrap:wrap;gap:8px 9px;padding:11px 12px}
+  .ptitle{flex:1 1 58%}
+  .pacts{width:100%;justify-content:flex-end}
+  .pcue,.pmeta{padding-left:12px;padding-right:12px}
+  .panel{padding:12px}
+  .cue{flex-wrap:wrap} .cuel,.cuer{flex:1 1 100%}
+  .pacebar{gap:7px 16px;padding:11px 13px}
+  .cards{grid-template-columns:1fr 1fr;gap:8px}
+  .card{padding:13px}
+  .grid{grid-template-columns:1fr;gap:7px}
+  .grid label{margin-top:6px}
+  .drawbox{padding:17px}
+  .drawtitle{font-size:19px}
+  .setrow,.sethead{grid-template-columns:1fr 62px 78px;gap:9px}
+  .hist{height:82px}
+  .evid{margin-top:26px;padding:11px 13px}
+  .grp summary{padding:13px 13px;gap:10px}
+  .gbody{padding:4px 11px 13px}
+  .sitefoot .finner{padding:22px 14px 30px}
+  .fside{align-items:flex-start;margin-left:0;text-align:left}
+  .dayhead{flex-wrap:wrap;gap:4px 10px}
+  .daytally{margin-left:0}
+  .hhead{flex-wrap:wrap;gap:7px 9px}
+  .h .undo{margin-left:auto}
+}
+@media(max-width:420px){
+  .btn{padding:5px 10px;font-size:12px}
+  .theme button{padding:4px 8px;font-size:11px}
+  .daychip{font-size:11.5px;padding:3px 8px}
+  .cards{grid-template-columns:1fr}
+  .gsub{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="inner">
+  <div class="brandrow">
+    <a class="brand" href="#today">
+      <span class="mark">lc<em>sr</em></span>
+      <span class="full">LeetCode Spaced Repetition</span>
+    </a>
+    <span class="daychip" id="daychip">…</span>
+    <span class="spacer"></span>
+    <span class="overall" id="overall"></span>
+    <div class="theme" id="theme" role="group" aria-label="Colour theme">
+      <button data-theme-set="system">Auto</button>
+      <button data-theme-set="light">Light</button>
+      <button data-theme-set="dark">Dark</button>
+    </div>
+  </div>
+  <nav id="nav" role="tablist" aria-label="Sections"></nav>
+</div></div>
+
+<main id="view"></main>
+
+<footer class="sitefoot"><div class="finner">
+  <div class="fmain">
+    <span class="fname">LeetCode Spaced Repetition <em>(lcsr)</em></span>
+    <span class="fdesc" id="fdesc">
+      <span>Miss a problem and it comes back in <b>3 days</b>, then <b>10</b>, then
+        <b>30</b>. Solve it cold and it never comes back at all.</span>
+      <span>The 324 problems run in a deliberate order, each pattern's plainest example
+        before its hard variants.</span>
+    </span>
+  </div>
+  <div class="fside">
+    <span class="fmade">Made with <span class="heart">&#9829;</span> by Swapnil</span>
+    <span class="flinks">
+      <a href="https://github.com/Swapnil-jain/lcsr" target="_blank"
+         rel="noopener noreferrer" title="Source on GitHub" aria-label="Source on GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.96 0-1.32.47-2.39 1.24-3.23-.12-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.18.77.84 1.24 1.91 1.24 3.23 0 4.63-2.8 5.65-5.48 5.95.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 24 12.5C24 5.87 18.63.5 12 .5Z"/></svg>
+      </a>
+    </span>
+  </div>
+  <span class="fwhere" id="footwhere"></span>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const TABS = [
+  {k:'today',      label:'Today'},
+  {k:'curriculum', label:'Curriculum'},
+  {k:'progress',   label:'Progress'},
+  {k:'pool',       label:'Interview pool'},
+  {k:'cues',       label:'Cue table'},
+  {k:'settings',   label:'Settings'},
+];
+let tab = location.hash.slice(1) || 'today';
+// Tabs this used to have. Old links and bookmarks keep working.
+if(tab === 'frequent') tab = 'pool';
+if(tab === 'history' || tab === 'stats') tab = 'progress';
+let plan=null, curric=null, hist=null, cues=null, freq=null, load=null;
+let drawn = null;
+const FILT = {diff:new Set(), lists:new Set(), noPaid:false, noSolved:true, noCurric:true};
+let listsInit = false;   // set once, so unticking every source is not undone by a refresh
+let sprintArmed = false; // starting a new pass is two clicks, never one
+const draft = {};        // id -> {mistake, note}
+const revealed = new Set();
+let showAhead = false;
+const inFlight = new Set();   // ids with a write in progress, so a double-click cannot double-log
+let preview = null;   // plan for a future day, null when viewing today
+
+/* pywebview desktop app transport layer.
+   All backend calls go directly to the Python LcsrAPI object via
+   window.pywebview.api rather than over HTTP. No server, no stateless
+   mode, no localStorage sync needed. */
+
+// Thin wrapper so call sites look identical to the old api() calls.
+// route examples: '/api/plan', '/api/plan?date=2026-09-17', '/api/log'
+async function api(route, body){
+  const [path, query] = route.split('?');
+  const method = path.replace('/api/', '');
+  const args = body ? {...body} : {};
+  if(query && query.startsWith('date=')){
+    args.date = decodeURIComponent(query.slice(5));
+  }
+  const pv = window.pywebview;
+  if(!pv) throw new Error('pywebview not available');
+  // pywebview methods are keyed by Python method name (underscored).
+  // Map from HTTP-style route names to LcsrAPI method names.
+  const methodMap = {
+    'plan':       'get_plan',
+    'curriculum': 'get_curriculum',
+    'history':    'get_history',
+    'cues':       'get_cues',
+    'settings':   'get_settings',
+    'frequent':   'get_frequent',
+    'log':        'log',
+    'undo':       'undo',
+    'amend':      'amend',
+    'skip':       'skip',
+    'sprint':     'start_sprint',
+    'add':        'add_problem',
+    'export':     'export',
+  };
+  // settings POST branches on whether it's a reset or a save.
+  if(method === 'settings' && Object.keys(args).length > 0){
+    const fn = args.reset ? 'reset_settings' : 'save_settings';
+    const result = await pv.api[fn](args.reset ? {} : args);
+    if(result && result.error) throw new Error(result.error);
+    return result;
+  }
+  const fn = methodMap[method];
+  if(!fn) throw new Error(`unknown route ${route}`);
+  // pywebview.api calls return Promises; await them.
+  const result = await pv.api[fn](args);
+  if(result && result.error) throw new Error(result.error);
+  return result;
+}
+/* Three-way theme. prefers-color-scheme alone was not enough: someone whose OS
+   sits in light mode could never reach the dark palette at all. 'system' removes
+   the attribute so the media query takes over again. */
+function currentTheme(){
+  try{ return localStorage.getItem('lcsr-theme') || 'system'; }catch(e){ return 'system'; }
+}
+function paintThemeSwitch(){
+  const cur = currentTheme();
+  document.querySelectorAll('[data-theme-set]').forEach(b=>
+    b.setAttribute('aria-pressed', b.dataset.themeSet === cur));
+}
+function setTheme(t){
+  try{ localStorage.setItem('lcsr-theme', t); }catch(e){}
+  if(t === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', t);
+  paintThemeSwitch();
+  paintFooterWhere();
+}
+function toast(msg, opts={}){
+  const t = $('#toast');
+  t.innerHTML = `<span>${esc(msg)}</span>`
+    + (opts.undo   ? `<button class="tundo" data-toast-undo="${opts.undo}">Undo</button>` : '')
+    + (opts.unskip ? `<button class="tundo" data-toast-unskip="${opts.unskip}">Undo</button>` : '');
+  t.classList.toggle('good', !!opts.good);
+  t.classList.add('show');
+  // Longer when there is something to press: a two-second window to notice a
+  // button, read it and reach it is not a window at all.
+  clearTimeout(t._h);
+  t._h = setTimeout(()=>t.classList.remove('show'), (opts.undo || opts.unskip) ? 6500 : 2600);
+}
+// Step a YYYY-MM-DD entirely in UTC. Parsing "2026-09-01T00:00:00" gives LOCAL
+// midnight, and toISOString() then converts to UTC -- which in any zone at or
+// east of Greenwich lands back on the PREVIOUS day, so "+1 day" returned the
+// same date and the stepper silently did nothing. Parse with the Z and use the
+// setUTC* setters so the arithmetic never crosses a local/UTC boundary.
+function addDays(iso, n){
+  const d = new Date(iso + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0,10);
+}
+
+function relDay(iso){
+  const d=new Date(iso+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0);
+  const n=Math.round((now-d)/864e5);
+  return n===0?'today':n===1?'yesterday':n>0?`${n} days ago`:`in ${-n} days`;
+}
+
+/* ---------------- problem row ---------------- */
+function logPanel(p, solved){
+  const chips = `<div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">(only recorded when logged as stuck)</span></div>
+      <div class="chips">${(plan?.mistakes||[]).map(m=>
+        `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`).join('')}</div>`;
+  const head = solved
+    ? `<div class="phead2">Logged as <b>solved</b>. Changing it rewrites that attempt in
+        place and does not count as today's work.</div>`
+    : `<div class="phead2">Stuck means it returns in 3 days, then 10, then 30. Failing
+        again resets it to 3.</div>`;
+  const foot = solved
+    ? `<button class="btn warn" data-act="amend-stuck">Change to stuck</button>
+       <button class="btn" data-act="amend-clear">Remove the attempt</button>
+       <button class="btn" data-act="cancel">Cancel</button>`
+    : `<button class="btn primary" data-act="solved">Log as solved</button>
+       <button class="btn warn" data-act="confirm">Log as stuck</button>
+       <button class="btn" data-act="cancel">Cancel</button>`;
+  // Panel visibility lives in draft so it survives a re-render too: any refresh
+  // replaces innerHTML wholesale, which previously closed the panel and threw
+  // away whatever had been typed into it.
+  return `<div class="panel" data-panel ${(draft[p.id]||{}).open ? '' : 'hidden'}>
+      ${head}
+      <div class="lbl">Note: the cue, then the pattern</div>
+      <textarea data-note placeholder="one line, in your own words">${esc((draft[p.id]||{}).note||'')}</textarea>
+      ${chips}
+      <div class="prow">${foot}</div>
+    </div>`;
+}
+
+function logActions(solved, o={}){
+  // In the set-aside tier the only useful action is the way out of it.
+  if(o.unskip) return `<span class="pacts">
+      <button class="btn" data-act="unskip">Bring back</button>
+    </span>`;
+  if(solved) return `<span class="pacts">
+      <button class="btn" data-act="change">Change</button>
+    </span>`;
+  // Skip is offered only where a queue is being worked, which is Today. It is
+  // deliberately last and unemphasised: it is a way out, not a third outcome.
+  return `<span class="pacts">
+      <button class="btn" data-act="solved">Solved</button>
+      <button class="btn warn" data-act="stuck" aria-expanded="false">Stuck</button>
+      <button class="btn" data-act="note">Note</button>
+      ${o.skip ? '<button class="btn quiet" data-act="skip" title="Stop offering this one">Skip</button>' : ''}
+    </span>`;
+}
+
+// Cues are veiled per problem, in memory. Deliberately not persisted: a new
+// session should start covered, because the cost of re-revealing one is a click
+// and the cost of a cue you did not mean to read is the problem itself.
+const unveiled = new Set();
+
+function cueRow(p){
+  const open = unveiled.has(p.id);
+  return `<button type="button" class="pcue veil ${open ? '' : 'veiled'}"
+      data-veil="${p.id}" aria-pressed="${open}"
+      aria-label="${open ? 'Hide' : 'Reveal'} the cue for problem ${p.id}"
+    ><span class="cuetag">cue</span><span class="cuetext">${esc(p.cue)}</span>${
+      open ? '' : '<span class="cuehint">click to reveal</span>'}</button>`;
+}
+
+function pRow(p, o={}){
+  const st = p.state || {};
+  const late = o.late;
+  const cls = ['p', st.status==='done'?'isdone':'', late!=null?'due':''].join(' ');
+  const badges = [
+    p.hard ? '<span class="badge hard">hard</span>' : '',
+    late!=null ? `<span class="badge late">${late>0?late+'d late':'due today'}</span>` : '',
+    o.showTier ? `<span class="badge">${esc(p.tier)}${p.week?' · W'+p.week:''}</span>` : '',
+    (st.skipped && !o.unskip) ? '<span class="badge aside-b">set aside</span>' : '',
+  ].join('');
+  const acts = o.readonly ? '' : logActions(st.status === 'done', o);
+  let meta = '';
+  if(st.status==='done')      meta = `<div class="pmeta"><span class="ok">✓ solved</span> · ${st.attempts} attempt${st.attempts>1?'s':''}${st.last?' · last '+relDay(st.last):''}</div>`;
+  else if(st.status==='learning' && st.due) meta = `<div class="pmeta"><span class="w">returns ${st.due}</span> · ${relDay(st.due)} · ${st.attempts} attempt${st.attempts>1?'s':''}</div>`;
+  return `
+  <div class="${cls}" data-id="${p.id}">
+    <div class="phead">
+      <span class="dot ${st.status||'new'}"></span>
+      <span class="pid">${p.id}</span>
+      ${p.immediately_after_prev?'<span class="arrow" title="solve immediately after the previous problem">↳</span>':''}
+      <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
+      ${badges}${acts}
+    </div>
+    ${o.cue && p.cue ? cueRow(p) : ''}
+    ${meta}
+    ${o.readonly ? '' : logPanel(p, st.status === 'done')}
+  </div>`;
+}
+
+/* ---------------- views ---------------- */
+function vToday(){
+  const p = preview || plan;
+  const ro = !p.is_today;
+  let h = `<div class="stepper">
+      <button class="btn" id="d-prev" ${ro?'':'disabled'}>‹</button>
+      <span class="stepdate">${ro?'':'Today · '}${p.date}${
+        ro?` <em>· ${relDay(p.date)}</em>`:''}</span>
+      <button class="btn" id="d-next">›</button>
+      ${ro?`<button class="btn" id="d-today">Back to today</button>`:''}
+    </div>`;
+  if(ro) h += `<div class="preview">Preview. Nothing can be logged for another day.</div>`;
+
+  if(!ro && p.idle_days >= 3)
+    h += `<div class="drift">Nothing logged for <b>${p.idle_days} days</b>. Re-solves kept
+      falling due; the new-problem queue just waited.</div>`;
+
+  if(!ro && p.pace.started)
+    h += `<div class="pacebar">
+      <span><b>${p.pace.per_day.toFixed(1)}</b> problems/day <em>over ${p.pace.window_days} day${p.pace.window_days>1?'s':''}</em></span>
+      <span><b>${p.projection.remaining}</b> left <em>of the required tiers</em></span>
+      ${p.projection.finish ? `<span>on track to finish <b>${p.projection.finish}</b>
+        <em>${Math.round(p.projection.days_left/7)} weeks</em></span>` : ''}
+    </div>`;
+
+  if(p.paused)
+    h += `<div class="paused">
+      <b>${p.backlog} re-solves outstanding, so new problems are paused</b>
+      <span>Stacking new material on an unworked backlog is what makes the re-solve rate
+      worse. Nothing new until the backlog is under ${p.pause_at}.</span></div>`;
+
+  if(p.due.length){
+    h += `<div class="sec due"><h2>Due re-solves</h2><span class="hint">${
+      p.backlog > p.due.length
+        ? `showing the ${p.due.length} most overdue of ${p.backlog}`
+        : 'these come first'}</span></div>
+          <div class="stack">${p.due.map(x=>pRow(x,{late:x.days_late,cue:true,showTier:true,readonly:ro,skip:!ro})).join('')}</div>`;
+    if(p.due_hidden)
+      h += `<div class="morehint">+ ${p.due_hidden} more overdue, held back so the day stays
+        finishable. They surface as these clear.</div>`;
+  }
+  for(const s of p.sections){
+    h += `<div class="sec"><h2>${esc(s.title)}</h2></div>
+          <div class="stack">${s.problems.map(x=>pRow(x,{cue:true,readonly:ro,skip:!ro})).join('')}</div>`;
+  }
+
+  if(p.caught_up && !ro){
+    const over = p.done_today > p.target_today;
+    h += `<div class="doneday">
+      <div class="tick">✓</div>
+      <div>
+        <b>Done for today</b>
+        <span>${p.done_today} new problem${p.done_today===1?'':'s'}${
+          p.resolves_today?` · ${p.resolves_today} re-solve${p.resolves_today===1?'':'s'}`:''
+        } · today's target is ${p.target_today}${over?' (you went over)':''}</span>
+        <span class="quiet">Working ahead trades tomorrow's spacing for today's volume.</span>
+      </div>
+      ${p.ahead.length?`<button class="btn" id="ahead-toggle">Work ahead</button>`:''}
+    </div>`;
+    if(showAhead && p.ahead.length){
+      h += `<div class="sec" style="margin-top:26px"><h2>Working ahead</h2>
+              <span class="hint">counts toward tomorrow, not today</span></div>`;
+      for(const s of p.ahead){
+        h += `<div class="sec"><h2 style="font-size:13px;color:var(--muted)">${esc(s.title)}</h2></div>
+              <div class="stack">${s.problems.map(x=>pRow(x,{cue:true,readonly:ro})).join('')}</div>`;
+      }
+    }
+  }
+
+  if(ro && !p.due.length && !p.sections.length)
+    h += `<div class="empty"><b>Nothing scheduled</b>No re-solves fall due, and the
+          curriculum has no new problems left to hand you that day.</div>`;
+  return h;
+}
+
+function vCurriculum(){
+  const cw = plan?.week || 1;
+  return curric.groups.map(g=>{
+    const pr=g.progress, pct=pr.total?Math.round(pr.done/pr.total*100):0;
+    const isNow = g.week===cw;
+    const wk = g.week ? 'W'+g.week : (g.key==='foundations'?'T0':g.key==='stretch'?'T3':
+               g.key==='consolidation'?'W17':'+');
+    const body = g.note
+      ? `<div class="note">The only part of the schedule where problems reach you
+         <strong>without a pattern label attached</strong>, which is the only part that
+         resembles an interview.</div>`
+      : g.blocks.map(b=>
+          `${b.title?`<div class="rolelbl">${esc(b.title)}</div>`:''}
+           <div class="stack" style="margin-bottom:0;gap:6px">
+             ${b.problems.map(x=>pRow(x, g.key==='skipped' ? {unskip:true} : {})).join('')}</div>`).join('');
+    return `<details class="grp" ${isNow?'open':''} data-key="${g.key}">
+      <summary>
+        <span class="wk">${wk}</span>
+        <span class="gtitles">
+          <span class="gtitle">${esc(g.title)}</span>
+          <span class="gsub">${esc(g.subtitle||'')}</span>
+        </span>
+        <span class="gprog">
+          ${pr.total?`<span>${pr.done}/${pr.total}</span>
+          <span class="gbar ${pct===100?'full':''}"><i style="width:${pct}%"></i></span>`:''}
+        </span>
+      </summary>
+      <div class="gbody">${body}</div>
+    </details>`;
+  }).join('');
+}
+
+function vHistory(){
+  if(!hist.days.length) return `<div class="empty"><b>Nothing logged yet</b>Attempts appear here as you record them.</div>`;
+  // Days run newest first, so a pass that began on date D divides the entries
+  // above it from those below. Without this the log of a second run reads as
+  // one undifferentiated list in which everything is somehow solved twice.
+  const marks = (hist.sprints || []).slice().sort((a,b)=> a.date < b.date ? 1 : -1);
+  const shown = new Set();
+  return hist.days.map(d=>{
+    let head = '';
+    for(const m of marks){
+      if(m.date >= d.date && !shown.has(m.n)){
+        shown.add(m.n);
+        head += `<div class="passmark"><span>Pass ${m.n} started</span><i></i>
+          <span class="pm2">${esc(m.date)}</span></div>`;
+      }
+    }
+    return head + `
+    <div class="day">
+      <div class="dayhead">
+        <span class="daydate">${d.date}</span>
+        <span class="dayrel">${relDay(d.date)}</span>
+        <span class="daytally">${d.solved} solved${d.stuck?` · ${d.stuck} stuck`:''}</span>
+      </div>
+      ${d.entries.map(e=>`
+        <div class="h">
+          <div class="hhead">
+            <span class="dot ${e.outcome==='solved'?'done':'learning'}"></span>
+            <span class="pid">${e.id}</span>
+            <span class="ptitle">${e.url?`<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title)}</span>
+            ${e.hard?'<span class="badge hard">hard</span>':''}
+            <span class="badge">${esc(e.tier)}${e.week?' · W'+e.week:''}</span>
+            <span class="badge ${e.outcome==='solved'?'ok':'late'}">${e.outcome}</span>
+            ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
+            ${e.can_undo?`<button class="btn undo" data-undo="${e.id}">Undo</button>`:''}
+          </div>
+          ${e.note?`<div class="hnote">${esc(e.note)}</div>`:''}
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function vCues(){
+  const groups = [];
+  cues.forEach((c,i)=>{
+    const g = groups.find(x=>x.name===c.group);
+    (g || (groups[groups.push({name:c.group, rows:[]})-1])).rows.push({...c, i});
+  });
+  const n = cues.length;
+  return `<div class="sec"><h2>Cue → pattern</h2>
+    <span class="hint">the curriculum calls this the object of study: reconstruct it, don't read it</span></div>
+    <div class="prow" style="margin:0 0 18px">
+      <button class="btn" id="cue-all">Reveal all</button>
+      <button class="btn" id="cue-none">Hide all</button>
+      <span class="hint" style="margin-left:4px">${revealed.size}/${n} revealed</span>
+    </div>` +
+    groups.map(g=>`
+      <div class="rolelbl" style="margin:22px 0 9px">${esc(g.name)}</div>` +
+      g.rows.map(c=>{
+        const open = revealed.has(c.i);
+        return `<div class="cue" data-cue="${c.i}">
+          <span class="cuen">${String(c.i+1).padStart(2,'0')}</span>
+          <span class="cuel">${esc(c.says)}</span>
+          <span class="cuer ${open?'':'hidden'}">${open?esc(c.reach_for):'tap to reveal'}</span>
+          ${open && c.because ? `<span class="cuewhy">${esc(c.because)}</span>` : ''}
+        </div>`;
+      }).join('')).join('');
+}
+
+async function loadFreq(){
+  freq = await api('/api/frequent');
+  // Every source starts selected, so the chips show what you are looking at
+  // rather than an empty set that silently means "everything". Guarded by
+  // listsInit, or a refresh would undo a deliberate "untick them all".
+  if(!listsInit){ Object.keys(freq.labels).forEach(k=>FILT.lists.add(k)); listsInit = true; }
+  if(!drawn) draw();
+}
+
+function freqPool(){
+  return freq.problems.filter(p=>{
+    if(FILT.noPaid && p.paid) return false;
+    if(FILT.noSolved && p.solved) return false;
+    if(FILT.noCurric && p.in_curriculum) return false;
+    if(FILT.diff.size && !FILT.diff.has(p.difficulty)) return false;
+    if(!p.lists.some(l=>FILT.lists.has(l))) return false;
+    return true;
+  });
+}
+
+function draw(){
+  const pool = freqPool();
+  if(!pool.length){ drawn = null; return; }
+  // Weighted by how many of the four lists a problem appears in: something on
+  // all four is asked far more often than something on one, and a flat random
+  // draw over 363 would bury the nine that matter most.
+  const total = pool.reduce((a,p)=>a+p.count,0);
+  let r = Math.random()*total;
+  for(const p of pool){ r -= p.count; if(r<=0){ drawn = p; return; } }
+  drawn = pool[pool.length-1];
+}
+
+const CROWN = '<svg class="crown" viewBox="0 0 24 24" aria-hidden="true">'
+  + '<path d="M2.6 6.3l4.8 3.4L12 3l4.6 6.7 4.8-3.4-2 12.1H4.6L2.6 6.3Z"/></svg>';
+
+function nLists(){ return Object.keys(freq.labels).length; }
+function overlapText(n){
+  const t = nLists();
+  return n === t ? `on all ${t} lists` : `${n} of ${t} lists`;
+}
+function overlapClass(n){
+  const t = nLists();
+  return n === t ? 'nmax' : (n >= t - 1 ? 'nhigh' : '');
+}
+function listBadges(p){
+  return p.lists.map(l=>`<span class="badge src ${l}">${esc(freq.labels[l])}</span>`).join('');
+}
+
+function freqRow(p){
+  const c = p.curriculum;
+  const meta = p.solved ? `<div class="pmeta"><span class="ok">✓ solved</span> · ${p.attempts} attempt${p.attempts>1?'s':''}</div>`
+    : p.due ? `<div class="pmeta"><span class="w">returns ${p.due}</span> · ${relDay(p.due)}</div>` : '';
+  return `<div class="p ${p.solved?'isdone':''}" data-id="${p.id}"><div class="phead">
+    <span class="dot ${p.solved?'done':(p.attempted?'learning':'')}"></span>
+    <span class="pid">${p.id}</span>
+    <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></span>
+    <span class="badge d${p.difficulty}">${esc(p.difficulty)}</span>
+    ${p.paid?`<span class="badge gold">${CROWN}premium</span>`:''}
+    <span class="badge ${overlapClass(p.count)}">${overlapText(p.count)}</span>
+    ${c?`<span class="badge ok">curriculum${c.week?' W'+c.week:''}</span>`
+       :'<span class="badge">not in curriculum</span>'}
+    ${logActions(p.solved)}
+  </div><div class="pcue">${listBadges(p)}</div>${meta}${logPanel(p, p.solved)}</div>`;
+}
+
+function vPool(){
+  const st = freq.stats, pool = freqPool();
+  const chip = (on,k,label) => `<button class="chip" aria-pressed="${on}" data-f="${k}">${label}</button>`;
+  const d = drawn;
+  const counts = {};
+  for(const p of freq.problems) for(const l of p.lists) counts[l] = (counts[l]||0)+1;
+
+  // Concept, then filters, then the draw. The old order put a lucky-dip button
+  // first, so the first draw happened before you could see what you were
+  // drawing from or that it was separate from the curriculum at all.
+  const intro = `
+    <div class="sec"><h2>Interview pool</h2>
+      <span class="hint"><b>${st.total} problems that interviews repeat</b>, merged from
+        ${nLists()} public lists</span></div>
+    <p class="lead"><b class="apart">Separate from your curriculum.</b> Nothing you do here
+      moves its progress or metrics.</p>
+    <div class="srcs" style="border-top:none;margin-top:0;padding-top:0">
+      ${Object.entries(freq.labels).map(([k,v])=>
+        `<span class="srcpill"><i></i>${esc(v)} <b>${counts[k]||0}</b></span>`).join('')}</div>`;
+
+  const filters = `<div class="filters">
+    <div class="lbl">Source list <span style="text-transform:none;letter-spacing:0">(any of those picked)</span></div>
+    <div class="chips">${Object.entries(freq.labels).map(([k,v])=>
+      chip(FILT.lists.has(k),'list:'+k,esc(v))).join('')}</div>
+    <div class="lbl">Difficulty</div>
+    <div class="chips">${['Easy','Medium','Hard'].map(x=>chip(FILT.diff.has(x),'diff:'+x,x)).join('')}</div>
+    <div class="lbl">Leave out</div>
+    <div class="chips">
+      ${chip(FILT.noPaid,'x:noPaid','premium')}
+      ${chip(FILT.noSolved,'x:noSolved','already solved')}
+      ${chip(FILT.noCurric,'x:noCurric','already in curriculum')}
+    </div>
+  </div>`;
+
+  const drawbox = `<div class="drawbox">
+    <div class="drawlead">Lucky draw</div>
+    ${d ? `
+      <div class="drawmeta">${listBadges(d)}
+        <span class="badge d${d.difficulty}">${esc(d.difficulty)}</span>
+        <span class="badge ${overlapClass(d.count)}">${overlapText(d.count)}</span>
+        ${d.curriculum?`<span class="badge ok">in curriculum${d.curriculum.week?' · W'+d.curriculum.week:''}</span>`
+                      :'<span class="badge">not in curriculum</span>'}</div>
+      <div class="drawtitle"><span class="pid">${d.id}</span>
+        <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
+      ${d.curriculum?`<div class="drawsub">${esc(d.curriculum.block)}</div>`:''}
+      <div class="drawacts p" data-id="${d.id}">
+        ${logActions(d.solved)}
+        ${logPanel(d, d.solved)}
+      </div>
+    ` : `<div class="drawtitle" style="opacity:.6">${
+          pool.length ? 'Press draw' : 'Nothing matches these filters'}</div>`}
+    <div class="prow">
+      <button class="btn primary" id="f-draw">${d?'Draw again':'Draw a problem'}</button>
+      <span class="hint"><b>${pool.length}</b> in the pool, weighted by list overlap.</span>
+    </div>
+  </div>`;
+
+  return `<div class="pool">
+    ${intro}
+    <div style="height:20px"></div>
+    ${drawbox}
+    ${filters}
+    <div class="sec" style="margin-top:26px"><h2>All ${pool.length} in the pool</h2>
+      <span class="hint">most-overlapping first</span></div>
+    <div class="scrollbox"><div class="stack">${pool.map(freqRow).join('')}</div></div>
+  </div>`;
+}
+
+function vProgress(){
+  // The metrics and the attempt log answered the same question from two tabs:
+  // how it is going, and what produced that. The three numbers first, then the
+  // record behind them.
+  return vStats() + `<div class="sec" style="margin-top:34px"><h2>Every attempt</h2>
+    <span class="hint">newest first${hist ? ` · ${hist.total} logged` : ''}</span></div>`
+    + `<div class="scrollbox">${vHistory()}</div>`;
+}
+
+function vStats(){
+  const m = plan.metrics;
+  const rate = m.resolve_rate==null ? 'not yet' : Math.round(m.resolve_rate*100)+'%';
+  const rcol = m.resolve_rate==null ? 'var(--muted)' : (m.resolve_rate>.70?'var(--ok)':'var(--danger)');
+  const mk = m.mistakes||{}, mx = Math.max(1,...Object.values(mk));
+  return `
+  <div class="cards">
+    <div class="card"><b>${m.attempted}<small style="color:var(--muted)">/${m.total}</small></b>
+      <span>attempted</span></div>
+    <div class="card"><b style="color:${rcol}">${rate}</b>
+      <span>cold re-solve · target &gt;70%</span></div>
+    <div class="card"><b>${m.first_try??0}</b><span>solved cold, first try</span></div>
+    <div class="card"><b>${m.approach_avg?m.approach_avg.toFixed(1)+'m':'not yet'}</b>
+      <span>time to approach · target &lt;5m by W10</span></div>
+  </div>
+  <div class="sec"><h2>Mistake classes</h2>
+    <span class="hint">after ~40 problems one class dominates, and weeks 17 to 18 target that class</span></div>
+  ${Object.keys(mk).length ? `<div class="card"><div class="hist">
+    ${Object.entries(mk).map(([k,v])=>
+      `<div><i style="height:${v/mx*74+4}px"></i><small>${esc(k)}<br>${v}</small></div>`).join('')}
+  </div></div>` : `<div class="empty">No mistake classes logged yet. They are recorded when you mark a problem stuck.</div>`}
+  <div class="foot" style="margin-top:20px">No problems-solved count, on purpose. You can
+  raise it by picking easy problems. The cold re-solve rate above is the one the curriculum
+  says predicts how you do in an interview.</div>`;
+}
+
+function vAddProblem(){
+  return `
+  <details class="add">
+    <summary>Add a problem</summary>
+    <div class="grid">
+      <label for="a-id">LeetCode #</label><input id="a-id" type="number" placeholder="1768">
+      <label for="a-title">Title</label><input id="a-title" placeholder="Merge Strings Alternately">
+      <label for="a-block">Block</label><input id="a-block" placeholder="Added">
+      <label for="a-cue">Cue</label><input id="a-cue" placeholder="what the problem says…">
+      <label for="a-week">Week</label><input id="a-week" type="number" placeholder="optional">
+      <label for="a-hard">Hard</label><input id="a-hard" type="checkbox" style="width:auto">
+    </div>
+    <div class="prow"><button class="btn primary" id="a-save">Add problem</button></div>
+    <div class="err" id="a-err"></div>
+    <div class="foot">Kept separate from the packaged curriculum. Reusing a number
+      overrides that problem.</div>
+  </details>`;
+}
+
+function vSettings(){
+  const d = load, s = d.settings, c = d.curriculum, e = d.effective;
+  const TIERS = [
+    ['foundations','Foundations','The basics later patterns assume. They keep coming until all of them are done.'],
+    ['core','Core','This week\u2019s pattern, plainest example before any hard variant. Cut this last.'],
+    ['reps','Reps','Earlier weeks\u2019 patterns, mixed into today rather than drilled in a block, so you have to spot the pattern yourself.'],
+  ];
+  const row = ([k,label,hint]) => `
+    <div class="setrow">
+      <span class="setlab"><b>${label}</b><span>${hint}</span></span>
+      <input type="number" min="0" max="${d.max_per_tier}" data-set="${k}"
+             value="${s[k] ?? ''}" placeholder="${c[k]}" aria-label="${label} per day">
+      <span class="seteff ${e[k]===0?'zero':''}">${e[k]}<em>${
+        s[k]===null ? 'curriculum' : 'you set '+s[k]}</em></span>
+    </div>`;
+  const total = ['foundations','core','reps'].reduce((a,k)=>a+e[k],0);
+  const capped = s.daily_total !== null && total >= s.daily_total;
+
+  return `
+  <div class="sec"><h2>Daily load</h2>
+    <span class="hint">how many new problems a day, before due re-solves</span></div>
+  <div class="poolintro" style="border-left-color:var(--brand)">
+    <p>Due re-solves are never capped: they are mandatory.</p>
+  </div>
+
+  <div class="setcard">
+    <div class="sethead"><span>Tier</span><span>Per day</span><span>You get</span></div>
+    ${TIERS.map(row).join('')}
+    <div class="setrow total">
+      <span class="setlab"><b>Cap the whole day</b><span>Across all three. Reps are cut
+        first, then foundations, then core.</span></span>
+      <input type="number" min="0" max="${d.max_per_tier}" data-set="daily_total"
+             value="${s.daily_total ?? ''}" placeholder="none" aria-label="Total per day">
+      <span class="seteff ${total===0?'zero':''}">${total}<em>${
+        capped ? 'at the cap' : 'total'}</em></span>
+    </div>
+  </div>
+
+  <div class="prow">
+    <button class="btn primary" id="set-save">Save</button>
+    <button class="btn" id="set-reset" ${d.is_default?'disabled':''}>Follow the curriculum</button>
+    <span class="hint">${d.is_default
+      ? 'Currently following the curriculum exactly.'
+      : 'You have changed the default load.'} Week ${d.week} right now.</span>
+  </div>
+  <div class="err" id="set-err"></div>
+  ${vPasses()}
+  ${vExport()}
+  ${vAddProblem()}`;
+}
+
+function vPasses(){
+  const m = plan.metrics, d = load;
+  const sum = q => ['foundations','core','reps'].reduce((a,k)=>a+q[k], 0);
+  const load_ = sum(d.effective), nextLoad = sum(d.effective_next_pass);
+  const done = curric ? curric.overall.done : 0;
+  const total = curric ? curric.overall.total : m.total;
+  const finished = total && done >= total;
+  const left = Math.max(0, total - done);
+  return `
+  <div class="sec" style="margin-top:38px"><h2>Passes</h2>
+    <span class="hint">going round again when you reach the end</span></div>
+  <div class="poolintro" style="border-left-color:var(--brand)">
+    <p>You are on <b>pass ${d.sprint}</b>. ${finished
+      ? 'Every problem is finished.'
+      : `<b>${done}</b> of <b>${total}</b> finished, <b>${left}</b> still to go.`}</p>
+    <p>Every problem goes back on offer and the 3 / 10 / 30 ladder empties.
+      <b>Nothing is deleted</b>: past attempts stay in Progress and in your export.</p>
+    <p><b>Each pass raises the daily intake.</b> ${nextLoad !== load_
+      ? `<b>${load_}</b> a day becomes <b>${nextLoad}</b>.`
+      : d.settings.daily_total != null
+        ? `Your cap of <b>${d.settings.daily_total}</b> would hold it at <b>${load_}</b>, so
+           pass ${d.sprint + 1} looks the same until you raise it.`
+        : `Your own core setting fixes it at <b>${load_}</b>, so pass ${d.sprint + 1}
+           looks the same until you clear that.`}</p>
+    ${finished ? '' : `<p class="apart" style="color:var(--warn)">This also drops the
+      re-solves currently scheduled.</p>`}
+  </div>
+  <div class="prow">
+    <button class="btn ${finished?'primary':'warn'}" id="sprint-go"
+      data-armed="${sprintArmed}">${sprintArmed
+        ? `Yes, start pass ${d.sprint + 1}`
+        : `Start pass ${d.sprint + 1}`}</button>
+    ${sprintArmed?'<button class="btn" id="sprint-cancel">Cancel</button>':''}
+    <span class="hint">${sprintArmed
+      ? 'This cannot be undone from here, though nothing is lost.'
+      : 'You will be asked to confirm.'}</span>
+  </div>`;
+}
+
+function vExport(){
+  return `
+  <div class="sec" style="margin-top:38px"><h2>Export</h2>
+    <span class="hint">your record, in a form nothing here owns</span></div>
+  <div class="poolintro" style="border-left-color:var(--brand)">
+    <p><b>CSV.</b> One row per problem, all ${plan.metrics.total} of them, then a column
+      group per attempt: date, outcome, mistake class, pass and note.</p>
+    <p><b>Raw log.</b> The append-only file itself, which is what the CLI reads back.</p>
+  </div>
+  <div class="prow">
+    <button class="btn primary" data-export="csv">Download CSV</button>
+    <button class="btn" data-export="jsonl">Download raw log</button>
+  </div>`;
+}
+
+const EVIDENCE = {
+  curriculum: 'Plainest example before hard variant, and reps interleaved across weeks rather than massed. Both are findings from the literature, not preferences.',
+  progress: 'Cold re-solve at 30 days is the number that predicts performance. The mistake histogram is what tells you which part to fix.',
+  pool: 'Overlap across five independently compiled lists is the signal here, which is why the draw weights by it rather than picking uniformly.',
+  cues: 'Interleaving works because it makes you choose the method from the problem. Under blocked practice the heading has already chosen for you.',
+  settings: 'The defaults are the load the curriculum states for itself. Raising them is a choice about volume over spacing.',
+};
+
+function evidenceNote(){
+  const t = EVIDENCE[tab];
+  if(!t) return '';
+  return `<div class="evid">${t}
+    <a href="https://github.com/Swapnil-jain/lcsr/blob/main/docs/evidence.md"
+       target="_blank" rel="noopener noreferrer">Read the evidence</a></div>`;
+}
+
+/* ---------------- render ---------------- */
+function renderChrome(){
+  $('#daychip').innerHTML = `${plan.sprint > 1 ? 'pass ' + plan.sprint + ' · ' : ''}`
+    + `day ${plan.day} · week ${plan.week} · `
+    + `<strong style="color:${plan.caught_up?'var(--ok)':'var(--ink)'}">`
+    + `${plan.done_today}/${plan.target_today}</strong> today`;
+  const o = curric?.overall;
+  if(o) $('#overall').innerHTML =
+    `<span class="obar"><i style="width:${o.done/o.total*100}%"></i></span>
+     <span>${o.done} of ${o.total}</span>`;
+  const dueN = plan.due.length + plan.sections.reduce((a,s)=>a+s.problems.length,0);
+  $('#nav').innerHTML = TABS.map(t=>
+    `<button data-tab="${t.k}" aria-current="${t.k===tab}">${t.label}${
+      t.k==='today'&&dueN?`<span class="count">${dueN}</span>`:''}${
+      t.k==='progress'&&hist?`<span class="count">${hist.total}</span>`:''}</button>`).join('');
+}
+// Re-rendering replaces the whole view, so scroll position has to be restored
+// deliberately. Only a tab change should jump to the top -- revealing a cue,
+// toggling work-ahead or logging an attempt must leave you where you were.
+function render(opts={}){
+  const y = window.scrollY;
+  renderChrome();
+  const v = {today:vToday, curriculum:vCurriculum, progress:vProgress,
+             pool:vPool, cues:vCues, settings:vSettings}[tab] || vToday;
+  $('#view').innerHTML = v() + evidenceNote();
+  window.scrollTo({top: opts.top ? 0 : y});
+}
+
+async function refreshAll(){
+  plan = await api('/api/plan');
+  if(curric) curric = await api('/api/curriculum');
+  if(hist)   hist   = await api('/api/history');
+  if(freq){ freq = await api('/api/frequent');
+            if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
+  // The settings screen's "you get" column is the EFFECTIVE quota, which depends
+  // on how many foundations are still unattempted. Logging one changes it, so a
+  // loaded settings view goes stale unless it is refetched with everything else.
+  if(load) load = await api('/api/settings');
+  if(preview) preview = await api('/api/plan?date=' + preview.date);
+  render();
+}
+
+async function setDate(iso){
+  if(iso === plan.date){ preview = null; return render(); }
+  preview = await api('/api/plan?date=' + iso);
+  showAhead = false;
+  render({top:true});
+}
+
+// What a tab needs fetched before it can render, in ONE place.
+//
+// GOTCHA: go() and the bootstrap used to carry a copy of this list each, and
+// they drifted the moment a tab was added. Settings went into go()'s copy only,
+// so opening Settings worked and RELOADING the page on Settings left `load`
+// null, threw inside vSettings() before first paint, and showed "Could not
+// reach lcsr" on a server that was answering fine. Any new tab goes here, once.
+async function ensureData(t){
+  if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
+  if(t==='progress')              hist   = await api('/api/history');
+  if(t==='pool' && !freq)         await loadFreq();
+  if(t==='cues' && !cues)         cues   = await api('/api/cues');
+  if(t==='settings')              load   = await api('/api/settings');
+}
+
+async function go(t){
+  const prev = tab;
+  tab = t; location.hash = t;
+  try{
+    await ensureData(t);
+  }catch(err){
+    tab = prev; location.hash = prev; toast(err.message); return;
+  }
+  render({top:true});
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener('input', e=>{
+  const card = e.target.closest('.p');
+  if(card && e.target.matches('[data-note]')){
+    const id = +card.dataset.id;
+    (draft[id] = draft[id] || {}).note = e.target.value;
+  }
+});
+
+$('#nav').addEventListener('click', e=>{
+  const b=e.target.closest('[data-tab]'); if(b) go(b.dataset.tab);
+});
+$('#theme').addEventListener('click', e=>{
+  const b=e.target.closest('[data-theme-set]'); if(b) setTheme(b.dataset.themeSet);
+});
+paintThemeSwitch();
+function paintFooterWhere(){
+  const el = $('#footwhere');
+  if(!el) return;
+  el.style.color = '';
+  el.textContent = 'Everything is recomputed from a file on this machine. Nothing leaves it.';
+}
+
+document.addEventListener('click', async e=>{
+  // cue reveal
+  const cue = e.target.closest('[data-cue]');
+  if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  const ex = e.target.closest('[data-export]');
+  if(ex){
+    const kind = ex.dataset.export;
+    try{
+      const r = await api('/api/export', {format: kind});
+      let text = r.text, name = r.filename;
+      const url = URL.createObjectURL(new Blob([text],
+        {type: kind === 'csv' ? 'text/csv' : 'application/x-ndjson'}));
+      const a = document.createElement('a');
+      a.href = url; a.download = name; document.body.appendChild(a); a.click();
+      a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }catch(err){ toast(err.message); }
+    return;
+  }
+  const tus = e.target.closest('[data-toast-unskip]');
+  if(tus){
+    const id = +tus.dataset.toastUnskip;
+    $('#toast').classList.remove('show');
+    try{ await api('/api/skip', {id, skip:false}); await refreshAll();
+         toast(`${id} is back on the list.`, {good:true}); }
+    catch(err){ toast(err.message); }
+    return;
+  }
+  const tu = e.target.closest('[data-toast-undo]');
+  if(tu){
+    const id = +tu.dataset.toastUndo;
+    $('#toast').classList.remove('show');
+    try{
+      await api('/api/undo', {id});
+      await refreshAll();
+      toast(`${id} is back on today's list.`);
+    }catch(err){ toast(err.message); }
+    return;
+  }
+  const veil = e.target.closest('[data-veil]');
+  if(veil){
+    const id = +veil.dataset.veil;
+    if(unveiled.has(id)) unveiled.delete(id); else unveiled.add(id);
+    const open = unveiled.has(id);
+    // Toggled in place rather than via render(): a full re-render would discard
+    // whatever is typed in an open note panel on the same card.
+    veil.classList.toggle('veiled', !open);
+    veil.setAttribute('aria-pressed', open);
+    veil.setAttribute('aria-label', `${open ? 'Hide' : 'Reveal'} the cue for problem ${id}`);
+    veil.querySelector('.cuehint')?.remove();
+    if(!open) veil.insertAdjacentHTML('beforeend',
+      '<span class="cuehint">click to reveal</span>');
+    return;
+  }
+  if(e.target.id==='d-next' || e.target.id==='d-prev'){
+    return setDate(addDays((preview || plan).date, e.target.id==='d-next' ? 1 : -1));
+  }
+  if(e.target.id==='d-today'){ preview=null; return render(); }
+  if(e.target.id==='ahead-toggle'){ showAhead = !showAhead; return render(); }
+  if(e.target.id==='f-draw'){ draw(); return render(); }
+  if(e.target.dataset.f){
+    const [kind,val] = e.target.dataset.f.split(':');
+    if(kind==='diff') FILT.diff.has(val)?FILT.diff.delete(val):FILT.diff.add(val);
+    if(kind==='list') FILT.lists.has(val)?FILT.lists.delete(val):FILT.lists.add(val);
+    if(kind==='x')    FILT[val] = !FILT[val];
+    if(drawn && !freqPool().some(p=>p.id===drawn.id)) drawn = null;
+    return render();
+  }
+  if(e.target.id==='cue-all'){ cues.forEach((_,i)=>revealed.add(i)); return render(); }
+  if(e.target.id==='cue-none'){ revealed.clear(); return render(); }
+
+  if(e.target.dataset.undo){
+    const id = +e.target.dataset.undo;
+    if(inFlight.has(id)) return;      // a second click would retract twice
+    inFlight.add(id);
+    try{
+      const r = await api('/api/undo', {id});
+      toast(`undid ${r.undone} on ${id}`);
+      plan = await api('/api/plan');
+      hist = await api('/api/history');
+      if(curric) curric = await api('/api/curriculum');
+      if(freq){ freq = await api('/api/frequent');
+                if(drawn) drawn = freq.problems.find(x=>x.id===drawn.id) || drawn; }
+      if(preview) preview = await api('/api/plan?date=' + preview.date);
+      render();
+    }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
+    return;
+  }
+
+  const card = e.target.closest('.p'); if(!card) return;
+  const id = +card.dataset.id, act = e.target.dataset.act;
+  draft[id] = draft[id] || {};
+  const panel = card.querySelector('[data-panel]');
+
+  if(e.target.dataset.mistake){
+    const m = e.target.dataset.mistake;
+    draft[id].mistake = draft[id].mistake===m ? null : m;
+    card.querySelectorAll('.chip').forEach(c=>
+      c.setAttribute('aria-pressed', c.dataset.mistake===draft[id].mistake));
+    return;
+  }
+  // 'stuck' and 'note' both just open the panel; nothing is written until a
+  // Log button in it is pressed, so a mistyped note is never committed.
+  if(act==='change'){
+    draft[id].open = true;
+    panel.hidden = false;
+    panel.scrollIntoView({block:'nearest', behavior:'smooth'});
+    return;
+  }
+  if(act==='amend-stuck' || act==='amend-clear'){
+    if(inFlight.has(id)) return;
+    inFlight.add(id);
+    const note = panel.querySelector('[data-note]').value.trim();
+    try{
+      if(act==='amend-clear'){
+        const r = await api('/api/undo', {id});
+        toast(`${id} is back on today's list.`, {good:true});
+      }else{
+        const r = await api('/api/amend', {id, outcome:'stuck',
+                            mistake: draft[id].mistake, note});
+        toast(`${id} is now stuck. Back on ${r.due}.`, {good:true});
+      }
+      delete draft[id];
+      await refreshAll();
+    }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
+    return;
+  }
+  if(act==='skip' || act==='unskip'){
+    if(inFlight.has(id)) return;
+    inFlight.add(id);
+    try{
+      await api('/api/skip', {id, skip: act==='skip'});
+      await refreshAll();
+      toast(act==='skip'
+        ? `${id} set aside. It will not be offered again until you bring it back.`
+        : `${id} is back on the list.`,
+        act==='skip' ? {good:true, unskip:id} : {good:true});
+    }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
+    return;
+  }
+  if(act==='stuck' || act==='note'){
+    draft[id].open = true;
+    panel.hidden = false;
+    card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','true');
+    panel.scrollIntoView({block:'nearest', behavior:'smooth'});
+    panel.querySelector('textarea').focus();
+    return;
+  }
+  if(act==='cancel'){
+    panel.hidden = true;
+    draft[id] = {};
+    card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','false');
+    delete draft[id]; return;
+  }
+  if(act==='solved' || act==='confirm'){
+    if(inFlight.has(id)) return;
+    inFlight.add(id);
+    const note = panel.querySelector('[data-note]').value.trim();
+    try{
+      await api('/api/log', {id, outcome: act==='solved'?'solved':'stuck',
+                             mistake: draft[id].mistake, note});
+      delete draft[id];
+      toast(act==='solved'
+        ? `Nice. ${id} is solved and will not come back.`
+        : `${id} marked stuck. You will see it again in 3 days.`,
+        {good:true, undo:id});
+      await refreshAll();
+    }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
+  }
+});
+
+document.addEventListener('click', async e=>{
+  if(e.target.id==='sprint-cancel'){ sprintArmed = false; return render(); }
+  if(e.target.id==='sprint-go'){
+    if(!sprintArmed){ sprintArmed = true; return render(); }
+    try{
+      const r = await api('/api/sprint', {});
+      sprintArmed = false;
+      // Everything is derived from the log, and the log just changed shape:
+      // refetch the lot rather than patch pieces of it.
+      load = await api('/api/settings');
+      plan = await api('/api/plan');
+      curric = await api('/api/curriculum');
+      if(hist) hist = await api('/api/history');
+      toast(`pass ${r.sprint} started, nothing was deleted`);
+      go('today');
+    }catch(err){ $('#set-err').textContent = err.message; }
+    return;
+  }
+  if(e.target.id==='set-save' || e.target.id==='set-reset'){
+    $('#set-err').textContent = '';
+    try{
+      if(e.target.id==='set-reset'){
+        load = await api('/api/settings', {reset:true});
+      }else{
+        // An empty box is an explicit null: follow the curriculum for that tier.
+        // It is not the same instruction as 0, which stops the tier entirely.
+        const body = {};
+        document.querySelectorAll('[data-set]').forEach(i=>{
+          const v = i.value.trim();
+          body[i.dataset.set] = v === '' ? null : Number(v);
+        });
+        load = await api('/api/settings', body);
+      }
+      plan = await api('/api/plan');     // target_today moves with the load
+      if(preview) preview = await api('/api/plan?date=' + preview.date);
+      toast('daily load saved');
+      render();
+    }catch(err){ $('#set-err').textContent = err.message; }
+    return;
+  }
+  if(e.target.id!=='a-save') return;
+  $('#a-err').textContent='';
+  try{
+    await api('/api/add', {id:$('#a-id').value, title:$('#a-title').value,
+      block:$('#a-block').value, cue:$('#a-cue').value,
+      week:$('#a-week').value, hard:$('#a-hard').checked});
+    curric = await api('/api/curriculum'); plan = await api('/api/plan');
+    toast('problem added'); go('curriculum');
+  }catch(err){ $('#a-err').textContent = err.message; }
+});
+
+window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t&&t!==tab) go(t); });
+
+// Hooks called by app.py via evaluate_js() from the Python side.
+// _lcsrRefresh: re-fetch all cached data and re-render (e.g. after timer logs a result).
+// _lcsrTimerTimeout: timer ran out; pre-open the stuck panel for the given problem.
+window._lcsrRefresh = async function(){
+  try{ await refreshAll(); }catch(e){ toast(e.message); }
+};
+window._lcsrTimerTimeout = async function({id, approach_min}){
+  draft[id] = {...(draft[id]||{}), open:true, timerApproachMin: approach_min};
+  toast(`Time's up on ${id}. Add a note below, then log it as stuck.`);
+  render();
+  document.querySelector(`.p[data-id="${id}"] [data-panel]`)
+    ?.scrollIntoView({block:'center', behavior:'smooth'});
+};
+
+(async ()=>{
+  plan = await api('/api/plan');
+  curric = await api('/api/curriculum');
+  await ensureData(tab);
+  render();
+})().catch(err => {
+  document.getElementById('view').innerHTML =
+    `<div class="empty"><b>Could not start lcsr</b>${esc(err.message)}</div>`;
+});
+</script>
+</body>
+</html>

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import json
 import webbrowser
-from datetime import date
+from datetime import date as date_
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -54,8 +54,8 @@ TIMER_HTML = STATIC / "timer.html"
 # Helpers shared between API methods
 # ---------------------------------------------------------------------------
 
-def _today() -> date:
-    return date.today()
+def _today() -> date_:
+    return date_.today()
 
 
 def _problem_id(v) -> int:
@@ -94,8 +94,8 @@ class LcsrAPI:
 
     # ---------------------------------------------------------------- reads
 
-    def get_plan(self, date_str: str | None = None) -> dict:
-        on = date.fromisoformat(date_str) if date_str else _today()
+    def get_plan(self, date: str | None = None) -> dict:
+        on = date_.fromisoformat(date) if date else _today()
         today = _today()
         plan = todays_plan(on, today=today)
         plan["is_today"] = (on == today)
