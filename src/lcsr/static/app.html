@@ -796,10 +796,8 @@ function noteExpandHtml(note, ts, outcome){
   const dataNote = esc(note||'').replace(/"/g,'&quot;');
   return `<div class="note-expand" data-note-expand>
     <div class="note-expand-head" data-toggle-note>
-      <span class="dot ${outcome==='solved'?'done':'learning'}"></span>
       <span class="note-expand-date">${fmtTs(ts)}</span>
       <span class="note-expand-preview">${esc(preview)}</span>
-      <span class="badge ${outcome==='solved'?'ok':'late'}">${outcome}</span>
     </div>
     <div class="note-expand-body" data-note="${dataNote}"></div>
   </div>`;
