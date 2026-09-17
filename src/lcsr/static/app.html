@@ -1398,20 +1398,7 @@ document.addEventListener('click', async e=>{
     if(openCards.has(id)){ openCards.delete(id); } else { openCards.add(id); }
     render();
     // Lazy description fetch after render so the placeholder is visible first.
-    if(openCards.has(id)){
-      const url = card?.dataset.url || '';
-      window.pywebview.api.get_description({id, url}).then(r=>{
-        const el = document.getElementById('pdesc-'+id);
-        if(!el) return;
-        if(r.html){
-          el.classList.remove('pdesc-loading');
-          el.innerHTML = r.html;
-        } else {
-          el.classList.remove('pdesc-loading');
-          el.textContent = '';
-        }
-      }).catch(()=>{});
-    }
+    if(openCards.has(id)) loadDescriptionInto(id);
     return;
   }
 
@@ -1603,6 +1590,23 @@ window._lcsrTimerSolved = async function({id}){
   toast(`Nice. ${id} is solved and will not come back.`, {good:true, undo:id});
   try{ await refreshAll(); }catch(e){ toast(e.message); }
 };
+function loadDescriptionInto(id){
+  const card = document.querySelector(`.p[data-id="${id}"]`);
+  const el = document.getElementById('pdesc-'+id);
+  if(!el) return;
+  const url = card?.dataset.url || '';
+  window.pywebview.api.get_description({id, url}).then(r=>{
+    const target = document.getElementById('pdesc-'+id);
+    if(!target) return;
+    target.classList.remove('pdesc-loading');
+    if(r && r.html) target.innerHTML = r.html;
+    else target.textContent = '';
+  }).catch(()=>{
+    const target = document.getElementById('pdesc-'+id);
+    if(target){ target.classList.remove('pdesc-loading'); target.textContent = ''; }
+  });
+}
+
 window._lcsrTimerTimeout = async function({id, approach_min}){
   draft[id] = {...(draft[id]||{}), open:true, timerApproachMin: approach_min};
   openCards.add(id);   // auto-expand the card so the stuck panel is visible
@@ -1610,6 +1614,8 @@ window._lcsrTimerTimeout = async function({id, approach_min}){
   // Switch to Today tab if not already there.
   if(tab !== 'today') await go('today');
   else { try{ await refreshAll(); }catch(e){} }
+  // Fetch description now that the card is rendered and expanded.
+  loadDescriptionInto(id);
   // Scroll the card into view and focus the note field.
   const panel = document.querySelector(`.p[data-id="${id}"] [data-panel]`);
   panel?.scrollIntoView({block:'center', behavior:'smooth'});
