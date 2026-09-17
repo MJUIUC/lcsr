@@ -499,16 +499,6 @@ def main():
     )
     api._main_win = main_win
 
-    # Set the macOS Dock icon. AppKit is available on macOS via pyobjc,
-    # which pywebview already pulls in as a dependency.
-    try:
-        import AppKit
-        icon_path = str(STATIC / "icon.png")
-        image = AppKit.NSImage.alloc().initWithContentsOfFile_(icon_path)
-        if image:
-            AppKit.NSApplication.sharedApplication().setApplicationIconImage_(image)
-    except Exception:
-        pass  # non-macOS or AppKit unavailable -- silently skip
-
     # start() blocks until all windows are closed.
-    webview.start(debug=False)
+    # icon= sets the macOS Dock icon (and taskbar icon on other platforms).
+    webview.start(debug=False, icon=str(STATIC / "icon.png"))
