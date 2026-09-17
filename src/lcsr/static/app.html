@@ -792,12 +792,11 @@ function toggleNoteExpand(el){
 
 // Build a self-contained note-expand card (used in both stuck panel and Progress).
 function noteExpandHtml(note, ts, outcome){
-  const preview = (note||'').split('\n')[0].slice(0,100);
   const dataNote = esc(note||'').replace(/"/g,'&quot;');
   return `<div class="note-expand" data-note-expand>
     <div class="note-expand-head" data-toggle-note>
       <span class="note-expand-date">${fmtTs(ts)}</span>
-      <span class="note-expand-preview">${esc(preview)}</span>
+      <span class="note-expand-preview">Notes</span>
     </div>
     <div class="note-expand-body" data-note="${dataNote}"></div>
   </div>`;
