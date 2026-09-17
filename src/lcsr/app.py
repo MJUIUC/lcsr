@@ -358,8 +358,9 @@ class LcsrAPI:
         pid = _problem_id(args.get('id'))
         elapsed_sec = float(args.get('elapsed_sec', 0))
         paused_sec = float(args.get('paused_sec', 0))
+        note = args.get('note') or None
         am = round(elapsed_sec / 60, 1)
-        result = self.log({'id': pid, 'outcome': SOLVED, 'approach_min': am})
+        result = self.log({'id': pid, 'outcome': SOLVED, 'approach_min': am, 'note': note})
         self._close_timer()
         self._refresh_main(solved_id=pid)
         self._focus_main()
