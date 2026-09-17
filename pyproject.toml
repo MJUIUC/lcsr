@@ -9,6 +9,9 @@ description = "Run the 18-week DSA curriculum's daily loop"
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+app = ["pywebview>=5.0", "youtube-search-python"]
+
 [project.scripts]
 lcsr = "lcsr.cli:main"
 
