@@ -115,9 +115,13 @@ class LcsrAPI:
     def get_history(self, args: dict | None = None) -> dict:
         return history_view()
 
-    def get_cues(self, args: dict | None = None) -> list:
+    def get_cues(self, args: dict | None = None) -> dict:
+        """Return cues list plus the problem->cue index map."""
+        import json as _json
+        from .store import HOME
+        data = Path(__file__).parent / "data"
         all_probs = cur.problems()
-        result = []
+        cues_list = []
         for c in cur.cues():
             entry = dict(c)
             enriched = []
@@ -131,8 +135,11 @@ class LcsrAPI:
                         'hard': p.get('hard', False),
                     })
             entry['problems'] = enriched
-            result.append(entry)
-        return result
+            cues_list.append(entry)
+        cue_map_path = data / "cue_map.json"
+        cue_map = _json.loads(cue_map_path.read_text(encoding="utf-8")) \
+            if cue_map_path.exists() else {}
+        return {"cues": cues_list, "cue_map": cue_map}
 
     def get_settings(self, args: dict | None = None) -> dict:
         attempted = set(replay())

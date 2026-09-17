@@ -1414,12 +1414,13 @@ async function ensureData(t){
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
   if(t==='progress')              hist   = await api('/api/history');
   if(t==='cues' && !cues){
-    cues = await api('/api/cues');
-    // Build inverted map: problem id -> first cue index that lists it.
-    cues.forEach((c,i)=>{
-      (c.problems||[]).forEach(p=>{
-        if(!probToCueIdx.has(p.id)) probToCueIdx.set(p.id, i);
-      });
+    const r = await api('/api/cues');
+    cues = r.cues;
+    // cue_map is the source of truth: problem id (string) -> [cue indices]
+    // Use the first index as the primary jump target.
+    const cm = r.cue_map || {};
+    Object.entries(cm).forEach(([pid, indices])=>{
+      if(indices && indices.length) probToCueIdx.set(+pid, indices[0]);
     });
   }
   if(t==='settings')              load   = await api('/api/settings');
