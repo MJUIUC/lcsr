@@ -178,6 +178,9 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
   border:1px solid color-mix(in srgb,var(--danger) 35%,transparent);
   color:var(--danger);text-decoration:none;transition:.13s}
 .yt-link:hover{background:color-mix(in srgb,var(--danger) 20%,transparent)}
+.yt-link.ok{background:color-mix(in srgb,var(--ok) 10%,transparent);
+  border-color:color-mix(in srgb,var(--ok) 35%,transparent);color:var(--ok)}
+.yt-link.ok:hover{background:color-mix(in srgb,var(--ok) 18%,transparent)}
 .badge{font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;
   border-radius:99px;border:1px solid var(--line);color:var(--muted);flex:none;white-space:nowrap}
 .badge.hard{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
@@ -841,6 +844,36 @@ function stuckPanel(p){
   </div>`;
 }
 
+function solvedPanel(p){
+  if(!(draft[p.id]||{}).timerSolved) return '';
+  const t = draft[p.id].timerTitle || p.title || String(p.id);
+  const ytQuery = encodeURIComponent(t + ' leetcode solution');
+  const ytUrl = 'https://www.youtube.com/results?search_query=' + ytQuery;
+  const pastNotes = noteHistoryFor(p.id);
+  const histHtml = pastNotes.length ? `
+    <div class="note-hist">
+      <div class="note-hist-lbl">Previous attempt notes</div>
+      ${pastNotes.map(n=>noteExpandHtml(n.note, n.ts, n.outcome)).join('')}
+    </div>` : '';
+  const lastNote = pastNotes[pastNotes.length - 1];
+  const noteLabel = lastNote
+    ? `Notes from Attempt &middot; ${fmtTs(lastNote.ts)}`
+    : 'Attempt notes';
+  return `<div class="panel" data-solved-panel>
+    <div class="phead2" style="color:var(--ok)">&#10003; Solved! Add a note about your approach.</div>
+    <a class="yt-link ok" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; YouTube solutions</a>
+    ${histHtml}
+    <div class="lbl" style="margin-top:16px">${noteLabel}</div>
+    <textarea data-solve-note rows="6"
+      placeholder="Key insight, approach, patterns used... Markdown supported."
+    ></textarea>
+    <div class="prow">
+      <button class="btn primary" data-act="solve-save">Save note</button>
+      <button class="btn" data-act="solve-skip">Skip</button>
+    </div>
+  </div>`;
+}
+
 // Cues are veiled per problem, in memory. Deliberately not persisted: a new
 // session should start covered, because the cost of re-revealing one is a click
 // and the cost of a cue you did not mean to read is the problem itself.
@@ -897,6 +930,7 @@ function pRow(p, o={}){
     ${!inert ? `<div class="prow" style="margin-top:14px">
       <button class="btn primary" data-start-timer="${p.id}" data-timer-url="${esc(p.url)}">Start timed attempt</button>
     </div>` : ''}
+    ${!inert ? solvedPanel(p) : ''}
     ${!inert ? stuckPanel(p) : ''}
   ` : '';
 
@@ -1748,6 +1782,23 @@ document.addEventListener('click', async e=>{
     render();
     return;
   }
+  if(act==='solve-save' || act==='solve-skip'){
+    if(inFlight.has(id)) return;
+    inFlight.add(id);
+    const note = act==='solve-save'
+      ? (panel?.querySelector('[data-solve-note]')?.value.trim() || null)
+      : null;
+    const approach_min = (draft[id]||{}).timerApproachMin;
+    try{
+      await api('/api/log', {id, outcome:'solved', note, approach_min});
+      delete draft[id];
+      openCards.delete(id);
+      toast(`Nice. ${id} is solved and will not come back.`, {good:true, undo:id});
+      await refreshAll();
+    }catch(err){ toast(err.message); }
+    finally{ inFlight.delete(id); }
+    return;
+  }
   if(act==='confirm'){
     if(inFlight.has(id)) return;
     inFlight.add(id);
@@ -1831,9 +1882,16 @@ window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t
 window._lcsrRefresh = async function(){
   try{ await refreshAll(); }catch(e){ toast(e.message); }
 };
-window._lcsrTimerSolved = async function({id}){
-  toast(`Nice. ${id} is solved and will not come back.`, {good:true, undo:id});
-  try{ await refreshAll(); }catch(e){ toast(e.message); }
+window._lcsrTimerSolved = async function({id, approach_min, title}){
+  draft[id] = {...(draft[id]||{}), timerSolved:true, timerApproachMin:approach_min,
+               timerTitle: title};
+  openCards.add(id);
+  if(tab !== 'today') await go('today');
+  else { try{ await refreshAll(); }catch(e){} }
+  loadDescriptionInto(id);
+  const panel = document.querySelector(`.p[data-id="${id}"] [data-solved-panel]`);
+  panel?.scrollIntoView({block:'center', behavior:'smooth'});
+  panel?.querySelector('textarea')?.focus();
 };
 function loadDescriptionInto(id){
   // Already cached -- render() will have used it, nothing to do.

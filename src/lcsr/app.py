@@ -354,17 +354,19 @@ class LcsrAPI:
         return {"ok": True, "reused": False}
 
     def timer_done(self, args: dict) -> dict:
-        """Called by timer.html when Done is clicked (solved before timeout)."""
+        """Called by timer.html when Done is clicked.
+
+        Does NOT log yet -- the main window collects the note first,
+        then logs on the user's explicit Save or Skip action.
+        """
         pid = _problem_id(args.get('id'))
         elapsed_sec = float(args.get('elapsed_sec', 0))
         paused_sec = float(args.get('paused_sec', 0))
-        note = args.get('note') or None
+        title = args.get('title', '')
         am = round(elapsed_sec / 60, 1)
-        result = self.log({'id': pid, 'outcome': SOLVED, 'approach_min': am, 'note': note})
-        self._close_timer()
-        self._refresh_main(solved_id=pid)
+        self._refresh_main(solved_id=pid, approach_min=am, title=title)
         self._focus_main()
-        return result
+        return {"ok": True, "id": pid}
 
     def timer_timeout(self, args: dict) -> dict:
         """Called by timer.html when the countdown reaches zero."""
@@ -432,17 +434,20 @@ class LcsrAPI:
 
     def _refresh_main(self, prefill_stuck: int | None = None,
                       approach_min: float | None = None,
-                      solved_id: int | None = None):
+                      solved_id: int | None = None,
+                      title: str = ''):
         """Tell the main window to re-render. Runs on the GUI thread."""
         if self._main_win is None:
             return
         if prefill_stuck is not None:
-            payload = json.dumps({"id": prefill_stuck, "approach_min": approach_min})
+            payload = json.dumps({"id": prefill_stuck, "approach_min": approach_min,
+                                  "title": title})
             self._main_win.evaluate_js(
                 f"window._lcsrTimerTimeout && window._lcsrTimerTimeout({payload})"
             )
         elif solved_id is not None:
-            payload = json.dumps({"id": solved_id})
+            payload = json.dumps({"id": solved_id, "approach_min": approach_min,
+                                  "title": title})
             self._main_win.evaluate_js(
                 f"window._lcsrTimerSolved && window._lcsrTimerSolved({payload})"
             )
