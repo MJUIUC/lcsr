@@ -43,7 +43,7 @@ from . import prefs as prefs_mod
 from . import settings as cfg
 from .plan import (curriculum_view, export_csv, foundations_left,
                    frequent_view, history_view, intake_week, todays_plan)
-from .schedule import EDITORIAL, SOLVED, STUCK
+from .schedule import EDITORIAL, NOTE, SOLVED, STUCK
 from .store import (LOCK, MISTAKES, amend, append, current_sprint,
                     make_entry, replay, set_skipped, start_sprint, undo)
 
@@ -236,6 +236,20 @@ class LcsrAPI:
             st = replay()[pid]
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
+
+    def log_note(self, args: dict) -> dict:
+        """Log a standalone user note for a problem.
+
+        outcome: note -- visible in history, invisible to the scheduler.
+        No mistake class, no approach_min. Just a timestamped note.
+        """
+        pid = _problem_id(args.get('id'))
+        note = args.get('note') or None
+        if not note:
+            raise ValueError('note text is required')
+        cur.loggable(pid)
+        append(make_entry(pid, NOTE, _today(), None, None, note))
+        return {"ok": True, "id": pid, "outcome": NOTE}
 
     def log_editorial(self, args: dict) -> dict:
         """Log an editorial re-attempt.

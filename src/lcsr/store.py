@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-from .schedule import advance, EDITORIAL
+from .schedule import advance, EDITORIAL, NOTE
 
 HOME = Path(os.environ.get("LCSR_HOME", Path.home() / ".lcsr"))
 LOG = HOME / "log.jsonl"

@@ -5,7 +5,7 @@ typo in LADDER fails the test instead of propagating into it.
 """
 import pytest
 
-from lcsr.schedule import EDITORIAL, LADDER, SOLVED, STUCK, Next, advance
+from lcsr.schedule import EDITORIAL, LADDER, NOTE, SOLVED, STUCK, Next, advance
 
 # (box, outcome) -> (done, box, due_in_days)
 TABLE = {
@@ -22,6 +22,11 @@ TABLE = {
     (0, EDITORIAL): (False, 0, None),
     (1, EDITORIAL): (False, 1, None),
     (2, EDITORIAL): (False, 2, None),
+    # note: same as editorial, no scheduling effect
+    (None, NOTE): (True, None, None),
+    (0, NOTE): (False, 0, None),
+    (1, NOTE): (False, 1, None),
+    (2, NOTE): (False, 2, None),
 }
 
 

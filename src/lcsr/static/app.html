@@ -967,27 +967,9 @@ function stuckPanel(p){
     <div class="chips">${(plan?.mistakes||[]).map(m=>
       `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`
     ).join('')}</div>`;
-  // Past notes from hist (eagerly loaded) or empty if not yet available.
-  const pastNotes = noteHistoryFor(p.id);
-  const histHtml = pastNotes.length ? `
-    <div class="note-hist">
-      <div class="note-hist-lbl">Previous attempt notes</div>
-      ${pastNotes.map(n=>noteExpandHtml(n.note, n.ts, n.outcome, p.id, true)).join('')}
-    </div>` : '';
-  // Compute label: "Notes from Attempt · <date+time of last attempt with a note>"
-  const lastNote = pastNotes[pastNotes.length - 1];
-  const noteLabel = lastNote
-    ? `Notes from Attempt &middot; ${fmtTs(lastNote.ts)}`
-    : 'Attempt notes';
   return `<div class="panel" data-panel>
     <div class="phead2">Stuck means it returns in 3 days, then 10, then 30.</div>
-    <a class="yt-link" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; View solutions on YouTube</a>
-    ${histHtml}
-    <div class="lbl" style="margin-top:16px">${noteLabel}</div>
-    <button class="btn" style="margin-bottom:8px" data-add-note="${p.id}"
-      data-note-outcome="stuck" data-note-title="${esc(p.title||String(p.id))}">
-      ${(draft[p.id]||{}).note ? 'Edit note' : '+ Add note'}
-    </button>
+    <a class="yt-link" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; YouTube solutions</a>
     ${chips}
     <div class="prow">
       <button class="btn warn-solid" data-act="confirm">Log as stuck</button>
@@ -1001,28 +983,12 @@ function solvedPanel(p){
   const t = draft[p.id].timerTitle || p.title || String(p.id);
   const ytQuery = encodeURIComponent(t + ' leetcode solution');
   const ytUrl = 'https://www.youtube.com/results?search_query=' + ytQuery;
-  const pastNotes = noteHistoryFor(p.id);
-  const histHtml = pastNotes.length ? `
-    <div class="note-hist">
-      <div class="note-hist-lbl">Previous attempt notes</div>
-      ${pastNotes.map(n=>noteExpandHtml(n.note, n.ts, n.outcome, p.id, true)).join('')}
-    </div>` : '';
-  const lastNote = pastNotes[pastNotes.length - 1];
-  const noteLabel = lastNote
-    ? `Notes from Attempt &middot; ${fmtTs(lastNote.ts)}`
-    : 'Attempt notes';
   return `<div class="panel" data-solved-panel>
-    <div class="phead2" style="color:var(--ok)">&#10003; Solved! Add a note about your approach.</div>
+    <div class="phead2" style="color:var(--ok)">&#10003; Solved!</div>
     <a class="yt-link ok" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; YouTube solutions</a>
-    ${histHtml}
-    <div class="lbl" style="margin-top:16px">${noteLabel}</div>
-    <button class="btn" style="margin-bottom:8px" data-add-solve-note="${p.id}"
-      data-note-title="${esc(draft[p.id]?.timerTitle||p.title||String(p.id))}">
-      ${(draft[p.id]||{}).note ? 'Edit note' : '+ Add note'}
-    </button>
-    <div class="prow">
-      <button class="btn primary" data-act="solve-save">Save note</button>
-      <button class="btn" data-act="solve-skip">Skip</button>
+    <div class="prow" style="margin-top:14px">
+      <button class="btn primary" data-act="solve-confirm">Log as solved</button>
+      <button class="btn" data-act="cancel">Cancel</button>
     </div>
   </div>`;
 }
@@ -1245,6 +1211,11 @@ function vHistory(){
       </div>
       ${d.entries.map(e=>{
         const isEditorial = e.outcome === 'editorial';
+        const isNote = e.outcome === 'note';
+        // note-only entries: show as a standalone note card, no attempt row
+        if(isNote){
+          return e.note ? `<div class="hnote" style="margin-bottom:6px">${noteExpandHtml(e.note, e.ts||e.date, 'note', e.id, true)}</div>` : '';
+        }
         const outcomeClass = e.outcome==='solved'?'ok': isEditorial?'editorial':'late';
         const dotClass = e.outcome==='solved'?'done': isEditorial?'':'learning';
         const practiceBtn = e.outcome==='stuck'
@@ -1269,6 +1240,9 @@ function vHistory(){
             <span class="badge ${outcomeClass}">${isEditorial?'re-attempt':e.outcome}</span>
             ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
             ${e.can_undo?`<button class="btn undo" data-undo="${e.id}">Undo</button>`:''}
+            <button class="btn quiet" style="font-size:11px;margin-left:auto;flex:none"
+              data-add-note-entry="${e.id}"
+              data-note-entry-title="${esc(e.title||'')}">+ Note</button>
           </div>
           ${e.note?`<div class="hnote">${noteExpandHtml(e.note, e.ts||e.date, e.outcome, e.id, true)}</div>`:''}
           ${practiceBtn}
@@ -1850,29 +1824,25 @@ document.addEventListener('click', async e=>{
     return;
   }
 
-  // "Add note" button in stuck panel -- opens editor, stores in draft on save
-  const addNoteBtn = e.target.closest('[data-add-note]');
-  if(addNoteBtn){
-    const pid = +addNoteBtn.dataset.addNote;
-    const outcome = addNoteBtn.dataset.noteOutcome || 'stuck';
-    const title = addNoteBtn.dataset.noteTitle || String(pid);
-    const existing = (draft[pid]||{}).note || '';
+
+
+  // "+ Note" button on any Progress history entry
+  const addNoteEntry = e.target.closest('[data-add-note-entry]');
+  if(addNoteEntry){
+    const pid = +addNoteEntry.dataset.addNoteEntry;
+    const title = addNoteEntry.dataset.noteEntryTitle || String(pid);
     openNoteEditor({
-      pid, outcome, ts: null, note: existing, title,
+      pid, outcome: 'note', ts: null, note: '', title,
       returnTab: tab,
-      onSave: (note)=>{ draft[pid] = {...(draft[pid]||{}), note}; render(); }
-    });
-    return;
-  }
-  const addSolveNoteBtn = e.target.closest('[data-add-solve-note]');
-  if(addSolveNoteBtn){
-    const pid = +addSolveNoteBtn.dataset.addSolveNote;
-    const title = addSolveNoteBtn.dataset.noteTitle || String(pid);
-    const existing = (draft[pid]||{}).note || '';
-    openNoteEditor({
-      pid, outcome: 'solved', ts: null, note: existing, title,
-      returnTab: tab,
-      onSave: (note)=>{ draft[pid] = {...(draft[pid]||{}), note}; render(); }
+      onSave: async (note)=>{
+        if(!note.trim()) return;
+        try{
+          await window.pywebview.api.log_note({id: pid, note});
+          toast('Note saved.', {good:true});
+          hist = await api('/api/history');
+          render();
+        }catch(err){ toast(err.message); }
+      }
     });
     return;
   }
@@ -2023,15 +1993,12 @@ document.addEventListener('click', async e=>{
     render();
     return;
   }
-  if(act==='solve-save' || act==='solve-skip'){
+  if(act==='solve-confirm'){
     if(inFlight.has(id)) return;
     inFlight.add(id);
-    const note = act==='solve-save'
-      ? ((draft[id]||{}).note || null)
-      : null;
     const approach_min = (draft[id]||{}).timerApproachMin;
     try{
-      await api('/api/log', {id, outcome:'solved', note, approach_min});
+      await api('/api/log', {id, outcome:'solved', approach_min});
       delete draft[id];
       openCards.delete(id);
       toast(`Nice. ${id} is solved and will not come back.`, {good:true, undo:id});
@@ -2043,11 +2010,10 @@ document.addEventListener('click', async e=>{
   if(act==='confirm'){
     if(inFlight.has(id)) return;
     inFlight.add(id);
-    const note = (draft[id]||{}).note || '';
     try{
       await api('/api/log', {id, outcome:'stuck',
-                             mistake: draft[id].mistake, note,
-                             approach_min: draft[id].timerApproachMin});
+                             mistake: (draft[id]||{}).mistake,
+                             approach_min: (draft[id]||{}).timerApproachMin});
       delete draft[id];
       openCards.delete(id);
       toast(`${id} marked stuck. You will see it again in 3 days.`, {good:true, undo:id});
