@@ -37,6 +37,7 @@ except ImportError:
         "youtube-search-python is not installed. Run:  pip install lcsr[app]"
     )
 
+from . import cache as problem_cache
 from . import curriculum as cur
 from . import prefs as prefs_mod
 from . import settings as cfg
@@ -336,6 +337,13 @@ class LcsrAPI:
 
     def video_search(self, args: dict) -> list:
         return self._youtube_search(args.get('query', ''))
+
+    def get_description(self, args: dict) -> dict:
+        """Return cached problem statement HTML, fetching from LeetCode if needed."""
+        pid = _problem_id(args.get('id'))
+        url = args.get('url', '')
+        html = problem_cache.fetch(pid, url)
+        return {"id": pid, "html": html}
 
     def open_leetcode(self, args: dict) -> dict:
         webbrowser.open(args.get('url', ''))

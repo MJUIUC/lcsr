@@ -152,22 +152,22 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 /* ---------- problem row ---------- */
 .p{background:var(--panel);border:1px solid var(--line);border-radius:11px;
   box-shadow:var(--shadow);overflow:hidden;transition:.13s}
-.p:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
 .p.due{border-left:3px solid var(--warn)}
-.p.isdone{opacity:.62;box-shadow:none}
-.p.isdone .ptitle a{text-decoration:line-through;text-decoration-color:var(--muted)}
-.phead{display:flex;align-items:center;gap:11px;padding:11px 14px}
+.p.isdone{opacity:.55;box-shadow:none;pointer-events:none}
+.phead{display:flex;align-items:center;gap:11px;padding:11px 14px;
+  cursor:pointer;user-select:none}
+.p.isdone .phead{cursor:default}
+.p.readonly .phead{cursor:default}
+.phead:hover{background:var(--panel2)}
 .dot{width:7px;height:7px;border-radius:99px;background:var(--line);flex:none}
 .dot.done{background:var(--ok)} .dot.learning{background:var(--warn)}
 .pid{font:500 12.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);
   min-width:42px;text-align:right;flex:none}
-.ptitle{flex:1;min-width:0;font-size:14.5px}
-.ptitle a{text-decoration:none;border-bottom:1px solid transparent}
-.ptitle a:hover{color:var(--accent);border-bottom-color:currentColor}
+.ptitle{flex:1;min-width:0;font-size:14.5px;font-weight:500}
 .arrow{color:var(--muted);font-size:12px;flex:none}
-.timerbtn{flex:none;font-size:12px;line-height:1;padding:2px 6px;border-radius:6px;
-  border:1px solid var(--line);color:var(--muted);margin-left:2px;transition:.13s}
-.timerbtn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.pchevron{flex:none;font-size:13px;color:var(--muted);padding:2px 4px;
+  transition:transform .15s;line-height:1}
+.p.open .pchevron{transform:rotate(90deg)}
 .badge{font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;
   border-radius:99px;border:1px solid var(--line);color:var(--muted);flex:none;white-space:nowrap}
 .badge.hard{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
@@ -181,8 +181,6 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 .btn.warn:hover{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
 .btn.quiet{color:var(--muted);border-color:transparent}
 .btn.quiet:hover{color:var(--ink);border-color:var(--line);background:var(--panel2)}
-.badge.aside-b{color:var(--muted);border-style:dashed}
-.grp[data-key=skipped] .p{opacity:.72}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#1a1200;font-weight:550}
 .btn.primary:hover{opacity:.88;color:#1a1200;background:var(--brand)}
 .pcue{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);font-style:italic;
@@ -199,8 +197,23 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
   margin-left:auto}
 .pcue.veil:hover .cuehint{text-decoration:underline}
 .pcue.veil:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:7px}
-.pmeta{padding:0 14px 11px 74px;font-size:12.5px;color:var(--muted);margin-top:-4px}
+.pmeta{font-size:12.5px;color:var(--muted);margin-top:4px}
 .pmeta .ok{color:var(--ok)} .pmeta .w{color:var(--warn)}
+.pbody{border-top:1px solid var(--line2);background:var(--panel2);padding:13px 14px;
+  display:none}
+.p.open .pbody{display:block}
+.pdesc{font-size:13.5px;line-height:1.7;color:var(--mid);margin-bottom:12px}
+.pdesc p{margin:0 0 8px}
+.pdesc pre{background:var(--panel);border:1px solid var(--line);border-radius:7px;
+  padding:10px 12px;overflow-x:auto;font-size:12.5px}
+.pdesc code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+.pdesc-loading{font-size:13px;color:var(--muted);font-style:italic}
+.pdetails{font-size:12.5px;color:var(--muted);margin-bottom:10px;display:flex;
+  gap:12px;flex-wrap:wrap;align-items:baseline}
+.pdetails a{color:var(--accent);text-decoration:none}
+.pdetails a:hover{text-decoration:underline}
+.pcue-inline{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:12px}
+.pcue-inline b{font-style:normal;color:var(--mid);font-weight:500}
 
 /* ---------- log panel ---------- */
 .panel{border-top:1px solid var(--line2);background:var(--panel2);padding:13px 14px}
@@ -677,50 +690,24 @@ function relDay(iso){
 }
 
 /* ---------------- problem row ---------------- */
-function logPanel(p, solved){
-  const chips = `<div class="lbl" style="margin-top:13px">Mistake class <span style="text-transform:none;letter-spacing:0">(only recorded when logged as stuck)</span></div>
-      <div class="chips">${(plan?.mistakes||[]).map(m=>
-        `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`).join('')}</div>`;
-  const head = solved
-    ? `<div class="phead2">Logged as <b>solved</b>. Changing it rewrites that attempt in
-        place and does not count as today's work.</div>`
-    : `<div class="phead2">Stuck means it returns in 3 days, then 10, then 30. Failing
-        again resets it to 3.</div>`;
-  const foot = solved
-    ? `<button class="btn warn" data-act="amend-stuck">Change to stuck</button>
-       <button class="btn" data-act="amend-clear">Remove the attempt</button>
-       <button class="btn" data-act="cancel">Cancel</button>`
-    : `<button class="btn primary" data-act="solved">Log as solved</button>
-       <button class="btn warn" data-act="confirm">Log as stuck</button>
-       <button class="btn" data-act="cancel">Cancel</button>`;
-  // Panel visibility lives in draft so it survives a re-render too: any refresh
-  // replaces innerHTML wholesale, which previously closed the panel and threw
-  // away whatever had been typed into it.
-  return `<div class="panel" data-panel ${(draft[p.id]||{}).open ? '' : 'hidden'}>
-      ${head}
-      <div class="lbl">Note: the cue, then the pattern</div>
-      <textarea data-note placeholder="one line, in your own words">${esc((draft[p.id]||{}).note||'')}</textarea>
-      ${chips}
-      <div class="prow">${foot}</div>
-    </div>`;
-}
-
-function logActions(solved, o={}){
-  // In the set-aside tier the only useful action is the way out of it.
-  if(o.unskip) return `<span class="pacts">
-      <button class="btn" data-act="unskip">Bring back</button>
-    </span>`;
-  if(solved) return `<span class="pacts">
-      <button class="btn" data-act="change">Change</button>
-    </span>`;
-  // Skip is offered only where a queue is being worked, which is Today. It is
-  // deliberately last and unemphasised: it is a way out, not a third outcome.
-  return `<span class="pacts">
-      <button class="btn" data-act="solved">Solved</button>
-      <button class="btn warn" data-act="stuck" aria-expanded="false">Stuck</button>
-      <button class="btn" data-act="note">Note</button>
-      ${o.skip ? '<button class="btn quiet" data-act="skip" title="Stop offering this one">Skip</button>' : ''}
-    </span>`;
+// Stuck panel: shown in accordion body when timer fires or user declares stuck.
+// No "Log as solved" — the timer is the only solved path.
+function stuckPanel(p){
+  if(!(draft[p.id]||{}).open) return '';
+  const chips = `<div class="lbl" style="margin-top:13px">Mistake class</div>
+    <div class="chips">${(plan?.mistakes||[]).map(m=>
+      `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`
+    ).join('')}</div>`;
+  return `<div class="panel" data-panel>
+    <div class="phead2">Stuck means it returns in 3 days, then 10, then 30.</div>
+    <div class="lbl">Note: the cue, then the pattern</div>
+    <textarea data-note placeholder="one line, in your own words">${esc((draft[p.id]||{}).note||'')}</textarea>
+    ${chips}
+    <div class="prow">
+      <button class="btn warn" data-act="confirm">Log as stuck</button>
+      <button class="btn" data-act="cancel">Cancel</button>
+    </div>
+  </div>`;
 }
 
 // Cues are veiled per problem, in memory. Deliberately not persisted: a new
@@ -737,35 +724,50 @@ function cueRow(p){
       open ? '' : '<span class="cuehint">click to reveal</span>'}</button>`;
 }
 
+// Accordion open state lives in a Set so it survives re-renders.
+const openCards = new Set();
+
 function pRow(p, o={}){
   const st = p.state || {};
   const late = o.late;
-  const cls = ['p', st.status==='done'?'isdone':'', late!=null?'due':''].join(' ');
+  const done = st.status === 'done';
+  // Solved cards are inert -- no timer, no panel, no click to start.
+  const inert = done || o.readonly;
+  const isOpen = openCards.has(p.id) || !!(draft[p.id]||{}).open;
+  const cls = ['p', done?'isdone':'', late!=null?'due':'', o.readonly?'readonly':'',
+               isOpen?'open':''].filter(Boolean).join(' ');
   const badges = [
     p.hard ? '<span class="badge hard">hard</span>' : '',
     late!=null ? `<span class="badge late">${late>0?late+'d late':'due today'}</span>` : '',
     o.showTier ? `<span class="badge">${esc(p.tier)}${p.week?' · W'+p.week:''}</span>` : '',
-    (st.skipped && !o.unskip) ? '<span class="badge aside-b">set aside</span>' : '',
   ].join('');
-  const acts = o.readonly ? '' : logActions(st.status === 'done', o);
   let meta = '';
-  if(st.status==='done')      meta = `<div class="pmeta"><span class="ok">✓ solved</span> · ${st.attempts} attempt${st.attempts>1?'s':''}${st.last?' · last '+relDay(st.last):''}</div>`;
-  else if(st.status==='learning' && st.due) meta = `<div class="pmeta"><span class="w">returns ${st.due}</span> · ${relDay(st.due)} · ${st.attempts} attempt${st.attempts>1?'s':''}</div>`;
+  if(done) meta = `<div class="pmeta"><span class="ok">&#10003; solved</span> &middot; ${st.attempts} attempt${st.attempts>1?'s':''}${st.last?' &middot; last '+relDay(st.last):''}</div>`;
+  else if(st.status==='learning' && st.due) meta = `<div class="pmeta"><span class="w">returns ${st.due}</span> &middot; ${relDay(st.due)} &middot; ${st.attempts} attempt${st.attempts>1?'s':''}</div>`;
+
+  // Accordion body: description placeholder (filled lazily), cue, meta, stuck panel.
+  const bodyContent = isOpen ? `
+    <div class="pdesc pdesc-loading" id="pdesc-${p.id}">Loading&hellip;</div>
+    <div class="pdetails">
+      ${p.tier ? `<span>${esc(p.tier)}${p.week?' &middot; W'+p.week:''}</span>` : ''}
+      <a href="${esc(p.url)}" target="_blank" rel="noopener">View on LeetCode &rarr;</a>
+    </div>
+    ${p.cue ? `<div class="pcue-inline"><b>Cue:</b> ${esc(p.cue)}</div>` : ''}
+    ${meta}
+    ${!inert ? stuckPanel(p) : ''}
+  ` : '';
+
   return `
-  <div class="${cls}" data-id="${p.id}">
-    <div class="phead">
+  <div class="${cls}" data-id="${p.id}" data-url="${esc(p.url)}">
+    <div class="phead" ${!inert ? `data-start-timer="${p.id}"` : ''}>
       <span class="dot ${st.status||'new'}"></span>
       <span class="pid">${p.id}</span>
-      ${p.immediately_after_prev?'<span class="arrow" title="solve immediately after the previous problem">↳</span>':''}
-      <span class="ptitle"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>${
-        o.readonly ? '' : `<button type="button" class="timerbtn" data-timer="${p.id}"
-          data-timer-title="${esc(p.title)}" data-timer-url="${esc(p.url)}"
-          title="Open with a timed attempt">&#9201;</button>`}</span>
-      ${badges}${acts}
+      ${p.immediately_after_prev?'<span class="arrow" title="solve immediately after the previous problem">&#8618;</span>':''}
+      <span class="ptitle">${esc(p.title)}</span>
+      ${badges}
+      <span class="pchevron" data-chevron="${p.id}">&#9656;</span>
     </div>
-    ${o.cue && p.cue ? cueRow(p) : ''}
-    ${meta}
-    ${o.readonly ? '' : logPanel(p, st.status === 'done')}
+    <div class="pbody">${bodyContent}</div>
   </div>`;
 }
 
@@ -1384,12 +1386,45 @@ function paintFooterWhere(){
 }
 
 document.addEventListener('click', async e=>{
-  // cue reveal
+  // cue reveal (pool/cues tab)
   const cue = e.target.closest('[data-cue]');
   if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
-  const timerBtn = e.target.closest('[data-timer]');
-  if(timerBtn){
-    openTimer(+timerBtn.dataset.timer, timerBtn.dataset.timerTitle, timerBtn.dataset.timerUrl);
+
+  // chevron: toggle accordion, load description lazily
+  const chevron = e.target.closest('[data-chevron]');
+  if(chevron){
+    const id = +chevron.dataset.chevron;
+    const card = e.target.closest('.p');
+    if(openCards.has(id)){ openCards.delete(id); } else { openCards.add(id); }
+    render();
+    // Lazy description fetch after render so the placeholder is visible first.
+    if(openCards.has(id)){
+      const url = card?.dataset.url || '';
+      window.pywebview.api.get_description({id, url}).then(r=>{
+        const el = document.getElementById('pdesc-'+id);
+        if(!el) return;
+        if(r.html){
+          el.classList.remove('pdesc-loading');
+          el.innerHTML = r.html;
+        } else {
+          el.classList.remove('pdesc-loading');
+          el.textContent = '';
+        }
+      }).catch(()=>{});
+    }
+    return;
+  }
+
+  // header row: start timer (unsolved, non-readonly cards only)
+  const header = e.target.closest('[data-start-timer]');
+  if(header){
+    // Don't start timer if user clicked the chevron (handled above).
+    if(e.target.closest('[data-chevron]')) return;
+    const card = header.closest('.p');
+    const id = +header.dataset.startTimer;
+    const title = card.querySelector('.ptitle')?.textContent?.trim() || '';
+    const url = card.dataset.url || '';
+    openTimer(id, title, url);
     return;
   }
   const ex = e.target.closest('[data-export]');
@@ -1406,15 +1441,7 @@ document.addEventListener('click', async e=>{
     }catch(err){ toast(err.message); }
     return;
   }
-  const tus = e.target.closest('[data-toast-unskip]');
-  if(tus){
-    const id = +tus.dataset.toastUnskip;
-    $('#toast').classList.remove('show');
-    try{ await api('/api/skip', {id, skip:false}); await refreshAll();
-         toast(`${id} is back on the list.`, {good:true}); }
-    catch(err){ toast(err.message); }
-    return;
-  }
+
   const tu = e.target.closest('[data-toast-undo]');
   if(tu){
     const id = +tu.dataset.toastUndo;
@@ -1489,73 +1516,23 @@ document.addEventListener('click', async e=>{
       c.setAttribute('aria-pressed', c.dataset.mistake===draft[id].mistake));
     return;
   }
-  // 'stuck' and 'note' both just open the panel; nothing is written until a
-  // Log button in it is pressed, so a mistyped note is never committed.
-  if(act==='change'){
-    draft[id].open = true;
-    panel.hidden = false;
-    panel.scrollIntoView({block:'nearest', behavior:'smooth'});
-    return;
-  }
-  if(act==='amend-stuck' || act==='amend-clear'){
-    if(inFlight.has(id)) return;
-    inFlight.add(id);
-    const note = panel.querySelector('[data-note]').value.trim();
-    try{
-      if(act==='amend-clear'){
-        const r = await api('/api/undo', {id});
-        toast(`${id} is back on today's list.`, {good:true});
-      }else{
-        const r = await api('/api/amend', {id, outcome:'stuck',
-                            mistake: draft[id].mistake, note});
-        toast(`${id} is now stuck. Back on ${r.due}.`, {good:true});
-      }
-      delete draft[id];
-      await refreshAll();
-    }catch(err){ toast(err.message); }
-    finally{ inFlight.delete(id); }
-    return;
-  }
-  if(act==='skip' || act==='unskip'){
-    if(inFlight.has(id)) return;
-    inFlight.add(id);
-    try{
-      await api('/api/skip', {id, skip: act==='skip'});
-      await refreshAll();
-      toast(act==='skip'
-        ? `${id} set aside. It will not be offered again until you bring it back.`
-        : `${id} is back on the list.`,
-        act==='skip' ? {good:true, unskip:id} : {good:true});
-    }catch(err){ toast(err.message); }
-    finally{ inFlight.delete(id); }
-    return;
-  }
-  if(act==='stuck' || act==='note'){
-    draft[id].open = true;
-    panel.hidden = false;
-    card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','true');
-    panel.scrollIntoView({block:'nearest', behavior:'smooth'});
-    panel.querySelector('textarea').focus();
-    return;
-  }
   if(act==='cancel'){
-    panel.hidden = true;
-    draft[id] = {};
-    card.querySelector('[data-act=stuck]')?.setAttribute('aria-expanded','false');
-    delete draft[id]; return;
+    delete draft[id];
+    openCards.delete(id);
+    render();
+    return;
   }
-  if(act==='solved' || act==='confirm'){
+  if(act==='confirm'){
     if(inFlight.has(id)) return;
     inFlight.add(id);
-    const note = panel.querySelector('[data-note]').value.trim();
+    const note = panel?.querySelector('[data-note]')?.value.trim() || '';
     try{
-      await api('/api/log', {id, outcome: act==='solved'?'solved':'stuck',
-                             mistake: draft[id].mistake, note});
+      await api('/api/log', {id, outcome:'stuck',
+                             mistake: draft[id].mistake, note,
+                             approach_min: draft[id].timerApproachMin});
       delete draft[id];
-      toast(act==='solved'
-        ? `Nice. ${id} is solved and will not come back.`
-        : `${id} marked stuck. You will see it again in 3 days.`,
-        {good:true, undo:id});
+      openCards.delete(id);
+      toast(`${id} marked stuck. You will see it again in 3 days.`, {good:true, undo:id});
       await refreshAll();
     }catch(err){ toast(err.message); }
     finally{ inFlight.delete(id); }
@@ -1628,10 +1605,15 @@ window._lcsrTimerSolved = async function({id}){
 };
 window._lcsrTimerTimeout = async function({id, approach_min}){
   draft[id] = {...(draft[id]||{}), open:true, timerApproachMin: approach_min};
-  toast(`Time's up on ${id}. Add a note below, then log it as stuck.`);
-  render();
-  document.querySelector(`.p[data-id="${id}"] [data-panel]`)
-    ?.scrollIntoView({block:'center', behavior:'smooth'});
+  openCards.add(id);   // auto-expand the card so the stuck panel is visible
+  toast(`Time's up on ${id}. Add a note and log it as stuck.`);
+  // Switch to Today tab if not already there.
+  if(tab !== 'today') await go('today');
+  else { try{ await refreshAll(); }catch(e){} }
+  // Scroll the card into view and focus the note field.
+  const panel = document.querySelector(`.p[data-id="${id}"] [data-panel]`);
+  panel?.scrollIntoView({block:'center', behavior:'smooth'});
+  panel?.querySelector('textarea')?.focus();
 };
 
 // pywebview injects window.pywebview asynchronously after the DOM is ready.

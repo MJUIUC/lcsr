@@ -60,6 +60,8 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .btn[disabled]{opacity:.45;pointer-events:none}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#1a1200;font-weight:600}
 .btn.primary:hover{opacity:.88;color:#1a1200;background:var(--brand)}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff;font-weight:600}
+.btn.danger:hover{opacity:.88}
 .end{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:10px;text-align:center}
 .end b{font-family:ui-serif,Georgia,serif;font-size:20px;font-weight:600}
@@ -84,6 +86,9 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   <div class="row">
     <button class="btn" id="pause">Pause</button>
     <button class="btn primary" id="done">Done</button>
+  </div>
+  <div class="row" style="margin-top:-6px">
+    <button class="btn danger" id="im-stuck">I&#39;m Stuck</button>
   </div>
   <div class="hint" id="pausehint">One pause allowed per attempt.</div>
 </div>
@@ -225,18 +230,26 @@ doneBtn.addEventListener('click', function(){
   setTimeout(function(){ window.pywebview.api.close_timer({}); }, 500);
 });
 
-function timeout(){
+function goStuck(withAlarm){
   if(finished) return;
   finished = true;
   clearInterval(timerHandle);
-  alarm();
+  if(withAlarm) alarm();
   var elapsed = elapsedSecondsNow(), pausedSec = Math.round(pausedMs / 1000);
   document.getElementById('live').style.display = 'none';
   document.getElementById('stuckview').style.display = 'flex';
-  // Tell Python: pre-fill the stuck panel in the main window and focus it.
+  // Tell Python: pre-fill stuck panel in main window and focus it.
   window.pywebview.api.timer_timeout({id: id, elapsed_sec: elapsed, paused_sec: pausedSec})
     .catch(function(){});
 }
+
+function timeout(){
+  goStuck(true);   // alarm sounds only on natural timeout
+}
+
+document.getElementById('im-stuck').addEventListener('click', function(){
+  goStuck(false);  // no alarm when user self-declares stuck
+});
 
 document.getElementById('yt-btn').addEventListener('click', function(){
   var query = encodeURIComponent(title + ' leetcode solution');
