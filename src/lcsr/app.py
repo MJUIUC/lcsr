@@ -318,6 +318,8 @@ class LcsrAPI:
             str(TIMER_HTML) + params,
             width=360,
             height=520,
+            x=20,
+            y=20,
             resizable=False,
             on_top=True,
             js_api=self,
