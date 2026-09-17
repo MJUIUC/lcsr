@@ -791,6 +791,9 @@ function pRow(p, o={}){
         title="${probToCueIdx.has(p.id) ? 'Open in Cue table' : ''}"
       ><b>Cue:</b> ${esc(p.cue)}</div>` : ''}
     ${meta}
+    ${!inert ? `<div class="prow" style="margin-top:14px">
+      <button class="btn primary" data-start-timer="${p.id}" data-timer-url="${esc(p.url)}">Start timed attempt</button>
+    </div>` : ''}
     ${!inert ? stuckPanel(p) : ''}
   ` : '';
 
@@ -801,7 +804,7 @@ function pRow(p, o={}){
       <span class="pid">${p.id}</span>
       ${p.immediately_after_prev?'<span class="arrow" title="solve immediately after the previous problem">&#8618;</span>':''}
       <span class="ptitle-wrap">
-        <span class="ptitle" ${!inert ? `data-start-timer="${p.id}" title="Start timed attempt"` : ''}>${esc(p.title)}</span>
+        <span class="ptitle">${esc(p.title)}</span>
       </span>
       ${badges}
       <span data-chevron="${p.id}"></span>
@@ -1521,13 +1524,13 @@ document.addEventListener('click', async e=>{
     return;
   }
 
-  // title: start timer (unsolved, non-readonly only)
-  const titleEl = e.target.closest('[data-start-timer]');
-  if(titleEl){
-    const card = titleEl.closest('.p');
-    const id = +titleEl.dataset.startTimer;
-    const title = titleEl.textContent.trim();
-    const url = card.dataset.url || '';
+  // start timer button (in expanded card body)
+  const timerBtn = e.target.closest('[data-start-timer]');
+  if(timerBtn){
+    const card = timerBtn.closest('.p');
+    const id = +timerBtn.dataset.startTimer;
+    const title = card.querySelector('.ptitle')?.textContent.trim() || '';
+    const url = timerBtn.dataset.timerUrl || card.dataset.url || '';
     openTimer(id, title, url);
     return;
   }
