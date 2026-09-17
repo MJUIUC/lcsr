@@ -493,8 +493,8 @@ def main():
         "lcsr",
         str(APP_HTML),
         width=1100,
-        height=800,
-        min_size=(680, 500),
+        height=900,
+        min_size=(680, 600),
         js_api=api,
     )
     api._main_win = main_win
