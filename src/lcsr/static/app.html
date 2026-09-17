@@ -165,9 +165,7 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
   min-width:42px;text-align:right;flex:none}
 .ptitle-wrap{flex:1;min-width:0}
 .arrow{color:var(--muted);font-size:12px;flex:none}
-.pchevron{flex:none;font-size:13px;color:var(--muted);padding:2px 4px;
-  transition:transform .15s;line-height:1}
-.p.open .pchevron{transform:rotate(90deg)}
+
 .ptitle{flex:1;min-width:0;font-size:14.5px;font-weight:500;cursor:pointer}
 .ptitle:hover{color:var(--accent)}
 .p.isdone .ptitle{cursor:default}
@@ -783,7 +781,7 @@ function pRow(p, o={}){
         <span class="ptitle" ${!inert ? `data-start-timer="${p.id}" title="Start timed attempt"` : ''}>${esc(p.title)}</span>
       </span>
       ${badges}
-      <span class="pchevron" data-chevron="${p.id}">&#9656;</span>
+      <span data-chevron="${p.id}"></span>
     </div>
     <div class="pbody">${bodyContent}</div>
   </div>`;
