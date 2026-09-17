@@ -220,7 +220,9 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
   gap:12px;flex-wrap:wrap;align-items:baseline}
 .pdetails a{color:var(--accent);text-decoration:none}
 .pdetails a:hover{text-decoration:underline}
-.pcue-inline{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:12px}
+.pcue-inline{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:12px;
+  cursor:pointer}
+.pcue-inline:hover{color:var(--accent)}
 .pcue-inline b{font-style:normal;color:var(--mid);font-weight:500}
 
 /* ---------- log panel ---------- */
@@ -783,7 +785,7 @@ function pRow(p, o={}){
       ${p.tier ? `<span>${esc(p.tier)}${p.week?' &middot; W'+p.week:''}</span>` : ''}
       <a href="${esc(p.url)}" target="_blank" rel="noopener">View on LeetCode &rarr;</a>
     </div>
-    ${p.cue ? `<div class="pcue-inline"><b>Cue:</b> ${esc(p.cue)}</div>` : ''}
+    ${p.cue ? `<div class="pcue-inline" data-cue-search="${esc(p.cue)}" title="Open in Cue table"><b>Cue:</b> ${esc(p.cue)}</div>` : ''}
     ${meta}
     ${!inert ? stuckPanel(p) : ''}
   ` : '';
@@ -1472,6 +1474,17 @@ document.addEventListener('click', async e=>{
     const i = +cueCard.dataset.cueidx;
     openCues.has(i) ? openCues.delete(i) : openCues.add(i);
     return render();
+  }
+
+  // cue text on problem card: navigate to Cue table and pre-fill search
+  const cueLink = e.target.closest('[data-cue-search]');
+  if(cueLink){
+    cueQuery = cueLink.dataset.cueSearch;
+    await go('cues');
+    // After navigation, patch the list in place so the search is visible.
+    const list = document.getElementById('cue-list');
+    if(list) list.innerHTML = cueListHtml();
+    return;
   }
 
   // title: start timer (unsolved, non-readonly only)
