@@ -30,6 +30,7 @@ from .store import (HOME, LOCK, MISTAKES, amend, append, current_sprint,
                     undo)
 
 INDEX = Path(__file__).parent / "static" / "index.html"
+TIMER = Path(__file__).parent / "static" / "timer.html"
 
 PIDFILE = HOME / "server.pid"
 SERVERLOG = HOME / "server.log"
@@ -214,6 +215,8 @@ class Handler(BaseHTTPRequestHandler):
     def _get(self, route):
         if route.path in ("/", "/index.html"):
             return self._send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
+        if route.path == "/timer.html":
+            return self._send(200, TIMER.read_bytes(), "text/html; charset=utf-8")
         if route.path == "/api/plan":
             q = parse_qs(route.query)
             today = getattr(self, "_today", None) or date.today()
@@ -259,6 +262,9 @@ class Handler(BaseHTTPRequestHandler):
             route = urlparse(self.path)
             if route.path in ("/", "/index.html"):
                 raw = INDEX.read_bytes()
+                ctype = "text/html; charset=utf-8"
+            elif route.path == "/timer.html":
+                raw = TIMER.read_bytes()
                 ctype = "text/html; charset=utf-8"
             else:
                 raw, ctype = b"", "application/json"
@@ -423,11 +429,19 @@ class Handler(BaseHTTPRequestHandler):
             raise ValueError(f"mistake must be one of {MISTAKES}")
         if outcome == SOLVED:
             mistake = None                            # only meaningful on a failure
+        approach_min = body.get("approach_min")
+        try:
+            approach_min = float(approach_min) if approach_min is not None else None
+            if approach_min is not None and approach_min < 0:
+                approach_min = None
+        except (TypeError, ValueError):
+            approach_min = None
         today = getattr(self, "_today", None) or date.today()
         on = date.fromisoformat(body["date"]) if body.get("date") else today
         if on > today:
             raise ValueError("cannot log an attempt for a future date")
-        append(make_entry(pid, outcome, on, mistake, note=(body.get("note") or None)))
+        append(make_entry(pid, outcome, on, mistake, approach_min,
+                          note=(body.get("note") or None)))
         st = replay()[pid]
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
