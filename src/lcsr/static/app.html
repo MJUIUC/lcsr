@@ -755,6 +755,8 @@ function cueRow(p){
 
 // Accordion open state lives in a Set so it survives re-renders.
 const openCards = new Set();
+// Curriculum week groups open state -- keyed by group.key.
+const openGroups = new Set();
 // Fetched descriptions keyed by problem id. Populated lazily on first expand
 // and reused on subsequent renders so re-renders don't reset to Loading.
 const descCache = new Map();
@@ -886,9 +888,14 @@ function vToday(){
 
 function vCurriculum(){
   const cw = plan?.week || 1;
+  // Seed openGroups with the current week on first load only.
+  if(openGroups.size === 0){
+    const nowGroup = curric.groups.find(g=>g.week===cw);
+    if(nowGroup) openGroups.add(nowGroup.key);
+  }
   return curric.groups.map(g=>{
     const pr=g.progress, pct=pr.total?Math.round(pr.done/pr.total*100):0;
-    const isNow = g.week===cw;
+    const isOpen = openGroups.has(g.key);
     const wk = g.week ? 'W'+g.week : (g.key==='foundations'?'T0':g.key==='stretch'?'T3':
                g.key==='consolidation'?'W17':'+');
     const body = g.note
@@ -899,7 +906,7 @@ function vCurriculum(){
           `${b.title?`<div class="rolelbl">${esc(b.title)}</div>`:''}
            <div class="stack" style="margin-bottom:0;gap:6px">
              ${b.problems.map(x=>pRow(x, {readonly:true})).join('')}</div>`).join('');
-    return `<details class="grp" ${isNow?'open':''} data-key="${g.key}">
+    return `<details class="grp" ${isOpen?'open':''} data-key="${g.key}">
       <summary>
         <span class="wk">${wk}</span>
         <span class="gtitles">
@@ -1442,6 +1449,17 @@ function openTimer(id, title, url){
   window.pywebview.api.open_timer({id, title, url, timer_min: timerMinutes()})
     .catch(err => toast(err.message || 'Could not open the timer.'));
 }
+
+/* ---------------- curriculum group toggle ---------------- */
+// <details> open/close is handled natively by the browser, but render()
+// resets them. Listen for the toggle event and mirror state into openGroups
+// so re-renders restore the user's choices.
+document.addEventListener('toggle', e=>{
+  const grp = e.target.closest('.grp');
+  if(!grp || !grp.dataset.key) return;
+  if(grp.open) openGroups.add(grp.dataset.key);
+  else openGroups.delete(grp.dataset.key);
+}, true);  // capture: toggle does not bubble
 
 /* ---------------- events ---------------- */
 // Route all target=_blank links through open_leetcode so pywebview
