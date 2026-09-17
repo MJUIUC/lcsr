@@ -400,6 +400,7 @@ def amend(pid: int, outcome: str, mistake: str | None = None,
             mistake if mistake is not None else last.get("mistake"),
             last.get("approach_min"),
             note if note is not None else last.get("note"),
+            created_at=last.get("created_at") or last.get("ts"),
         ))
         return last
 
@@ -468,9 +469,12 @@ def replay(rows: list[dict] | None = None) -> dict[int, ProblemState]:
 
 
 def make_entry(pid: int, outcome: str, on: date, mistake: str | None = None,
-               approach_min: float | None = None, note: str | None = None) -> dict:
+               approach_min: float | None = None, note: str | None = None,
+               created_at: str | None = None) -> dict:
+    now = datetime.now().astimezone().isoformat(timespec="seconds")
     return {
-        "ts": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "ts": now,
+        "created_at": created_at or now,  # preserved across edits; ts becomes updated_at
         "date": on.isoformat(),
         "id": pid,
         "outcome": outcome,

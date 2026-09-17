@@ -842,7 +842,7 @@ function noteFirstLine(note){
   return first.replace(/^#+\s*/, '').slice(0, 80) || 'Note';
 }
 
-function noteExpandHtml(note, ts, outcome, pid, editable){
+function noteExpandHtml(note, ts, outcome, pid, editable, created_at){
   const dataNote = esc(note||'').replace(/"/g,'&quot;');
   const label = noteFirstLine(note);
   const editBtn = (editable && pid)
@@ -855,9 +855,12 @@ function noteExpandHtml(note, ts, outcome, pid, editable){
          data-delete-note="${pid}" data-delete-ts="${esc(ts||'')}"
          data-delete-label="${esc(label)}">Delete</button>`
     : '';
+  const displayTs = created_at || ts;
+  const wasEdited = created_at && ts && created_at !== ts;
+  const dateLabel = fmtTs(displayTs) + (wasEdited ? ` <span style="font-size:10px;color:var(--muted);font-style:normal">(edited ${fmtTs(ts)})</span>` : '');
   return `<div class="note-expand" data-note-expand>
     <div class="note-expand-head" data-toggle-note>
-      <span class="note-expand-date">${fmtTs(ts)}</span>
+      <span class="note-expand-date">${dateLabel}</span>
       <span class="note-expand-preview">${esc(label)}</span>
       ${editBtn}
       ${deleteBtn}
@@ -1254,7 +1257,7 @@ ${(()=>{
           const dayNotes = notesByPid[e.id] || [];
           if(dayNotes.length) usedPids.add(e.id);
           const notesHtml = dayNotes
-            .map(n=>noteExpandHtml(n.note, n.ts||n.date, 'note', n.id, true))
+            .map(n=>noteExpandHtml(n.note, n.ts||n.date, 'note', n.id, true, n.created_at))
             .join('');
           return `<div class="h">
             <div class="hhead">
@@ -1269,7 +1272,7 @@ ${(()=>{
                 data-add-note-entry="${e.id}"
                 data-note-entry-title="${esc(e.title||'')}">+ Note</button>
             </div>
-            ${e.note?`<div class="hnote">${noteExpandHtml(e.note, e.ts||e.date, e.outcome, e.id, true)}</div>`:''}
+            ${e.note?`<div class="hnote">${noteExpandHtml(e.note, e.ts||e.date, e.outcome, e.id, true, e.created_at)}</div>`:''}
             ${notesHtml ? `<div class="hnote">${notesHtml}</div>` : ''}
             ${practiceBtn}
           </div>`;
@@ -1279,7 +1282,7 @@ ${(()=>{
         const orphanRows = Object.entries(notesByPid)
           .filter(([pid])=>!usedPids.has(+pid))
           .map(([,notes])=>notes.map(n=>
-            `<div class="hnote" style="margin-bottom:6px">${noteExpandHtml(n.note, n.ts||n.date, 'note', n.id, true)}</div>`
+            `<div class="hnote" style="margin-bottom:6px">${noteExpandHtml(n.note, n.ts||n.date, 'note', n.id, true, n.created_at)}</div>`
           ).join('')).join('');
 
         return attemptRows + orphanRows;

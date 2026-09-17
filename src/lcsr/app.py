@@ -127,6 +127,7 @@ class LcsrAPI:
             {
                 "date": r["date"],
                 "ts": r.get("ts", ""),
+                "created_at": r.get("created_at") or r.get("ts", ""),
                 "outcome": r["outcome"],
                 "note": r["note"],
                 "mistake": r.get("mistake"),

@@ -492,7 +492,9 @@ def history_view() -> dict:
             "tier": p.get("tier"), "week": p.get("week"),
             "url": (_url_for(r["id"], probs, freq) if p.get("tier") != "?" else None),
             "outcome": r["outcome"], "mistake": r.get("mistake"),
-            "note": r.get("note"), "ts": r.get("ts"), "can_undo": False,
+            "note": r.get("note"), "ts": r.get("ts"),
+            "created_at": r.get("created_at") or r.get("ts"),
+            "can_undo": False,
         })
     # Only the most recent surviving attempt at a problem can be undone --
     # retraction cancels the latest, so offering it on an older row would
