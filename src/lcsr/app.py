@@ -115,6 +115,27 @@ class LcsrAPI:
     def get_history(self, args: dict | None = None) -> dict:
         return history_view()
 
+    def get_notes(self, args: dict) -> list:
+        """Return all logged attempts for a problem that have a note.
+
+        Each entry: {date, ts, outcome, note, mistake, approach_min}.
+        Sorted oldest-first so note history reads chronologically.
+        """
+        from .store import entries as all_entries
+        pid = _problem_id(args.get('id'))
+        return [
+            {
+                "date": r["date"],
+                "ts": r.get("ts", ""),
+                "outcome": r["outcome"],
+                "note": r["note"],
+                "mistake": r.get("mistake"),
+                "approach_min": r.get("approach_min"),
+            }
+            for r in all_entries()
+            if r.get("id") == pid and r.get("note")
+        ]
+
     def get_cues(self, args: dict | None = None) -> dict:
         """Return cues list plus the problem->cue index map."""
         import json as _json

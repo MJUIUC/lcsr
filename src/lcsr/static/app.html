@@ -31,6 +31,9 @@
   document.head.appendChild(s);
 })();
 </script>
+<script src="marked.min.js"></script>
+<script src="highlight.min.js"></script>
+<link rel="stylesheet" href="highlight-dark.min.css">
 <style>
 /* LeetCode-flavoured. --brand is the LeetCode orange and is used for FILLS;
    --accent is the text-safe variant of it, because #ffa116 on white is ~2:1 and
@@ -186,6 +189,8 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
   color:var(--mid);transition:.13s}
 .btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .btn.warn:hover{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.btn.warn-solid{background:var(--warn);border-color:var(--warn);color:#1a1000;font-weight:550}
+.btn.warn-solid:hover{opacity:.88}
 .btn.quiet{color:var(--muted);border-color:transparent}
 .btn.quiet:hover{color:var(--ink);border-color:var(--line);background:var(--panel2)}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#1a1200;font-weight:550}
@@ -224,6 +229,46 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 .pcue-inline[data-cue-jump]:hover{color:var(--accent)}
 .pcue-inline b{font-style:normal;color:var(--mid);font-weight:500}
 
+/* ---------- note modal ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  width:100%;max-width:720px;max-height:82vh;display:flex;flex-direction:column;
+  box-shadow:0 24px 64px rgba(0,0,0,.4)}
+.modal-head{display:flex;align-items:baseline;gap:12px;padding:16px 18px 14px;
+  border-bottom:1px solid var(--line2);flex:none}
+.modal-head h3{font-family:ui-serif,Georgia,serif;font-size:16px;font-weight:600;
+  margin:0;flex:1;min-width:0}
+.modal-meta{font-size:12px;color:var(--muted);white-space:nowrap}
+.modal-close{flex:none;font-size:18px;color:var(--muted);padding:2px 8px;
+  border-radius:6px;line-height:1;cursor:pointer}
+.modal-close:hover{color:var(--ink);background:var(--panel2)}
+.modal-body{padding:18px;overflow-y:auto;flex:1;
+  font-size:14px;line-height:1.75;color:var(--mid)}
+.modal-body h1,.modal-body h2,.modal-body h3{font-family:ui-serif,Georgia,serif;
+  font-weight:600;margin:18px 0 8px;color:var(--ink)}
+.modal-body h1{font-size:18px} .modal-body h2{font-size:16px} .modal-body h3{font-size:15px}
+.modal-body p{margin:0 0 12px}
+.modal-body ul,.modal-body ol{margin:0 0 12px;padding-left:22px}
+.modal-body li{margin-bottom:4px}
+.modal-body pre{margin:0 0 12px;border-radius:8px;overflow-x:auto}
+.modal-body code:not(pre code){background:var(--panel2);border:1px solid var(--line);
+  border-radius:4px;padding:1px 5px;font-size:12.5px;
+  font-family:ui-monospace,Menlo,monospace}
+.modal-body strong{color:var(--ink);font-weight:600}
+.modal-outcome-solved{color:var(--ok)} .modal-outcome-stuck{color:var(--warn)}
+/* ---------- note history in stuck panel ---------- */
+.note-hist{margin-bottom:14px}
+.note-hist-lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin-bottom:8px}
+.note-hist-item{display:flex;align-items:center;gap:10px;padding:8px 10px;
+  border-radius:8px;cursor:pointer;border:1px solid var(--line);margin-bottom:6px;
+  background:var(--panel);transition:.13s}
+.note-hist-item:hover{border-color:var(--accent);background:var(--accent-soft)}
+.note-hist-date{font-size:12px;color:var(--muted);flex:none;white-space:nowrap}
+.note-hist-preview{flex:1;font-size:13px;color:var(--mid);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.note-hist-badge{flex:none}
 /* ---------- log panel ---------- */
 .panel{border-top:1px solid var(--line2);background:var(--panel2);padding:13px 14px}
 .lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
@@ -714,6 +759,63 @@ function relDay(iso){
   return n===0?'today':n===1?'yesterday':n>0?`${n} days ago`:`in ${-n} days`;
 }
 
+/* ---------------- note history & modal ---------------- */
+function noteHistoryFor(id){
+  // Pull from eagerly-loaded hist if available; filter to this problem, has note.
+  if(!hist) return [];
+  const entries = [];
+  (hist.days || []).forEach(d=>{
+    (d.entries || []).forEach(e=>{
+      if(e.id === id && e.note) entries.push(e);
+    });
+  });
+  return entries; // already oldest-first from history_view
+}
+
+function fmtTs(ts){
+  if(!ts) return '';
+  try{
+    const d = new Date(ts);
+    return d.toLocaleDateString(undefined, {month:'short',day:'numeric',year:'numeric'})
+      + ' · ' + d.toLocaleTimeString(undefined, {hour:'numeric',minute:'2-digit'});
+  }catch(e){ return ts.slice(0,10); }
+}
+
+function openNoteModal(id, ts, note, outcome, title){
+  // Remove any existing modal first.
+  document.getElementById('note-modal')?.remove();
+  const html = typeof marked !== 'undefined'
+    ? marked.parse(note || '')
+    : `<pre>${esc(note||'')}</pre>`;
+  const div = document.createElement('div');
+  div.id = 'note-modal';
+  div.className = 'modal-overlay';
+  div.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3>${esc(title || String(id))}</h3>
+        <span class="modal-meta modal-outcome-${outcome}">${outcome}</span>
+        <span class="modal-meta">${fmtTs(ts)}</span>
+        <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">${html}</div>
+    </div>`;
+  document.body.appendChild(div);
+  // Syntax highlight all code blocks.
+  if(typeof hljs !== 'undefined'){
+    div.querySelectorAll('pre code').forEach(block=>hljs.highlightElement(block));
+  }
+  // Close on overlay click or Escape.
+  div.addEventListener('click', e=>{ if(e.target===div) closeNoteModal(); });
+  document.getElementById('modal-close-btn').addEventListener('click', closeNoteModal);
+  document.addEventListener('keydown', _modalEscHandler);
+}
+function _modalEscHandler(e){ if(e.key==='Escape') closeNoteModal(); }
+function closeNoteModal(){
+  document.getElementById('note-modal')?.remove();
+  document.removeEventListener('keydown', _modalEscHandler);
+}
+
 /* ---------------- problem row ---------------- */
 // Stuck panel: shown in accordion body when timer fires or user declares stuck.
 // No "Log as solved" — the timer is the only solved path.
@@ -721,18 +823,39 @@ function stuckPanel(p){
   if(!(draft[p.id]||{}).open) return '';
   const ytQuery = encodeURIComponent((p.title||p.id) + ' leetcode solution');
   const ytUrl = 'https://www.youtube.com/results?search_query=' + ytQuery;
-  const chips = `<div class="lbl" style="margin-top:13px">Mistake class</div>
+  const chips = `<div class="lbl" style="margin-top:16px">Mistake class</div>
     <div class="chips">${(plan?.mistakes||[]).map(m=>
       `<button class="chip" data-mistake="${m}" aria-pressed="${(draft[p.id]||{}).mistake===m}">${m}</button>`
     ).join('')}</div>`;
+  // Past notes from hist (eagerly loaded) or empty if not yet available.
+  const pastNotes = noteHistoryFor(p.id);
+  const histHtml = pastNotes.length ? `
+    <div class="note-hist">
+      <div class="note-hist-lbl">Previous attempt notes</div>
+      ${pastNotes.map(n=>`
+        <div class="note-hist-item" data-open-note="${p.id}" data-note-ts="${esc(n.ts)}">
+          <span class="dot ${n.outcome==='solved'?'done':'learning'}"></span>
+          <span class="note-hist-date">${fmtTs(n.ts)}</span>
+          <span class="note-hist-preview">${esc(n.note)}</span>
+          <span class="badge ${n.outcome==='solved'?'ok':'late'}">${n.outcome}</span>
+        </div>`).join('')}
+    </div>` : '';
+  // Compute label: "Notes from Attempt · <date+time of last attempt with a note>"
+  const lastNote = pastNotes[pastNotes.length - 1];
+  const noteLabel = lastNote
+    ? `Notes from Attempt &middot; ${fmtTs(lastNote.ts)}`
+    : 'Attempt notes';
   return `<div class="panel" data-panel>
     <div class="phead2">Stuck means it returns in 3 days, then 10, then 30.</div>
     <a class="yt-link" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; View solutions on YouTube</a>
-    <div class="lbl" style="margin-top:13px">Note: the cue, then the pattern</div>
-    <textarea data-note placeholder="one line, in your own words">${esc((draft[p.id]||{}).note||'')}</textarea>
+    ${histHtml}
+    <div class="lbl" style="margin-top:16px">${noteLabel}</div>
+    <textarea data-note rows="6"
+      placeholder="Describe what you struggled with, what the key insight was, paste code snippets... Markdown supported."
+    >${esc((draft[p.id]||{}).note||'')}</textarea>
     ${chips}
     <div class="prow">
-      <button class="btn warn" data-act="confirm">Log as stuck</button>
+      <button class="btn warn-solid" data-act="confirm">Log as stuck</button>
       <button class="btn" data-act="cancel">Cancel</button>
     </div>
   </div>`;
@@ -1503,6 +1626,25 @@ function paintFooterWhere(){
 }
 
 document.addEventListener('click', async e=>{
+  // note history item: fetch fresh via get_notes and open modal
+  const noteItem = e.target.closest('[data-open-note]');
+  if(noteItem){
+    const id = +noteItem.dataset.openNote;
+    const ts = noteItem.dataset.noteTs;
+    const card = noteItem.closest('.p');
+    const title = card?.querySelector('.ptitle')?.textContent.trim() || String(id);
+    // Fetch fresh from Python to get the exact note for this ts.
+    window.pywebview.api.get_notes({id}).then(notes=>{
+      const n = notes.find(x=>x.ts===ts) || notes[notes.length-1];
+      if(n) openNoteModal(id, n.ts, n.note, n.outcome, title);
+    }).catch(()=>{
+      // Fallback to what hist has.
+      const hist_note = noteHistoryFor(id).find(x=>x.ts===ts);
+      if(hist_note) openNoteModal(id, hist_note.ts, hist_note.note, hist_note.outcome, title);
+    });
+    return;
+  }
+
   // cue card accordion toggle
   const cueCard = e.target.closest('[data-cueidx]');
   if(cueCard && !e.target.closest('a')){
@@ -1772,9 +1914,9 @@ window.addEventListener('pywebviewready', function(){
     if(prefs && prefs.timer_min) _timerMin = prefs.timer_min;
     plan = await api('/api/plan');
     curric = await api('/api/curriculum');
-    // Load cues eagerly so the problem->cue map is ready before any card
-    // is expanded, regardless of which tab the user starts on.
-    await ensureData('cues');
+    // Load cues and history eagerly: cues for the problem->cue map,
+    // history so note history is available in stuck panels immediately.
+    await Promise.all([ensureData('cues'), ensureData('progress')]);
     await ensureData(tab);
     render();
   })().catch(err => {
