@@ -125,7 +125,10 @@ class LcsrAPI:
         for c in cur.cues():
             entry = dict(c)
             enriched = []
-            for pid in c.get('problems', []):
+            for raw in c.get('problems', []):
+                # problems[] entries are plain ints in the JSON files;
+                # guard against dicts in case the file was hand-edited.
+                pid = raw['id'] if isinstance(raw, dict) else raw
                 p = all_probs.get(pid)
                 if p:
                     enriched.append({

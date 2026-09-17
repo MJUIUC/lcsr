@@ -237,24 +237,9 @@
   "reach_for": "Recursion with a base case per unit: solve the smallest chunk directly, combine upward",
   "because": "The problem has natural size boundaries that define the recursion. A number splits into groups of three digits with scale words (thousands, millions); an expression splits at operators by precedence; brackets define nesting depth. Identify the smallest unit that resolves directly, write one level of the recursion, and trust the call stack for the rest. A stack can simulate this when the recursion is too deep or when an iterative pass is clearer.",
   "problems": [
-   {
-    "id": 273,
-    "title": "Integer to English Words",
-    "url": "https://leetcode.com/problems/integer-to-english-words/",
-    "hard": true
-   },
-   {
-    "id": 224,
-    "title": "Basic Calculator",
-    "url": "https://leetcode.com/problems/basic-calculator/",
-    "hard": true
-   },
-   {
-    "id": 227,
-    "title": "Basic Calculator II",
-    "url": "https://leetcode.com/problems/basic-calculator-ii/",
-    "hard": false
-   }
+   273,
+   224,
+   227
   ]
  }
 ]
