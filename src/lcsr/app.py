@@ -116,7 +116,23 @@ class LcsrAPI:
         return history_view()
 
     def get_cues(self, args: dict | None = None) -> list:
-        return cur.cues()
+        all_probs = cur.problems()
+        result = []
+        for c in cur.cues():
+            entry = dict(c)
+            enriched = []
+            for pid in c.get('problems', []):
+                p = all_probs.get(pid)
+                if p:
+                    enriched.append({
+                        'id': pid,
+                        'title': p.get('title', str(pid)),
+                        'url': cur.url_of(pid),
+                        'hard': p.get('hard', False),
+                    })
+            entry['problems'] = enriched
+            result.append(entry)
+        return result
 
     def get_settings(self, args: dict | None = None) -> dict:
         attempted = set(replay())
