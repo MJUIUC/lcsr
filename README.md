@@ -6,6 +6,34 @@
 
 ---
 
+## Quick install (macOS)
+
+**Requirements:** macOS 12+, Python 3.10+ installed and accessible as `python3`.
+
+```bash
+git clone https://github.com/MJUIUC/lcsr
+cd lcsr
+bash install.sh
+```
+
+That's it. The script will:
+- Create a `.venv` inside the repo and install all dependencies
+- Build a native `lcsr.app` and install it to `/Applications`
+- Make it instantly findable via Spotlight (⌘Space → `lcsr`)
+
+You'll be prompted for your password once to copy the app to `/Applications`.
+
+> ⚠️ **Do not move the repo folder after installing.** The app bundle
+> contains the absolute path to this directory. If you move it, just
+> re-run `bash install.sh` from the new location.
+
+> ⚠️ **Python must be accessible as `python3` in your terminal.** The
+> script prefers pyenv if available, then falls back to whatever `python3`
+> is on your PATH. If you get a version error, install Python 3.10+ from
+> [python.org](https://python.org) or via `brew install python@3.13`.
+
+---
+
 **A spaced repetition system for LeetCode and DSA interview prep.**
 
 **Miss a problem and it comes back in 3 days, then 10, then 30. Solve it cold and
@@ -69,22 +97,22 @@ The 20-row cue table from the curriculum is extended to 44 entries:
 
 ## Install
 
-**CLI + browser UI (original flow, no extra dependencies):**
+**macOS desktop app (recommended):** see [Quick install](#quick-install-macos) above.
+
+**CLI only (no desktop app, no extra dependencies):**
 
 ```bash
 git clone https://github.com/MJUIUC/lcsr && cd lcsr
 python3 -m venv .venv && .venv/bin/pip install -e .
+lcsr today   # CLI works immediately
 ```
 
-Python 3.10+. No dependencies for the base install.
-
-**Desktop app (this fork's main addition):**
+**Desktop app manually (if you prefer not to use install.sh):**
 
 ```bash
 .venv/bin/pip install -e ".[app]"
+.venv/bin/lcsr app
 ```
-
-This adds `pywebview` and `youtube-search-python`.
 
 ---
 
