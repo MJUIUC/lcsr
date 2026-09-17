@@ -1616,9 +1616,14 @@ document.addEventListener('click', async e=>{
 window.addEventListener('hashchange', ()=>{ const t=location.hash.slice(1); if(t&&t!==tab) go(t); });
 
 // Hooks called by app.py via evaluate_js() from the Python side.
-// _lcsrRefresh: re-fetch all cached data and re-render (e.g. after timer logs a result).
-// _lcsrTimerTimeout: timer ran out; pre-open the stuck panel for the given problem.
+// _lcsrRefresh: re-fetch all cached data and re-render.
+// _lcsrTimerSolved: timer Done clicked -- toast + refresh, matching the manual solved flow.
+// _lcsrTimerTimeout: timer ran out -- pre-open the stuck panel.
 window._lcsrRefresh = async function(){
+  try{ await refreshAll(); }catch(e){ toast(e.message); }
+};
+window._lcsrTimerSolved = async function({id}){
+  toast(`Nice. ${id} is solved and will not come back.`, {good:true, undo:id});
   try{ await refreshAll(); }catch(e){ toast(e.message); }
 };
 window._lcsrTimerTimeout = async function({id, approach_min}){

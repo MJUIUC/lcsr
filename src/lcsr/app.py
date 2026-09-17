@@ -311,7 +311,7 @@ class LcsrAPI:
         am = round(elapsed_sec / 60, 1)
         result = self.log({'id': pid, 'outcome': SOLVED, 'approach_min': am})
         self._close_timer()
-        self._refresh_main()
+        self._refresh_main(solved_id=pid)
         self._focus_main()
         return result
 
@@ -373,7 +373,8 @@ class LcsrAPI:
             self._timer_win = None
 
     def _refresh_main(self, prefill_stuck: int | None = None,
-                      approach_min: float | None = None):
+                      approach_min: float | None = None,
+                      solved_id: int | None = None):
         """Tell the main window to re-render. Runs on the GUI thread."""
         if self._main_win is None:
             return
@@ -381,6 +382,11 @@ class LcsrAPI:
             payload = json.dumps({"id": prefill_stuck, "approach_min": approach_min})
             self._main_win.evaluate_js(
                 f"window._lcsrTimerTimeout && window._lcsrTimerTimeout({payload})"
+            )
+        elif solved_id is not None:
+            payload = json.dumps({"id": solved_id})
+            self._main_win.evaluate_js(
+                f"window._lcsrTimerSolved && window._lcsrTimerSolved({payload})"
             )
         else:
             self._main_win.evaluate_js(
