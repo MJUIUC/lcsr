@@ -1,5 +1,10 @@
 # lcsr: LeetCode Spaced Repetition
 
+> **Forked from [Swapnil-jain/lcsr](https://github.com/Swapnil-jain/lcsr)** — original browser-based tool by Swapnil Jain.
+> This fork adds a native desktop app (`lcsr app`) built with pywebview, a timer-governed
+> practice loop, an enriched cue table with pattern explanations and problem associations,
+> and a redesigned card UI. Contributions by [MJUIUC](https://github.com/MJUIUC).
+
 ### [→ Try it live](https://leetcode-srs-khaki.vercel.app)
 
 No sign-up and no account. Your progress is stored in your own browser, and the
