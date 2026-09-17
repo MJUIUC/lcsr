@@ -325,7 +325,10 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .h .undo{margin-left:auto;flex:none;font-size:12px;padding:4px 10px}
 .h .undo:hover{border-color:var(--danger);color:var(--danger);background:none}
 .hnote{margin-top:8px;padding:9px 12px;background:var(--panel2);border-radius:8px;
-  font-size:13px;color:var(--mid);border-left:2px solid var(--line)}
+  border-left:2px solid var(--line);display:flex;align-items:baseline;gap:10px}
+.hnote-preview{font-size:13px;color:var(--mid);flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;font-style:italic}
+.hnote-view{font-size:12px;flex:none;padding:3px 9px}
 .passmark{display:flex;align-items:center;gap:12px;margin:26px 2px 16px;
   font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
   font-weight:600}
@@ -1083,7 +1086,11 @@ function vHistory(){
             ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
             ${e.can_undo?`<button class="btn undo" data-undo="${e.id}">Undo</button>`:''}
           </div>
-          ${e.note?`<div class="hnote">${esc(e.note)}</div>`:''}
+          ${e.note?`<div class="hnote">
+            <div class="hnote-preview">${esc(e.note.split('\n').slice(0,2).join(' ').slice(0,120))}${e.note.length>120||e.note.includes('\n')?'&hellip;':''}</div>
+            <button class="btn quiet hnote-view" data-hist-note-id="${e.id}" data-hist-note-ts="${esc(e.ts||'')}"
+              data-hist-note-title="${esc(e.title||'')}" data-hist-note-outcome="${esc(e.outcome)}">View note</button>
+          </div>`:''}
         </div>`).join('')}
     </div>`;
   }).join('');
@@ -1626,6 +1633,23 @@ function paintFooterWhere(){
 }
 
 document.addEventListener('click', async e=>{
+  // progress tab history note: fetch fresh and open modal
+  const histNoteBtn = e.target.closest('[data-hist-note-id]');
+  if(histNoteBtn){
+    const id = +histNoteBtn.dataset.histNoteId;
+    const ts = histNoteBtn.dataset.histNoteTs;
+    const title = histNoteBtn.dataset.histNoteTitle;
+    const outcome = histNoteBtn.dataset.histNoteOutcome;
+    window.pywebview.api.get_notes({id}).then(notes=>{
+      const n = notes.find(x=>x.ts===ts) || notes[notes.length-1];
+      if(n) openNoteModal(id, n.ts, n.note, n.outcome, title);
+    }).catch(()=>{
+      const fallback = noteHistoryFor(id).find(x=>x.ts===ts);
+      if(fallback) openNoteModal(id, fallback.ts, fallback.note, fallback.outcome, title);
+    });
+    return;
+  }
+
   // note history item: fetch fresh via get_notes and open modal
   const noteItem = e.target.closest('[data-open-note]');
   if(noteItem){
