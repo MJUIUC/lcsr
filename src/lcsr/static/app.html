@@ -287,16 +287,33 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);
 .passmark .pm2{color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none}
 
 /* ---------- cues ---------- */
+.cue-search{width:100%;padding:9px 13px;font:inherit;font-size:14px;
+  border:1px solid var(--line);border-radius:9px;background:var(--panel);
+  color:var(--ink);margin-bottom:18px;display:block}
+.cue-search:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .cue{background:var(--panel);border:1px solid var(--line);border-radius:11px;
-  padding:13px 15px;margin-bottom:6px;box-shadow:var(--shadow);display:flex;
-  align-items:center;gap:14px;cursor:pointer}
-.cue:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
-.cuen{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted);flex:none}
+  margin-bottom:6px;box-shadow:var(--shadow);overflow:hidden}
+.cue-head{display:flex;align-items:center;gap:14px;padding:13px 15px;
+  cursor:pointer;user-select:none}
+.cue-head:hover{background:var(--panel2)}
+.cuen{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted);flex:none;min-width:26px}
 .cuel{flex:1;font-size:14.5px}
-.cuer{flex:1;font-size:14px;color:var(--accent);font-weight:500}
-.cuewhy{flex:1 1 100%;font-size:13px;color:var(--mid);line-height:1.6;
-  border-top:1px solid var(--line2);padding-top:11px;margin-top:2px}
-.cuer.hidden{color:var(--muted);font-weight:400;font-style:italic;opacity:.55}
+.cuer{font-size:13px;color:var(--accent);font-weight:500;flex:none;
+  padding:2px 8px;border-radius:6px;background:var(--accent-soft);white-space:nowrap}
+.cue-body{display:none;border-top:1px solid var(--line2);padding:14px 15px;
+  background:var(--panel2)}
+.cue.open .cue-body{display:block}
+.cue-because{font-size:13.5px;color:var(--mid);line-height:1.7;margin-bottom:14px}
+.cue-problems{margin-bottom:0}
+.cue-problems-lbl{font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin-bottom:8px}
+.cue-prob{display:flex;align-items:center;gap:8px;padding:6px 0;
+  border-bottom:1px solid var(--line2);font-size:13.5px}
+.cue-prob:last-child{border-bottom:none}
+.cue-prob .pid{font:500 12px ui-monospace,Menlo,monospace;color:var(--muted);min-width:34px}
+.cue-prob a{color:var(--ink);text-decoration:none;flex:1}
+.cue-prob a:hover{color:var(--accent)}
+.cue-noprob{font-size:13px;color:var(--muted);font-style:italic}
 
 /* ---------- stats ---------- */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;
@@ -935,31 +952,64 @@ function vHistory(){
   }).join('');
 }
 
+// Cue card open state -- survives re-renders.
+const openCues = new Set();
+let cueQuery = '';
+
+function cueCard(c, i){
+  const isOpen = openCues.has(i);
+  const probsHtml = c.problems && c.problems.length
+    ? `<div class="cue-problems">
+        <div class="cue-problems-lbl">Related problems</div>
+        ${c.problems.map(p=>`
+          <div class="cue-prob">
+            <span class="pid">${p.id}</span>
+            <a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>
+            ${p.hard ? '<span class="badge hard">hard</span>' : ''}
+          </div>`).join('')}
+      </div>`
+    : '<div class="cue-noprob">No curriculum problems tagged yet.</div>';
+  const body = isOpen ? `
+    <div class="cue-body">
+      ${c.because ? `<div class="cue-because">${esc(c.because)}</div>` : ''}
+      ${probsHtml}
+    </div>` : '<div class="cue-body"></div>';
+  return `<div class="cue ${isOpen?'open':''}" data-cueidx="${i}">
+    <div class="cue-head">
+      <span class="cuen">${String(i+1).padStart(2,'0')}</span>
+      <span class="cuel">${esc(c.says)}</span>
+      <span class="cuer">${esc(c.reach_for)}</span>
+    </div>
+    ${body}
+  </div>`;
+}
+
 function vCues(){
+  const q = cueQuery.toLowerCase();
+  const filtered = cues.map((c,i)=>({...c,i})).filter(c=>
+    !q ||
+    c.says.toLowerCase().includes(q) ||
+    c.reach_for.toLowerCase().includes(q) ||
+    (c.group||'').toLowerCase().includes(q) ||
+    (c.because||'').toLowerCase().includes(q)
+  );
   const groups = [];
-  cues.forEach((c,i)=>{
+  filtered.forEach(c=>{
     const g = groups.find(x=>x.name===c.group);
-    (g || (groups[groups.push({name:c.group, rows:[]})-1])).rows.push({...c, i});
+    (g || (groups[groups.push({name:c.group||'From the curriculum', rows:[]})-1])).rows.push(c);
   });
-  const n = cues.length;
-  return `<div class="sec"><h2>Cue → pattern</h2>
-    <span class="hint">the curriculum calls this the object of study: reconstruct it, don't read it</span></div>
-    <div class="prow" style="margin:0 0 18px">
-      <button class="btn" id="cue-all">Reveal all</button>
-      <button class="btn" id="cue-none">Hide all</button>
-      <span class="hint" style="margin-left:4px">${revealed.size}/${n} revealed</span>
-    </div>` +
-    groups.map(g=>`
-      <div class="rolelbl" style="margin:22px 0 9px">${esc(g.name)}</div>` +
-      g.rows.map(c=>{
-        const open = revealed.has(c.i);
-        return `<div class="cue" data-cue="${c.i}">
-          <span class="cuen">${String(c.i+1).padStart(2,'0')}</span>
-          <span class="cuel">${esc(c.says)}</span>
-          <span class="cuer ${open?'':'hidden'}">${open?esc(c.reach_for):'tap to reveal'}</span>
-          ${open && c.because ? `<span class="cuewhy">${esc(c.because)}</span>` : ''}
-        </div>`;
-      }).join('')).join('');
+  return `
+    <div class="sec"><h2>Cue &rarr; pattern</h2>
+      <span class="hint">click a card to see why and which problems to practice</span></div>
+    <input class="cue-search" id="cue-search" type="search" placeholder="Filter by cue, pattern, or keyword&hellip;"
+      value="${esc(cueQuery)}" autocomplete="off">
+    ${
+      filtered.length === 0
+        ? '<div class="empty"><b>No matches</b>Try a different keyword.</div>'
+        : groups.map(g=>`
+            <div class="rolelbl" style="margin:18px 0 8px">${esc(g.name)}</div>
+            ${g.rows.map(c=>cueCard(c, c.i)).join('')}`).join('')
+    }`;
 }
 
 async function loadFreq(){
@@ -1389,6 +1439,10 @@ document.addEventListener('input', e=>{
     const id = +card.dataset.id;
     (draft[id] = draft[id] || {}).note = e.target.value;
   }
+  if(e.target.id === 'cue-search'){
+    cueQuery = e.target.value;
+    render();
+  }
 });
 
 
@@ -1407,9 +1461,13 @@ function paintFooterWhere(){
 }
 
 document.addEventListener('click', async e=>{
-  // cue reveal (pool/cues tab)
-  const cue = e.target.closest('[data-cue]');
-  if(cue){ const i=+cue.dataset.cue; revealed.has(i)?revealed.delete(i):revealed.add(i); return render(); }
+  // cue card accordion toggle
+  const cueCard = e.target.closest('[data-cueidx]');
+  if(cueCard && !e.target.closest('a')){
+    const i = +cueCard.dataset.cueidx;
+    openCues.has(i) ? openCues.delete(i) : openCues.add(i);
+    return render();
+  }
 
   // title: start timer (unsolved, non-readonly only)
   const titleEl = e.target.closest('[data-start-timer]');
@@ -1486,8 +1544,7 @@ document.addEventListener('click', async e=>{
     if(drawn && !freqPool().some(p=>p.id===drawn.id)) drawn = null;
     return render();
   }
-  if(e.target.id==='cue-all'){ cues.forEach((_,i)=>revealed.add(i)); return render(); }
-  if(e.target.id==='cue-none'){ revealed.clear(); return render(); }
+
 
   if(e.target.dataset.undo){
     const id = +e.target.dataset.undo;
