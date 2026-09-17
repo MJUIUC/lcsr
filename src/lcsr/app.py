@@ -486,14 +486,14 @@ def _urlencode(s: str) -> str:
 # Entry point
 # ---------------------------------------------------------------------------
 
-def main():
+def main(debug: bool = False):
     api = LcsrAPI()
 
     main_win = webview.create_window(
         "lcsr",
         str(APP_HTML),
         width=1100,
-        height=900,
+        height=1000,
         min_size=(680, 600),
         js_api=api,
     )
@@ -511,4 +511,5 @@ def main():
 
     # start() blocks until all windows are closed.
     # icon= sets the macOS Dock icon; func= runs after the GUI loop starts.
-    webview.start(func=_on_start, debug=False, icon=str(STATIC / "icon.png"))
+    # debug=True enables right-click → Inspect Element in the webview.
+    webview.start(func=_on_start, debug=debug, icon=str(STATIC / "icon.png"))

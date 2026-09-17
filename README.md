@@ -138,6 +138,56 @@ lcsr serve         # foreground, with logs
 
 ---
 
+## Development
+
+The dev environment uses a completely separate data directory (`~/.lcsr-dev`)
+so you can develop and test without touching your real log.
+
+**First time setup:**
+
+```bash
+python tools/seed_dev.py     # populate ~/.lcsr-dev with realistic data
+bash dev.sh                  # launch with isolated data + DevTools enabled
+```
+
+**Subsequent sessions:**
+
+```bash
+bash dev.sh   # data persists between sessions
+```
+
+**Reset dev data from scratch:**
+
+```bash
+python tools/seed_dev.py --reset && bash dev.sh
+```
+
+**What `--dev` does:**
+- Sets `LCSR_HOME=~/.lcsr-dev` — all reads/writes go there
+- Your real `~/.lcsr/` log is never touched
+
+**What `--debug` does:**
+- Enables pywebview DevTools: right-click anywhere in the window → **Inspect Element**
+- Full browser DevTools panel: console, elements, network, CSS live editing
+- `console.log()` output is visible in the panel
+
+You can also run these flags manually without `dev.sh`:
+
+```bash
+.venv/bin/lcsr app --dev --debug
+```
+
+**Dev loop:** edit → ⌘Q → `bash dev.sh` — relaunch is typically under 2 seconds.
+
+**Seed data covers:**
+- Problems in all states: unseen, due for re-solve, solved
+- Stuck attempts with mistake classes and multi-line markdown notes
+- Solved attempts with approach notes and code snippets
+- A re-solve sequence (stuck → stuck → solved) to exercise the ladder
+- Problems spread across W0–W6 so Today, Progress, and Curriculum all render
+
+---
+
 ## How the timer works
 
 1. Open a problem card (click the header to expand)

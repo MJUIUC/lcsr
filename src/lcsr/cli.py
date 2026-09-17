@@ -190,8 +190,17 @@ def cmd_undo(a):
 
 
 def cmd_app(a):
+    import os
+    if a.dev:
+        dev_home = Path.home() / '.lcsr-dev'
+        dev_home.mkdir(parents=True, exist_ok=True)
+        os.environ['LCSR_HOME'] = str(dev_home)
+        # Reload the store module so HOME picks up the new env var.
+        from . import store
+        store.HOME = dev_home
+        store.LOG  = dev_home / 'log.jsonl'
     from .app import main as app_main
-    app_main()
+    app_main(debug=a.debug)
 
 
 def cmd_serve(a):
@@ -343,6 +352,10 @@ def main(argv=None):
     p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("app", help="launch the native desktop companion app (requires lcsr[app])")
+    p.add_argument('--dev',   action='store_true',
+                   help='use ~/.lcsr-dev as the data dir, isolated from your real log')
+    p.add_argument('--debug', action='store_true',
+                   help='enable pywebview DevTools (right-click → Inspect Element)')
     p.set_defaults(fn=cmd_app)
 
     p = sub.add_parser("log", help="record attempts")
