@@ -878,7 +878,7 @@ function vCurriculum(){
       : g.blocks.map(b=>
           `${b.title?`<div class="rolelbl">${esc(b.title)}</div>`:''}
            <div class="stack" style="margin-bottom:0;gap:6px">
-             ${b.problems.map(x=>pRow(x, g.key==='skipped' ? {unskip:true} : {})).join('')}</div>`).join('');
+             ${b.problems.map(x=>pRow(x, {readonly:true})).join('')}</div>`).join('');
     return `<details class="grp" ${isNow?'open':''} data-key="${g.key}">
       <summary>
         <span class="wk">${wk}</span>
