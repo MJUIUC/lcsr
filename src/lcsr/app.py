@@ -43,7 +43,7 @@ from . import prefs as prefs_mod
 from . import settings as cfg
 from .plan import (curriculum_view, export_csv, foundations_left,
                    frequent_view, history_view, intake_week, todays_plan)
-from .schedule import SOLVED, STUCK
+from .schedule import EDITORIAL, SOLVED, STUCK
 from .store import (LOCK, MISTAKES, amend, append, current_sprint,
                     make_entry, replay, set_skipped, start_sprint, undo)
 
@@ -237,6 +237,42 @@ class LcsrAPI:
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
 
+    def log_editorial(self, args: dict) -> dict:
+        """Log an editorial re-attempt.
+
+        Outcome is 'editorial' -- visible in history but invisible to the
+        scheduler. Does not move the due date, does not affect cold re-solve
+        rate. Used when the user re-attempts a problem after reading/watching
+        the solution.
+        """
+        pid = _problem_id(args.get('id'))
+        approach_min = args.get('approach_min')
+        note = args.get('note') or None
+        try:
+            approach_min = float(approach_min) if approach_min is not None else None
+            if approach_min is not None and approach_min < 0:
+                approach_min = None
+        except (TypeError, ValueError):
+            approach_min = None
+        cur.loggable(pid)
+        append(make_entry(pid, EDITORIAL, _today(), None, approach_min, note))
+        return {"ok": True, "id": pid, "outcome": EDITORIAL}
+
+    def update_note(self, args: dict) -> dict:
+        """Update the note on the most recent attempt for a problem.
+
+        Uses amend() to rewrite the note field in place, preserving all other
+        fields (outcome, mistake, approach_min).
+        """
+        from .store import amend as store_amend
+        pid = _problem_id(args.get('id'))
+        note = args.get('note') or None
+        outcome = args.get('outcome', STUCK)
+        out = SOLVED if outcome == SOLVED else (EDITORIAL if outcome == EDITORIAL else STUCK)
+        # amend() rewrites the last entry for this pid
+        was = store_amend(pid, out, None, note)
+        return {"ok": True, "id": pid, "was": was["outcome"]}
+
     def undo(self, args: dict) -> dict:
         pid = _problem_id(args.get('id'))
         was = undo(pid)
@@ -310,6 +346,48 @@ class LcsrAPI:
 
     # ------------------------------------------------- timer / companion
 
+    def open_timer_editorial(self, args: dict) -> dict:
+        """Open a timer window for an editorial re-attempt.
+
+        Same as open_timer but the timer window is labeled 'Re-attempt — not scored'
+        and the result is logged as outcome: editorial.
+        """
+        pid = _problem_id(args.get('id'))
+        title = args.get('title', '')
+        url = args.get('url', '')
+        timer_min = float(args.get('timer_min', 25))
+        webbrowser.open(url)
+
+        if self._timer_win is not None:
+            try:
+                self._timer_win.show()
+                return {"ok": True, "reused": True}
+            except Exception:
+                self._timer_win = None
+
+        params = (f"?id={pid}"
+                  f"&title={_urlencode(title)}"
+                  f"&min={float(timer_min):.1f}"
+                  f"&editorial=1")
+
+        self._timer_win = webview.create_window(
+            f"Re-attempt \u2014 not scored \u2014 #{pid}",
+            str(TIMER_HTML) + params,
+            width=360,
+            height=520,
+            x=20,
+            y=20,
+            resizable=False,
+            on_top=True,
+            js_api=self,
+        )
+
+        def _on_closed():
+            self._timer_win = None
+        self._timer_win.events.closed += _on_closed  # type: ignore[union-attr]
+
+        return {"ok": True, "reused": False}
+
     def open_timer(self, args: dict) -> dict:
         """
         Open the LeetCode problem in the real browser, then pop out the
@@ -352,6 +430,16 @@ class LcsrAPI:
         self._timer_win.events.closed += _on_closed  # type: ignore[union-attr]
 
         return {"ok": True, "reused": False}
+
+    def timer_editorial_done(self, args: dict) -> dict:
+        """Called by timer.html when Done is clicked on an editorial re-attempt."""
+        pid = _problem_id(args.get('id'))
+        elapsed_sec = float(args.get('elapsed_sec', 0))
+        title = args.get('title', '')
+        am = round(elapsed_sec / 60, 1)
+        self._refresh_main(editorial_id=pid, approach_min=am, title=title)
+        self._focus_main()
+        return {"ok": True, "id": pid}
 
     def timer_done(self, args: dict) -> dict:
         """Called by timer.html when Done is clicked.
@@ -403,6 +491,20 @@ class LcsrAPI:
 
     # ------------------------------------------------------------ prefs
 
+    def reveal_in_finder(self, args: dict | None = None) -> dict:
+        """Open Finder with the log file selected (macOS only)."""
+        import subprocess
+        from .store import LOG
+        try:
+            LOG.parent.mkdir(parents=True, exist_ok=True)
+            # Touch the file if it doesn't exist so Finder has something to select.
+            if not LOG.exists():
+                LOG.write_text('', encoding='utf-8')
+            subprocess.run(['open', '-R', str(LOG)], check=False)
+        except Exception:
+            pass
+        return {"ok": True, "path": str(LOG)}
+
     def get_prefs(self, args: dict | None = None) -> dict:
         """Return all persisted UI preferences."""
         return prefs_mod.load()
@@ -435,6 +537,7 @@ class LcsrAPI:
     def _refresh_main(self, prefill_stuck: int | None = None,
                       approach_min: float | None = None,
                       solved_id: int | None = None,
+                      editorial_id: int | None = None,
                       title: str = ''):
         """Tell the main window to re-render. Runs on the GUI thread."""
         if self._main_win is None:
@@ -450,6 +553,12 @@ class LcsrAPI:
                                   "title": title})
             self._main_win.evaluate_js(
                 f"window._lcsrTimerSolved && window._lcsrTimerSolved({payload})"
+            )
+        elif editorial_id is not None:
+            payload = json.dumps({"id": editorial_id, "approach_min": approach_min,
+                                  "title": title})
+            self._main_win.evaluate_js(
+                f"window._lcsrTimerEditorial && window._lcsrTimerEditorial({payload})"
             )
         else:
             self._main_win.evaluate_js(

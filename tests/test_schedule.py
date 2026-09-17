@@ -5,7 +5,7 @@ typo in LADDER fails the test instead of propagating into it.
 """
 import pytest
 
-from lcsr.schedule import LADDER, SOLVED, STUCK, Next, advance
+from lcsr.schedule import EDITORIAL, LADDER, SOLVED, STUCK, Next, advance
 
 # (box, outcome) -> (done, box, due_in_days)
 TABLE = {
@@ -17,6 +17,11 @@ TABLE = {
     (1, STUCK): (False, 0, 3),            # failing resets, does not resume
     (2, SOLVED): (True, None, None),      # cleared +3/+10/+30
     (2, STUCK): (False, 0, 3),
+    # editorial: same box, same done, no due date change
+    (None, EDITORIAL): (True, None, None),
+    (0, EDITORIAL): (False, 0, None),
+    (1, EDITORIAL): (False, 1, None),
+    (2, EDITORIAL): (False, 2, None),
 }
 
 
@@ -28,7 +33,8 @@ def test_truth_table(key, expected):
 
 def test_table_is_exhaustive():
     boxes = [None, *LADDER]
-    assert set(TABLE) == {(b, o) for b in boxes for o in (SOLVED, STUCK)}
+    from lcsr.schedule import OUTCOMES
+    assert set(TABLE) == {(b, o) for b in boxes for o in OUTCOMES}
 
 
 def test_failure_always_resets_to_bottom():

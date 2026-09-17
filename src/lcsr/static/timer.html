@@ -96,6 +96,11 @@ var totalSec = Math.round(totalMin * 60);
 
 document.getElementById('pid').textContent = isFinite(id) ? ('#' + id) : '';
 document.getElementById('ptitle').textContent = title;
+var isEditorial = q.get('editorial') === '1';
+if(isEditorial){
+  document.getElementById('ptitle').textContent = title + ' — re-attempt (not scored)';
+  document.getElementById('ptitle').style.color = 'var(--muted)';
+}
 
 // pywebview is a first-party native window -- AudioContext starts running
 // immediately, no user gesture required. No unlock dance needed.
@@ -204,8 +209,8 @@ doneBtn.addEventListener('click', function(){
   finished = true;
   clearInterval(timerHandle);
   var elapsed = elapsedSecondsNow(), pausedSec = Math.round(pausedMs / 1000);
-  // Hand off to the main window -- it collects the note and logs.
-  window.pywebview.api.timer_done({
+  var apiMethod = isEditorial ? 'timer_editorial_done' : 'timer_done';
+  window.pywebview.api[apiMethod]({
     id: id, title: title, elapsed_sec: elapsed, paused_sec: pausedSec
   }).catch(function(){});
   setTimeout(function(){ window.pywebview.api.close_timer({}); }, 150);
@@ -216,12 +221,15 @@ function goStuck(withAlarm){
   finished = true;
   clearInterval(timerHandle);
   if(withAlarm) alarm();
+  if(isEditorial){
+    // On editorial re-attempt, giving up just closes the window and lets
+    // the user log manually from Progress if they want.
+    window.pywebview.api.close_timer({}).catch(function(){});
+    return;
+  }
   var elapsed = elapsedSecondsNow(), pausedSec = Math.round(pausedMs / 1000);
-  // Tell Python: pre-fill stuck panel in main window, focus it, close this window.
   window.pywebview.api.timer_timeout({id: id, elapsed_sec: elapsed, paused_sec: pausedSec})
     .catch(function(){});
-  // Close immediately -- the main window takes over from here.
-  // Small delay so the API call dispatches before the window tears down.
   setTimeout(function(){ window.pywebview.api.close_timer({}); }, 150);
 }
 

@@ -259,6 +259,48 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
 .note-hist{margin-bottom:14px}
 .note-hist-lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;
   color:var(--muted);font-weight:600;margin-bottom:8px}
+/* ---------- note editor page ---------- */
+.editor-page{position:fixed;inset:0;background:var(--bg);z-index:50;
+  display:flex;flex-direction:column;overflow:hidden}
+.editor-head{display:flex;align-items:center;gap:12px;padding:14px 18px;
+  border-bottom:1px solid var(--line);flex:none;background:var(--panel)}
+.editor-head h2{font-family:ui-serif,Georgia,serif;font-size:16px;font-weight:600;
+  margin:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.editor-tabs{display:flex;gap:2px;background:var(--line2);border:1px solid var(--line);
+  border-radius:8px;padding:2px;flex:none}
+.editor-tab{font-size:12.5px;padding:4px 12px;border-radius:6px;color:var(--muted);
+  cursor:pointer;transition:.13s;background:none;border:none;font:inherit}
+.editor-tab.active{background:var(--panel);color:var(--ink);font-weight:550}
+.editor-body{flex:1;display:flex;overflow:hidden;gap:0}
+.editor-write{flex:1;display:flex;flex-direction:column;padding:16px 18px;overflow:hidden}
+.editor-write textarea{flex:1;font:13.5px/1.7 ui-monospace,Menlo,monospace;
+  width:100%;resize:none;padding:12px;border:1px solid var(--line);border-radius:8px;
+  background:var(--panel);color:var(--ink);outline:none}
+.editor-write textarea:focus{border-color:var(--accent)}
+.editor-preview{flex:1;padding:16px 18px;overflow-y:auto;
+  font-size:14px;line-height:1.75;color:var(--mid)}
+.editor-preview h1,.editor-preview h2,.editor-preview h3{font-family:ui-serif,Georgia,serif;
+  font-weight:600;margin:16px 0 8px;color:var(--ink)}
+.editor-preview h1{font-size:18px}.editor-preview h2{font-size:16px}.editor-preview h3{font-size:14px}
+.editor-preview p{margin:0 0 10px}
+.editor-preview ul,.editor-preview ol{margin:0 0 10px;padding-left:20px}
+.editor-preview li{margin-bottom:3px}
+.editor-preview pre{margin:0 0 10px;border-radius:8px;overflow-x:auto}
+.editor-preview code:not(pre code){background:var(--panel2);border:1px solid var(--line);
+  border-radius:4px;padding:1px 5px;font-size:12px;font-family:ui-monospace,Menlo,monospace}
+.editor-preview strong{color:var(--ink);font-weight:600}
+.editor-err{color:var(--danger);font-size:12.5px;padding:4px 18px;flex:none}
+.editor-foot{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--line);
+  flex:none;background:var(--panel)}
+/* editorial outcome badge */
+.badge.editorial{color:var(--pool,#6d38d6);
+  border-color:color-mix(in srgb,var(--pool,#6d38d6) 35%,transparent)}
+/* editorial section in history */
+.editorial-section{margin-top:10px;padding:10px 12px;border-radius:8px;
+  border:1px solid color-mix(in srgb,var(--pool,#6d38d6) 25%,transparent);
+  background:color-mix(in srgb,var(--pool,#6d38d6) 5%,transparent)}
+.editorial-lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--pool,#6d38d6);font-weight:600;margin-bottom:8px}
 /* ---------- log panel ---------- */
 .panel{border-top:1px solid var(--line2);background:var(--panel2);padding:13px 14px}
 .lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
@@ -794,15 +836,124 @@ function toggleNoteExpand(el){
 }
 
 // Build a self-contained note-expand card (used in both stuck panel and Progress).
-function noteExpandHtml(note, ts, outcome){
+function noteExpandHtml(note, ts, outcome, pid, editable){
   const dataNote = esc(note||'').replace(/"/g,'&quot;');
+  const editBtn = (editable && pid)
+    ? `<button class="btn quiet" style="font-size:11px;padding:2px 8px;flex:none"
+         data-edit-note="${pid}" data-edit-ts="${esc(ts||'')}"
+         data-edit-outcome="${esc(outcome||'')}">Edit</button>`
+    : '';
   return `<div class="note-expand" data-note-expand>
     <div class="note-expand-head" data-toggle-note>
       <span class="note-expand-date">${fmtTs(ts)}</span>
       <span class="note-expand-preview">Notes</span>
+      ${editBtn}
     </div>
     <div class="note-expand-body" data-note="${dataNote}"></div>
   </div>`;
+}
+
+/* ---------------- note editor page ---------------- */
+function openNoteEditor({pid, outcome, ts, note, title, returnTab, onSave}){
+  editorState = {pid, outcome, ts, note: note||'', title, returnTab: returnTab||tab, onSave: onSave||null};
+  renderEditor();
+}
+
+function renderEditor(){
+  if(!editorState) return;
+  const existing = document.getElementById('note-editor-page');
+  if(existing) existing.remove();
+  const div = document.createElement('div');
+  div.id = 'note-editor-page';
+  div.className = 'editor-page';
+  div.innerHTML = `
+    <div class="editor-head">
+      <button class="btn quiet" id="editor-back">&#8592; Back</button>
+      <h2>${esc(editorState.title || String(editorState.pid))}</h2>
+      <div class="editor-tabs">
+        <button class="editor-tab active" id="editor-tab-write">Write</button>
+        <button class="editor-tab" id="editor-tab-preview">Preview</button>
+      </div>
+    </div>
+    <div class="editor-err" id="editor-err" style="display:none"></div>
+    <div class="editor-body">
+      <div class="editor-write" id="editor-write-pane">
+        <textarea id="editor-textarea" placeholder="Markdown supported &mdash; ## headings, **bold**, \`code\`, fenced code blocks...">${esc(editorState.note)}</textarea>
+      </div>
+      <div class="editor-preview" id="editor-preview-pane" style="display:none"></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn primary" id="editor-save">Save</button>
+      <button class="btn" id="editor-cancel">Cancel</button>
+      <span class="hint" style="margin-left:auto;align-self:center">Markdown supported</span>
+    </div>`;
+  document.body.appendChild(div);
+  document.getElementById('editor-textarea').focus();
+
+  // Tab switching
+  document.getElementById('editor-tab-write').addEventListener('click', ()=>{
+    document.getElementById('editor-tab-write').classList.add('active');
+    document.getElementById('editor-tab-preview').classList.remove('active');
+    document.getElementById('editor-write-pane').style.display = '';
+    document.getElementById('editor-preview-pane').style.display = 'none';
+  });
+  document.getElementById('editor-tab-preview').addEventListener('click', ()=>{
+    document.getElementById('editor-tab-preview').classList.add('active');
+    document.getElementById('editor-tab-write').classList.remove('active');
+    document.getElementById('editor-write-pane').style.display = 'none';
+    const pane = document.getElementById('editor-preview-pane');
+    pane.style.display = '';
+    const errEl = document.getElementById('editor-err');
+    try{
+      pane.innerHTML = typeof marked !== 'undefined'
+        ? marked.parse(document.getElementById('editor-textarea').value || '')
+        : '<pre>' + esc(document.getElementById('editor-textarea').value) + '</pre>';
+      if(typeof hljs !== 'undefined')
+        pane.querySelectorAll('pre code').forEach(b=>hljs.highlightElement(b));
+      errEl.style.display = 'none';
+    }catch(err){
+      pane.innerHTML = '';
+      errEl.textContent = 'Markdown render error: ' + err.message;
+      errEl.style.display = '';
+      // Switch back to write so user can fix it
+      document.getElementById('editor-tab-write').click();
+    }
+  });
+
+  // Save
+  document.getElementById('editor-save').addEventListener('click', async ()=>{
+    const note = document.getElementById('editor-textarea').value.trim();
+    if(editorState.onSave){
+      // Pre-log note: store in draft, return to tab
+      editorState.onSave(note);
+      const returnTab = editorState.returnTab;
+      editorState = null;
+      div.remove();
+      // No go() needed -- onSave already called render()
+      return;
+    }
+    try{
+      await window.pywebview.api.update_note({
+        id: editorState.pid,
+        note,
+        outcome: editorState.outcome,
+      });
+      const returnTab = editorState.returnTab;
+      editorState = null;
+      div.remove();
+      await go(returnTab);
+    }catch(err){ toast(err.message); }
+  });
+
+  // Back / Cancel
+  const goBack = async ()=>{
+    const returnTab = editorState.returnTab;
+    editorState = null;
+    div.remove();
+    await go(returnTab);
+  };
+  document.getElementById('editor-back').addEventListener('click', goBack);
+  document.getElementById('editor-cancel').addEventListener('click', goBack);
 }
 
 /* ---------------- problem row ---------------- */
@@ -821,7 +972,7 @@ function stuckPanel(p){
   const histHtml = pastNotes.length ? `
     <div class="note-hist">
       <div class="note-hist-lbl">Previous attempt notes</div>
-      ${pastNotes.map(n=>noteExpandHtml(n.note, n.ts, n.outcome)).join('')}
+      ${pastNotes.map(n=>noteExpandHtml(n.note, n.ts, n.outcome, p.id, true)).join('')}
     </div>` : '';
   // Compute label: "Notes from Attempt · <date+time of last attempt with a note>"
   const lastNote = pastNotes[pastNotes.length - 1];
@@ -833,9 +984,10 @@ function stuckPanel(p){
     <a class="yt-link" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; View solutions on YouTube</a>
     ${histHtml}
     <div class="lbl" style="margin-top:16px">${noteLabel}</div>
-    <textarea data-note rows="6"
-      placeholder="Describe what you struggled with, what the key insight was, paste code snippets... Markdown supported."
-    >${esc((draft[p.id]||{}).note||'')}</textarea>
+    <button class="btn" style="margin-bottom:8px" data-add-note="${p.id}"
+      data-note-outcome="stuck" data-note-title="${esc(p.title||String(p.id))}">
+      ${(draft[p.id]||{}).note ? 'Edit note' : '+ Add note'}
+    </button>
     ${chips}
     <div class="prow">
       <button class="btn warn-solid" data-act="confirm">Log as stuck</button>
@@ -853,7 +1005,7 @@ function solvedPanel(p){
   const histHtml = pastNotes.length ? `
     <div class="note-hist">
       <div class="note-hist-lbl">Previous attempt notes</div>
-      ${pastNotes.map(n=>noteExpandHtml(n.note, n.ts, n.outcome)).join('')}
+      ${pastNotes.map(n=>noteExpandHtml(n.note, n.ts, n.outcome, p.id, true)).join('')}
     </div>` : '';
   const lastNote = pastNotes[pastNotes.length - 1];
   const noteLabel = lastNote
@@ -864,9 +1016,10 @@ function solvedPanel(p){
     <a class="yt-link ok" href="${esc(ytUrl)}" target="_blank" rel="noopener">&#9654; YouTube solutions</a>
     ${histHtml}
     <div class="lbl" style="margin-top:16px">${noteLabel}</div>
-    <textarea data-solve-note rows="6"
-      placeholder="Key insight, approach, patterns used... Markdown supported."
-    ></textarea>
+    <button class="btn" style="margin-bottom:8px" data-add-solve-note="${p.id}"
+      data-note-title="${esc(draft[p.id]?.timerTitle||p.title||String(p.id))}">
+      ${(draft[p.id]||{}).note ? 'Edit note' : '+ Add note'}
+    </button>
     <div class="prow">
       <button class="btn primary" data-act="solve-save">Save note</button>
       <button class="btn" data-act="solve-skip">Skip</button>
@@ -887,6 +1040,11 @@ function cueRow(p){
     ><span class="cuetag">cue</span><span class="cuetext">${esc(p.cue)}</span>${
       open ? '' : '<span class="cuehint">click to reveal</span>'}</button>`;
 }
+
+// Note editor state
+let editorState = null;
+// { returnTab, pid, outcome, ts, note, title }
+// null when editor is not open
 
 // Accordion open state lives in a Set so it survives re-renders.
 const openCards = new Set();
@@ -1085,20 +1243,31 @@ function vHistory(){
         <span class="dayrel">${relDay(d.date)}</span>
         <span class="daytally">${d.solved} solved${d.stuck?` · ${d.stuck} stuck`:''}</span>
       </div>
-      ${d.entries.map(e=>`
-        <div class="h">
+      ${d.entries.map(e=>{
+        const isEditorial = e.outcome === 'editorial';
+        const outcomeClass = e.outcome==='solved'?'ok': isEditorial?'editorial':'late';
+        const dotClass = e.outcome==='solved'?'done': isEditorial?'':'learning';
+        const practiceBtn = e.outcome==='stuck'
+          ? `<button class="btn quiet" style="font-size:12px;margin-top:8px"
+               data-practice-editorial="${e.id}"
+               data-practice-title="${esc(e.title||'')}"
+               data-practice-url="${esc(e.url||'')}">Practice with editorial</button>`
+          : '';
+        return `<div class="h">
           <div class="hhead">
-            <span class="dot ${e.outcome==='solved'?'done':'learning'}"></span>
+            <span class="dot ${dotClass}"></span>
             <span class="pid">${e.id}</span>
             <span class="ptitle">${e.url?`<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title)}</span>
             ${e.hard?'<span class="badge hard">hard</span>':''}
             <span class="badge">${esc(e.tier)}${e.week?' · W'+e.week:''}</span>
-            <span class="badge ${e.outcome==='solved'?'ok':'late'}">${e.outcome}</span>
+            <span class="badge ${outcomeClass}">${isEditorial?'re-attempt':e.outcome}</span>
             ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
             ${e.can_undo?`<button class="btn undo" data-undo="${e.id}">Undo</button>`:''}
           </div>
-          ${e.note?`<div class="hnote">${noteExpandHtml(e.note, e.ts||e.date, e.outcome)}</div>`:''}
-        </div>`).join('')}
+          ${e.note?`<div class="hnote">${noteExpandHtml(e.note, e.ts||e.date, e.outcome, e.id, true)}</div>`:''}
+          ${practiceBtn}
+        </div>`;
+      }).join('')}
     </div>`;
   }).join('');
 }
@@ -1482,6 +1651,16 @@ function vExport(){
   <div class="prow">
     <button class="btn primary" data-export="csv">Download CSV</button>
     <button class="btn" data-export="jsonl">Download raw log</button>
+  </div>
+  <div class="sec" style="margin-top:38px"><h2>Your data</h2>
+    <span class="hint">everything lives on your machine</span></div>
+  <div class="poolintro" style="border-left-color:var(--line)">
+    <p>Your log is at <code style="font-size:12px">~/.lcsr/log.jsonl</code>. It is plain text
+      and can be copied to the same path on another machine to transfer all your progress.
+      Nothing else needs to move &mdash; the app reads it fresh on every launch.</p>
+  </div>
+  <div class="prow">
+    <button class="btn" id="reveal-finder">Reveal in Finder</button>
   </div>`;
 }
 
@@ -1647,6 +1826,62 @@ document.addEventListener('click', async e=>{
     return;
   }
 
+  // edit note button -- opens full-window note editor
+  const editNoteBtn = e.target.closest('[data-edit-note]');
+  if(editNoteBtn){
+    e.stopPropagation(); // don't also toggle the expand
+    const pid = +editNoteBtn.dataset.editNote;
+    const ts = editNoteBtn.dataset.editTs;
+    const outcome = editNoteBtn.dataset.editOutcome;
+    const card = editNoteBtn.closest('.h, .p');
+    const title = card?.querySelector('.ptitle')?.textContent?.trim() || String(pid);
+    // Fetch the full note text fresh
+    window.pywebview.api.get_notes({id: pid}).then(notes=>{
+      const n = notes.find(x=>x.ts===ts) || notes[notes.length-1];
+      if(n) openNoteEditor({pid, outcome: n.outcome, ts: n.ts, note: n.note,
+                            title, returnTab: tab});
+    }).catch(()=>{ toast('Could not load note.'); });
+    return;
+  }
+
+  // "Add note" button in stuck panel -- opens editor, stores in draft on save
+  const addNoteBtn = e.target.closest('[data-add-note]');
+  if(addNoteBtn){
+    const pid = +addNoteBtn.dataset.addNote;
+    const outcome = addNoteBtn.dataset.noteOutcome || 'stuck';
+    const title = addNoteBtn.dataset.noteTitle || String(pid);
+    const existing = (draft[pid]||{}).note || '';
+    openNoteEditor({
+      pid, outcome, ts: null, note: existing, title,
+      returnTab: tab,
+      onSave: (note)=>{ draft[pid] = {...(draft[pid]||{}), note}; render(); }
+    });
+    return;
+  }
+  const addSolveNoteBtn = e.target.closest('[data-add-solve-note]');
+  if(addSolveNoteBtn){
+    const pid = +addSolveNoteBtn.dataset.addSolveNote;
+    const title = addSolveNoteBtn.dataset.noteTitle || String(pid);
+    const existing = (draft[pid]||{}).note || '';
+    openNoteEditor({
+      pid, outcome: 'solved', ts: null, note: existing, title,
+      returnTab: tab,
+      onSave: (note)=>{ draft[pid] = {...(draft[pid]||{}), note}; render(); }
+    });
+    return;
+  }
+
+  // "Practice with editorial" button in Progress history
+  const practiceBtn = e.target.closest('[data-practice-editorial]');
+  if(practiceBtn){
+    const id = +practiceBtn.dataset.practiceEditorial;
+    const title = practiceBtn.dataset.practiceTitle;
+    const url = practiceBtn.dataset.practiceUrl;
+    window.pywebview.api.open_timer_editorial({id, title, url, timer_min: timerMinutes()})
+      .catch(err=>toast(err.message || 'Could not open timer.'));
+    return;
+  }
+
   // cue card accordion toggle
   const cueCard = e.target.closest('[data-cueidx]');
   if(cueCard && !e.target.closest('a')){
@@ -1786,7 +2021,7 @@ document.addEventListener('click', async e=>{
     if(inFlight.has(id)) return;
     inFlight.add(id);
     const note = act==='solve-save'
-      ? (panel?.querySelector('[data-solve-note]')?.value.trim() || null)
+      ? ((draft[id]||{}).note || null)
       : null;
     const approach_min = (draft[id]||{}).timerApproachMin;
     try{
@@ -1802,7 +2037,7 @@ document.addEventListener('click', async e=>{
   if(act==='confirm'){
     if(inFlight.has(id)) return;
     inFlight.add(id);
-    const note = panel?.querySelector('[data-note]')?.value.trim() || '';
+    const note = (draft[id]||{}).note || '';
     try{
       await api('/api/log', {id, outcome:'stuck',
                              mistake: draft[id].mistake, note,
@@ -1817,6 +2052,10 @@ document.addEventListener('click', async e=>{
 });
 
 document.addEventListener('click', async e=>{
+  if(e.target.id==='reveal-finder'){
+    window.pywebview.api.reveal_in_finder().catch(()=>{});
+    return;
+  }
   if(e.target.id==='sprint-cancel'){ sprintArmed = false; return render(); }
   if(e.target.id==='sprint-go'){
     if(!sprintArmed){ sprintArmed = true; return render(); }
@@ -1891,7 +2130,38 @@ window._lcsrTimerSolved = async function({id, approach_min, title}){
   loadDescriptionInto(id);
   const panel = document.querySelector(`.p[data-id="${id}"] [data-solved-panel]`);
   panel?.scrollIntoView({block:'center', behavior:'smooth'});
-  panel?.querySelector('textarea')?.focus();
+};
+window._lcsrTimerEditorial = async function({id, approach_min, title}){
+  // Editorial re-attempt done -- open note editor for post-editorial notes,
+  // then log as editorial on save.
+  // Store in a temporary editorial draft separate from the cold attempt draft.
+  draft[id] = {...(draft[id]||{}),
+    editorialPending: true,
+    editorialApproachMin: approach_min,
+    editorialTitle: title};
+  if(tab !== 'progress') await go('progress');
+  else { try{ await refreshAll(); }catch(e){} }
+  // Open the note editor pre-configured for editorial logging
+  openNoteEditor({
+    pid: id,
+    outcome: 'editorial',
+    ts: null,
+    note: '',
+    title: title || String(id),
+    returnTab: 'progress',
+    onSave: async (note)=>{
+      try{
+        await window.pywebview.api.log_editorial({
+          id,
+          approach_min: draft[id]?.editorialApproachMin,
+          note: note || null,
+        });
+        delete draft[id];
+        toast('Re-attempt logged.', {good:true});
+        await go('progress');
+      }catch(err){ toast(err.message); }
+    }
+  });
 };
 function loadDescriptionInto(id){
   // Already cached -- render() will have used it, nothing to do.

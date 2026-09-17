@@ -15,7 +15,8 @@ from dataclasses import dataclass
 
 SOLVED = "solved"
 STUCK = "stuck"
-OUTCOMES = (SOLVED, STUCK)
+EDITORIAL = "editorial"
+OUTCOMES = (SOLVED, STUCK, EDITORIAL)
 
 # box -> days until the re-solve that leaving this box schedules
 LADDER = {0: 3, 1: 10, 2: 30}
@@ -41,6 +42,12 @@ def advance(box: int | None, outcome: str) -> Next:
     """
     if outcome not in OUTCOMES:
         raise ValueError(f"unknown outcome {outcome!r}, expected one of {OUTCOMES}")
+
+    if outcome == EDITORIAL:
+        # Editorial re-attempts are logged for history but don't move the ladder.
+        # Return the current state unchanged: same box, same done, no new due date.
+        done = box is None  # already done if no box
+        return Next(done=done, box=box, due_in_days=None)
 
     if outcome == STUCK:
         return Next(done=False, box=0, due_in_days=LADDER[0])
