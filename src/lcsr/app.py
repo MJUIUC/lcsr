@@ -237,6 +237,20 @@ class LcsrAPI:
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
 
+    def delete_note(self, args: dict) -> dict:
+        """Delete a note or editorial entry by its timestamp.
+
+        Appends a retraction -- the log stays append-only. The entry
+        disappears from history on the next read.
+        """
+        from .store import delete_entry_by_ts
+        pid = _problem_id(args.get('id'))
+        ts = args.get('ts', '')
+        if not ts:
+            raise ValueError('ts is required')
+        was = delete_entry_by_ts(pid, ts)
+        return {"ok": True, "id": pid, "deleted_ts": ts, "outcome": was.get("outcome")}
+
     def log_note(self, args: dict) -> dict:
         """Log a standalone user note for a problem.
 

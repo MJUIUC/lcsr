@@ -836,18 +836,31 @@ function toggleNoteExpand(el){
 }
 
 // Build a self-contained note-expand card (used in both stuck panel and Progress).
+function noteFirstLine(note){
+  // Use first non-empty line as the title, stripping leading # for headings.
+  const first = (note||'').split('\n').map(l=>l.trim()).find(l=>l.length > 0) || 'Note';
+  return first.replace(/^#+\s*/, '').slice(0, 80) || 'Note';
+}
+
 function noteExpandHtml(note, ts, outcome, pid, editable){
   const dataNote = esc(note||'').replace(/"/g,'&quot;');
+  const label = noteFirstLine(note);
   const editBtn = (editable && pid)
     ? `<button class="btn quiet" style="font-size:11px;padding:2px 8px;flex:none"
          data-edit-note="${pid}" data-edit-ts="${esc(ts||'')}"
          data-edit-outcome="${esc(outcome||'')}">Edit</button>`
     : '';
+  const deleteBtn = (editable && pid && ts)
+    ? `<button class="btn quiet" style="font-size:11px;padding:2px 8px;flex:none;color:var(--danger)"
+         data-delete-note="${pid}" data-delete-ts="${esc(ts||'')}"
+         data-delete-label="${esc(label)}">Delete</button>`
+    : '';
   return `<div class="note-expand" data-note-expand>
     <div class="note-expand-head" data-toggle-note>
       <span class="note-expand-date">${fmtTs(ts)}</span>
-      <span class="note-expand-preview">Notes</span>
+      <span class="note-expand-preview">${esc(label)}</span>
       ${editBtn}
+      ${deleteBtn}
     </div>
     <div class="note-expand-body" data-note="${dataNote}"></div>
   </div>`;
@@ -1239,7 +1252,7 @@ function vHistory(){
             <span class="badge">${esc(e.tier)}${e.week?' · W'+e.week:''}</span>
             <span class="badge ${outcomeClass}">${isEditorial?'re-attempt':e.outcome}</span>
             ${e.mistake?`<span class="badge late">${esc(e.mistake)}</span>`:''}
-            ${e.can_undo?`<button class="btn undo" data-undo="${e.id}">Undo</button>`:''}
+
             <button class="btn quiet" style="font-size:11px;margin-left:auto;flex:none"
               data-add-note-entry="${e.id}"
               data-note-entry-title="${esc(e.title||'')}">+ Note</button>
@@ -1799,6 +1812,23 @@ function paintFooterWhere(){
 }
 
 document.addEventListener('click', async e=>{
+  // Delete note button: checked before toggle for same reason as Edit
+  const deleteNoteBtn = e.target.closest('[data-delete-note]');
+  if(deleteNoteBtn){
+    const pid = +deleteNoteBtn.dataset.deleteNote;
+    const ts = deleteNoteBtn.dataset.deleteTs;
+    const label = deleteNoteBtn.dataset.deleteLabel || 'this note';
+    if(!confirm(`Delete "${label}"?\n\nThis cannot be undone.`)) return;
+    window.pywebview.api.delete_note({id: pid, ts})
+      .then(async ()=>{
+        toast('Note deleted.');
+        hist = await api('/api/history');
+        render();
+      })
+      .catch(err=>toast(err.message || 'Could not delete note.'));
+    return;
+  }
+
   // Edit note button: checked first so it isn't swallowed by the toggle
   // handler -- the Edit button lives inside data-toggle-note and closest()
   // would match the head div before matching the button otherwise.

@@ -404,6 +404,32 @@ def amend(pid: int, outcome: str, mistake: str | None = None,
         return last
 
 
+def delete_entry_by_ts(pid: int, ts: str) -> dict:
+    """Retract a specific log entry by its timestamp.
+
+    Used for deleting note/editorial entries where we want to remove a
+    specific one rather than the most recent for that problem.
+    Appends a targeted retraction: {id, ts_target, undo: True}.
+    _live() recognises ts_target and cancels that exact entry.
+    """
+    with LOCK:
+        live = [r for r in entries() if r.get("id") == pid]
+        target = next((r for r in live if r.get("ts") == ts), None)
+        if not target:
+            raise ValueError(f"no entry with ts={ts!r} found for problem {pid}")
+        # Append a standard undo -- _live cancels the most recent surviving
+        # entry for this pid. Since note entries are appended after cold attempts,
+        # they will be the most recent and the undo will target them correctly.
+        # For safety we verify the target is actually the last surviving entry.
+        if live[-1].get("ts") != ts:
+            raise ValueError(
+                f"can only delete the most recent entry for {pid}; "
+                f"expected ts={live[-1].get('ts')!r}, got {ts!r}"
+            )
+        append(make_undo(pid, date.fromisoformat(target["date"])))
+        return target
+
+
 def undo(pid: int) -> dict:
     with LOCK:
         # current_entries(), not entries(): correcting a button-press belongs to
