@@ -1,16 +1,10 @@
 # lcsr: LeetCode Spaced Repetition
 
-### [→ Try it live](https://leetcode-srs-khaki.vercel.app)
+> Forked from [Swapnil-jain/lcsr](https://github.com/Swapnil-jain/lcsr) — original browser-based tool by Swapnil Jain.
+> This fork by [MJUIUC](https://github.com/MJUIUC) adds a native desktop app, a timer-governed practice loop,
+> an enriched cue table, and a redesigned card UI.
 
-No sign-up and no account. Your progress is stored in your own browser, and the
-hosted site keeps nothing: each request sends your log so the server can work out
-what is due, computes an answer, and forgets it. Nothing is stored server-side and
-nothing is shared between visitors. The hosted page loads Vercel Web Analytics,
-which counts page views and never sees your log.
-
-Or run it locally with the CLI below, where the log is a plain file you own and
-nothing leaves the machine at all.
-
+---
 
 **A spaced repetition system for LeetCode and DSA interview prep.**
 
@@ -19,274 +13,198 @@ it never comes back at all.** Fail it again at any rung and you drop to the
 bottom, because the point is to re-earn the spacing, not to resume it.
 
 That schedule runs over 324 problems in a fixed order, taken from an 18-week
-data structures and algorithms curriculum, plus its 20-row pattern cue table.
+data structures and algorithms curriculum, plus a 44-entry pattern cue table.
 
-Self-hosted, single file of state, no account, no dependencies. Python CLI plus a
-local web UI, with light and pitch-dark themes. Run it locally and nothing leaves
-your machine.
+---
 
-It does not invent a study method. The curriculum has one; this makes following
-it cost nothing.
+## What this fork adds
 
-**Why spaced repetition for coding interviews.** Solving a problem once and
-moving on feels productive and does not last. Spacing beats massed practice
-across 839 measured comparisons, and expanding intervals beat fixed ones
-([the evidence](docs/evidence.md)). 3 / 10 / 30 is an expanding schedule.
+### Native desktop app (`lcsr app`)
 
-![Today](docs/screenshots/today.png)
+The original tool runs as a local web server you open in a browser. This fork
+adds `lcsr app` — a native desktop window built with
+[pywebview](https://pywebview.app) that runs the same UI without a browser,
+enabling features that the browser's security model prevents:
 
-<table>
-<tr>
-<td width="50%"><a href="docs/screenshots/curriculum.png"><img src="docs/screenshots/curriculum.png" alt="Curriculum"></a><br><sub><b>Curriculum.</b> All 324 problems in the order they are taught, week by week.</sub></td>
-<td width="50%"><a href="docs/screenshots/progress.png"><img src="docs/screenshots/progress.png" alt="Progress"></a><br><sub><b>Progress.</b> The three metrics, the mistake histogram, and every attempt.</sub></td>
-</tr>
-<tr>
-<td width="50%"><a href="docs/screenshots/pool.png"><img src="docs/screenshots/pool.png" alt="Interview pool"></a><br><sub><b>Interview pool.</b> 390 problems from five lists, with a weighted draw.</sub></td>
-<td width="50%"><a href="docs/screenshots/settings.png"><img src="docs/screenshots/settings.png" alt="Settings"></a><br><sub><b>Settings.</b> The daily load, repeat passes, and export.</sub></td>
-</tr>
-</table>
+- **Reliable alarm audio** — the timer plays a buzzer the moment it hits zero,
+  no user gesture required (browsers block this)
+- **Window focus** — the app snaps into focus after the timer closes
+- **Direct Python calls** — the UI talks to the backend directly instead of
+  over HTTP, removing the server entirely from the desktop path
 
-### The order is the other half
+### Timer-governed outcomes
 
-A list of problems is not a curriculum. These 324 run in a deliberate sequence:
-the plainest example of a pattern always lands before any hard variant of it, so
-every problem has something to stand on.
+The original tool is self-report: you click Solved or Stuck after attempting a
+problem. This fork replaces that with a **timed practice loop**:
 
-Where the source curriculum broke its own rule, this fixes it: it taught Max
-Product Subarray without max-sum Kadane first. Ten problems were added to close
-gaps like that, each slotted into its real place rather than appended, because a
-base exemplar arriving after its own hard variant teaches backwards.
+1. Expand a problem card to read the description (fetched live from LeetCode)
+2. Click **Start timed attempt** — the timer popup opens and LeetCode opens in
+   your real browser simultaneously
+3. **Done** before the timer runs out → logged as solved immediately
+4. **I'm Stuck** or timer reaches zero → alarm fires, app comes to focus,
+   stuck panel opens with a YouTube solutions link, no way to self-report solved
 
-Reps are interleaved on purpose. Blocked practice's errors are mostly
-strategy-selection errors, picking a method that belonged to a different problem
-type, because the heading already told you which one to use. Interviews do not
-come with headings.
+The timer is the authority. There is no Solved button on the card.
 
-### What it does
+### Redesigned card UI
 
-- **Spaced repetition / SRS scheduling**, as above, over every problem you fail.
-- **An 18-week DSA curriculum**, 324 problems across foundations, core, reps and
-  stretch tiers.
-- **A cue table**: what the problem *says*, mapped to the pattern to reach for.
-  Self-testable, answers hidden by default.
-- **An interview pool** of 390 problems merged from five well-known lists
-  (below), with a weighted random draw.
-- **The three metrics the curriculum names**: cold re-solve rate at 30 days,
-  time to correct approach, and a mistake-class histogram. No streaks and no
-  problems-solved counter, on purpose.
-- **A configurable daily load**, if the curriculum's own pace is wrong for you.
-- **Repeat passes.** Finish the whole thing and start again: every problem goes
-  back on offer, the ladder empties, and the daily intake rises by one. Nothing
-  is deleted, and the old attempts stay in your history and your export.
-- **Export**, to CSV or the raw log, so the record is never trapped in here.
-- **Skip**, for the ones you are not doing today. Set aside from **Today**, and
-  they stop being offered until you bring them back. A skip is never an attempt,
-  so declining the hard ones cannot flatter the cold re-solve rate.
+- Cards expand to show the problem description, tier, LeetCode link, and cue
+- The cue text links directly to the matching entry in the Cue table
+- Solved cards are inert — once done, move on
+- Skip removed — the timer governs, not avoidance
 
-### Keywords
+### Enriched cue table
 
-leetcode, spaced repetition, SRS, DSA, data structures and algorithms, coding
-interview preparation, technical interview prep, algorithm practice, NeetCode
-150, Blind 75, LeetCode 75, Top Interview 150, Top 100 Liked, Striver A2Z,
-SDE sheet, FAANG interview, active recall, retrieval practice, interleaving,
-study planner, problem tracker, review scheduler, anki for leetcode, self-hosted,
-python, cli, local-first, no-tracking
+The 20-row cue table from the curriculum is extended to 44 entries:
+
+- Every entry has a `because` field explaining *why* the pattern is correct,
+  often contrasting the wrong approach
+- Every entry has 2–3 hand-curated related problems from the curriculum
+- `cue_map.json` maps all 314 curriculum problems to their cue entries —
+  the source of truth for the problem→pattern relationship
+- The cue table is searchable and accordion-style; collapsed cards hide the
+  pattern name so you can practice recognition before revealing
+
+---
 
 ## Install
 
+**CLI + browser UI (original flow, no extra dependencies):**
+
 ```bash
-git clone https://github.com/Swapnil-jain/lcsr && cd lcsr
+git clone https://github.com/MJUIUC/lcsr && cd lcsr
 python3 -m venv .venv && .venv/bin/pip install -e .
 ```
 
-Python 3.10+ (system Python is 3.9). No dependencies.
+Python 3.10+. No dependencies for the base install.
 
-To get `lcsr` on your PATH:
+**Desktop app (this fork's main addition):**
 
 ```bash
-ln -s "$PWD/.venv/bin/lcsr" /usr/local/bin/lcsr   # or anywhere on your PATH
+.venv/bin/pip install -e ".[app]"
 ```
 
-## Use
+This adds `pywebview` and `youtube-search-python`.
+
+---
+
+## Launch
+
+### Desktop app (recommended)
 
 ```bash
-lcsr up            # start the UI in the background and open it
+lcsr app
+```
+
+Opens a native window with the full UI. No browser needed. LeetCode problems
+open in your real browser when you start a timed attempt.
+
+### Browser-based (original flow)
+
+```bash
+lcsr up            # start in background, open browser tab
 lcsr status        # is it running?
 lcsr down          # stop it
+lcsr serve         # foreground, with logs
 ```
 
-`lcsr up` is idempotent and detaches into its own session, so it survives the
-terminal that launched it. Liveness is a connection to the port, not a pidfile:
-a pidfile outlives a crash and pids get reused.
+---
 
-`lcsr serve` still runs it in the foreground if you want the logs; background
-output goes to `~/.lcsr/server.log`.
+## How the timer works
 
-The page shows due re-solves first, then today's new problems. Each row links to
-LeetCode, and marks **Solved** or **Stuck**; stuck opens a mistake class and a
-note field. Nothing is stored in the browser; every action appends to the same
-log the CLI reads.
+1. Open a problem card (click the header to expand)
+2. Read the description, recall the cue
+3. Click **Start timed attempt** — timer popup opens, LeetCode opens in browser
+4. On the timer:
+   - **Pause** — freeze the clock once per attempt
+   - **Done** — solved before the buzzer; logged immediately, app comes to focus
+   - **I'm Stuck** — declare stuck early; no alarm, timer closes, stuck panel opens
+   - **Natural timeout** — alarm fires, timer closes, stuck panel opens
+5. On the stuck panel:
+   - **View solutions on YouTube** link (highlighted)
+   - Pick a mistake class, add a note
+   - **Log as stuck** — returns in 3 days, then 10, then 30
 
-### Adding problems
+Timer length defaults to 25 minutes (the curriculum's own number). Change it
+in **Settings → Timed attempts**.
 
-In the UI, "Add a problem" at the bottom. Or:
+---
 
-```bash
-lcsr add 1768 "Merge Strings Alternately" --block Warmup --cue "two strings, alternate"
-```
+## CLI
 
-Additions go to `~/.lcsr/custom.json`, kept separate from the packaged
-curriculum so upgrades never overwrite them, and appear under "Added". A custom
-entry reusing a packaged id overrides it, which is how you re-week or retag a
-problem without editing packaged data.
-
-### CLI
+The CLI is unchanged from the original:
 
 ```bash
 lcsr today                       # due re-solves first, then today's new problems
-lcsr show 42                     # the cue and the link, but not the pattern name
+lcsr show 42                     # the cue and the link
 lcsr log 42                      # solved it cold
 lcsr log 42 --stuck --mistake invariant
 lcsr log 1 217 242 --date yesterday
-lcsr amend 15 --stuck --mistake no-pattern   # it was not actually solved
+lcsr amend 15 --stuck --mistake no-pattern
 lcsr undo 209                    # retract the most recent attempt
-lcsr skip 42                     # set one aside; `--undo` puts it back
-lcsr skipped                     # what you have set aside
-lcsr stats                       # the three metrics the curriculum names
+lcsr stats                       # the three metrics
 lcsr cues                        # self-test the cue table; --answers to check
 lcsr week 5                      # one week's blocks, with progress
 lcsr config                      # show the daily load
-lcsr config --core 3 --total 5   # change it; `--core default` clears one
+lcsr config --core 3 --total 5   # change it
 lcsr sprint                      # start another pass over the curriculum
-lcsr export --out progress.csv   # every problem, every attempt
+lcsr export --out progress.csv
 ```
 
 Mistake classes: `off-by-one`, `invariant`, `edge-case`, `no-pattern`.
 
-### The daily load
+---
 
-By default you get the curriculum's own load: roughly 4 to 5 new problems a day
-in weeks 1 to 3, 3 a day after, plus whatever re-solves fall due. Due re-solves
-are never capped.
+## What is stored where
 
-Change any of it in **Settings**, or from the CLI:
-
-```bash
-lcsr config --foundations 1 --core 2   # per tier
-lcsr config --total 4                  # or cap the whole day
-lcsr config --reset                    # back to the curriculum's own load
-```
-
-Unset follows the curriculum; `0` stops that tier entirely, which is not the
-same thing. When a cap bites, reps are cut first, then foundations, then core.
-
-### Going round again
-
-When the curriculum is finished, start another pass:
-
-```bash
-lcsr sprint          # refuses unless everything is done; --force overrides
-```
-
-Every problem goes back on offer, the ladder empties, and the daily intake rises
-by one. **Nothing is deleted**: a pass is one more line in the append-only log,
-so every attempt stays in Progress and in your export. `undo` and `amend` will
-not reach back into a finished pass.
-
-### Export
-
-```bash
-lcsr export                      # CSV to stdout
-lcsr export --out progress.csv   # or to a file
-lcsr export --format jsonl       # the raw append-only log
-```
-
-One row per problem, all 324, then a column group per attempt: date, outcome,
-mistake class, pass and note. Both are in **Settings** in the UI too.
-
-## How it works
-
-`~/.lcsr/log.jsonl` is append-only and is the only record. Undo and amend append a
-retraction rather than deleting a line, so a mis-logged attempt is recoverable
-and the record of what happened is never rewritten underneath you. An amend
-keeps the original attempt's date: correcting a button-press is not the same as
-working the problem again today, and re-logging would shift the due date and
-consume the day's quota. Due dates, boxes and
-every metric are recomputed from it on each run, so nothing can drift out of
-sync and the scheduling rule can change later without invalidating history.
-
-`lcsr serve` binds to loopback only and has no auth. It is a local tool.
-
-Scheduling is `src/lcsr/schedule.py`: one pure function, with an exhaustive
-truth table over all 8 states in `tests/test_schedule.py`.
-
-No streak counter and no problems-solved count. You can raise problems-solved by
-picking easy problems. The cold re-solve rate is the one that predicts.
-
-## The interview pool
-
-A separate **Interview pool** tab: 390 unique problems merged from five public
-lists, with a weighted lucky draw.
-
-| List | Problems |
+| File | Contents |
 |---|---|
-| [NeetCode 150](https://neetcode.io/practice) | 150 |
-| [Top Interview 150](https://leetcode.com/studyplan/top-interview-150/) | 150 |
-| [Top 100 Liked](https://leetcode.com/studyplan/top-100-liked/) | 100 |
-| [LeetCode 75](https://leetcode.com/studyplan/leetcode-75/) | 75 |
-| [Striver A2Z](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/) | 251 |
+| `~/.lcsr/log.jsonl` | Append-only attempt log — the only record |
+| `~/.lcsr/settings.json` | Daily load overrides |
+| `~/.lcsr/prefs.json` | UI preferences (timer length) |
+| `~/.lcsr/problem_cache.json` | Cached problem descriptions from LeetCode |
+| `~/.lcsr/custom.json` | Problems added via `lcsr add` |
 
-The draw is weighted by how many lists a problem appears on, so the eight that
-all five agree about come up most and the 212 that only one list carries come up
-least.
-
-It is deliberately *not* merged into the curriculum and changes no metric. The
-only crossing point is read-only: each row says whether it is already in your
-curriculum and whether you have logged it.
-
-Deduplication is by LeetCode frontend id, the only stable key (titles repeat,
-slugs change). 749 raw entries collapse to 390, because the lists overlap
-heavily and A2Z files 18 problems under two to four topics each (274 entries for
-251 problems).
-
-```bash
-python tools/build_frequent.py     # refetch and rebuild the pool
-```
-
-## Regenerating the curriculum
-
-```bash
-python tools/parse_curriculum.py ~/Desktop/DSA-Curriculum-18-Week.pdf
-```
-
-Asserts the tier counts still match the figures the PDF states for itself
-(42/142/113/17), so a layout change in a future edition fails loudly instead of
-silently producing a short list.
-
-## Docs
-
-- [`docs/evidence.md`](docs/evidence.md): the literature review this started from
-- [`docs/design.md`](docs/design.md): what was built and what was dropped
-- [`docs/vercel.md`](docs/vercel.md): how it runs without a filesystem
-- [`SECURITY.md`](SECURITY.md): the threat model, and how to report a problem
-
-## Credits
-
-The curriculum is not mine. The 18-week structure, the problem ordering, the
-20-row cue table and the block titles come from a third-party document,
-`DSA-Curriculum-18-Week.pdf`; `src/lcsr/data/problems.json` and `cues.json` are
-extracted from it verbatim by `tools/parse_curriculum.py`. What this repository
-adds is the tooling, the scheduling code, and ten problems of its own in
-`problems_extra.json`. If you are the curriculum's author and want the extracted
-text credited differently or removed, open an issue and I will.
-
-The interview pool is assembled from the five public lists credited and linked
-above. Only factual data is stored from them: LeetCode problem numbers, slugs,
-difficulties, and which lists a problem appears on.
-
-Problem titles and links belong to LeetCode.
+The log is append-only. Undo and amend append a retraction rather than deleting
+a line. Everything — due dates, metrics, schedule — is recomputed from it on
+each run.
 
 ---
 
-Made with love by [Swapnil](https://github.com/Swapnil-jain)
-· [GitHub](https://github.com/Swapnil-jain/lcsr)
+## Data files
+
+See [`src/lcsr/data/README.md`](src/lcsr/data/README.md) for documentation of
+all bundled data files (`problems.json`, `cues.json`, `cue_map.json`, etc.),
+their schemas, and how they relate to each other.
+
+---
+
+## How it works
+
+`lcsr serve` / `lcsr app` both use the same backend: `src/lcsr/schedule.py`
+(one pure function, exhaustively tested), `src/lcsr/store.py` (log I/O), and
+`src/lcsr/plan.py` (what to show today). The desktop app replaces HTTP calls
+with direct Python method calls via pywebview's JS bridge. The log format is
+identical regardless of which frontend you use.
+
+---
+
+## Credits
+
+The curriculum is not mine or Swapnil's. The 18-week structure, the problem
+ordering, the cue table, and the block titles come from a third-party document,
+`DSA-Curriculum-18-Week.pdf`. `src/lcsr/data/problems.json` and `cues.json` are
+extracted from it by `tools/parse_curriculum.py`. The `because` field
+explanations and `cue_map.json` associations in this fork were written by
+[MJUIUC](https://github.com/MJUIUC).
+
+Problem titles and links belong to LeetCode.
+
+The original tool was built by [Swapnil Jain](https://github.com/Swapnil-jain).
+This fork would not exist without it.
+
+---
+
+Made with love by [MJUIUC](https://github.com/MJUIUC)
+· [GitHub](https://github.com/MJUIUC/lcsr)
+· Forked from [Swapnil-jain/lcsr](https://github.com/Swapnil-jain/lcsr)

@@ -1,82 +1,142 @@
 [
  {
-  "says": "“subarray / substring of size k”",
-  "reach_for": "Fixed window"
+  "group": "From the curriculum",
+  "says": "\u201csubarray / substring of size k\u201d",
+  "reach_for": "Fixed window",
+  "because": "The window size is fixed, so there is no decision about when to shrink: every step you add the element entering from the right and remove the element that just fell off the left. This single invariant keeps the algorithm O(n) with no inner loop.",
+  "problems": [643, 1456, 1052]
  },
  {
-  "says": "“longest or shortest subarray such that…”, all values non- negative",
-  "reach_for": "Variable window, shrink while invalid"
+  "group": "From the curriculum",
+  "says": "\u201clongest or shortest subarray such that\u2026\u201d, all values non- negative",
+  "reach_for": "Variable window, shrink while invalid",
+  "because": "Non-negativity means extending the window can only push the aggregate up and shrinking can only pull it down, giving the two-pointer a monotone invariant to exploit. If the values could be negative, extending might lower the sum and no shrink condition would be sound, forcing a prefix-sum approach instead.",
+  "problems": [209, 3, 1004]
  },
  {
-  "says": "“count subarrays with sum = k”, or negatives are present",
-  "reach_for": "Prefix sum + hashmap: a window cannot work"
+  "group": "From the curriculum",
+  "says": "\u201ccount subarrays with sum = k\u201d, or negatives are present",
+  "reach_for": "Prefix sum + hashmap: a window cannot work",
+  "because": "Negatives destroy the monotonicity a sliding window needs: extending can lower the sum and shrinking can raise it, so there is no consistent shrink condition. A prefix-sum lets you ask \u2018how many earlier prefix sums equal current \u2212 k?\u2019 in O(1) per step, handling negatives correctly.",
+  "problems": [560, 974, 523]
  },
  {
-  "says": "“exactly K distinct / odd / sum”",
-  "reach_for": "atMost(K) − atMost(K−1)"
+  "group": "From the curriculum",
+  "says": "\u201cexactly K distinct / odd / sum\u201d",
+  "reach_for": "atMost(K) \u2212 atMost(K\u22121)",
+  "because": "\u2018Exactly K\u2019 has no direct shrink condition because the window cannot stay valid by shrinking alone: you might need to shrink past the target to find the boundary. \u2018At most K\u2019 is monotone, so a standard variable window works; subtracting atMost(K\u22121) isolates the exact count in O(n).",
+  "problems": [930, 1248, 992]
  },
  {
-  "says": "“next greater”, “next smaller”, “span”, “largest rectangle”",
-  "reach_for": "Monotonic stack"
+  "group": "From the curriculum",
+  "says": "\u201cnext greater\u201d, \u201cnext smaller\u201d, \u201cspan\u201d, \u201clargest rectangle\u201d",
+  "reach_for": "Monotonic stack",
+  "because": "These problems ask about the nearest element that breaks a trend, which is exactly what a monotonic stack maintains: elements are pushed in order and popped the moment a new element dominates them, answering \u2018what was the last thing smaller than me\u2019 in amortised O(1). A brute-force comparison of every pair is O(n\u00b2).",
+  "problems": [739, 496, 84]
  },
  {
-  "says": "“max or min of every window of size k”",
-  "reach_for": "Monotonic deque"
+  "group": "From the curriculum",
+  "says": "\u201cmax or min of every window of size k\u201d",
+  "reach_for": "Monotonic deque",
+  "because": "A heap would give the max but cannot evict the element that just left the window in O(1); each eviction would require a linear scan or lazy deletion. The deque keeps a decreasing sequence of indices so the front is always the window maximum and eviction is a simple O(1) pop.",
+  "problems": [239, 1438]
  },
  {
-  "says": "“minimise the maximum”, “largest k that still works”",
-  "reach_for": "Binary search on the answer + a feasibility check"
+  "group": "From the curriculum",
+  "says": "\u201cminimise the maximum\u201d, \u201clargest k that still works\u201d",
+  "reach_for": "Binary search on the answer + a feasibility check",
+  "because": "The answer is monotone: if a capacity of k is feasible, every capacity above k is also feasible, so the value space has a clean threshold you can binary-search. This converts the optimisation into a yes/no feasibility check at each midpoint, which is usually a greedy or linear scan.",
+  "problems": [875, 1011, 410]
  },
  {
-  "says": "“kth largest”, “top k”, “median of a stream”",
-  "reach_for": "Heap: one, or two facing each other"
+  "group": "From the curriculum",
+  "says": "\u201ckth largest\u201d, \u201ctop k\u201d, \u201cmedian of a stream\u201d",
+  "reach_for": "Heap: one, or two facing each other",
+  "because": "Sorting is O(n log n) and requires all data upfront; a heap of size k processes each element in O(log k) and works online. For the median, two heaps facing each other maintain the lower and upper halves so the median is always a root access away.",
+  "problems": [215, 347, 295]
  },
  {
-  "says": "“overlapping ranges”, “rooms needed”",
-  "reach_for": "Sort by start (merge) or by end (greedy count)"
+  "group": "From the curriculum",
+  "says": "\u201coverlapping ranges\u201d, \u201crooms needed\u201d",
+  "reach_for": "Sort by start (merge) or by end (greedy count)",
+  "because": "Sorting by start aligns intervals so that any overlap with the current merged interval is immediately visible without looking backward. Counting rooms needed is the dual problem: sort by end so you can greedily free the earliest-ending room when a new interval arrives.",
+  "problems": [56, 435, 1094]
  },
  {
+  "group": "From the curriculum",
   "says": "The answer is not what the recursion must return",
-  "reach_for": "DFS returning one value, side variable tracking another"
+  "reach_for": "DFS returning one value, side variable tracking another",
+  "because": "Tree DFS must return something useful to the parent (e.g. height or max gain from a subtree), but the global answer \u2014 like the longest path through a node \u2014 combines two subtrees and cannot be passed upward. A nonlocal variable captures this combination at each node without corrupting the return contract.",
+  "problems": [543, 124, 437]
  },
  {
-  "says": "“shortest path”, every edge costs 1",
-  "reach_for": "BFS: multi-source if there are several origins"
+  "group": "From the curriculum",
+  "says": "\u201cshortest path\u201d, every edge costs 1",
+  "reach_for": "BFS: multi-source if there are several origins",
+  "because": "Uniform edge cost makes layer order identical to distance order: the first time BFS reaches a node it has found the shortest path, so no relaxation or priority queue is needed. Multi-source BFS seeds the queue with all sources simultaneously and finds the distance to the nearest source in one pass.",
+  "problems": [994, 542, 1091]
  },
  {
-  "says": "“shortest path” with weights",
-  "reach_for": "Dijkstra: unless a hop limit is imposed"
+  "group": "From the curriculum",
+  "says": "\u201cshortest path\u201d with weights",
+  "reach_for": "Dijkstra: unless a hop limit is imposed",
+  "because": "The min-heap ensures each node is finalised the first time it is popped, which is correct when no shorter path can arrive later \u2014 a guarantee that holds only when all edge weights are non-negative. A hop limit breaks this guarantee and forces Bellman\u2013Ford or DP over hop count instead.",
+  "problems": [743]
  },
  {
-  "says": "“are these connected”, “merge these groups”",
-  "reach_for": "Union-find"
+  "group": "From the curriculum",
+  "says": "\u201care these connected\u201d, \u201cmerge these groups\u201d",
+  "reach_for": "Union-find",
+  "because": "BFS and DFS answer connectivity but rebuild paths each time; Union-find answers the same yes/no question and handles many merge operations in nearly O(1) amortised time via path compression and union by rank. It is the right structure when you need to process a stream of merge events cheaply.",
+  "problems": [684, 721]
  },
  {
-  "says": "“valid order given prerequisites”",
-  "reach_for": "Topological sort (Kahn's, which detects cycles for free)"
+  "group": "From the curriculum",
+  "says": "\u201cvalid order given prerequisites\u201d",
+  "reach_for": "Topological sort (Kahn\u2019s, which detects cycles for free)",
+  "because": "Prerequisites define a directed dependency graph and you need a linear order that respects every edge; that is the definition of a topological sort. Kahn\u2019s BFS-based approach detects cycles automatically: if any nodes remain with nonzero in-degree after the sort, a cycle exists.",
+  "problems": [207, 210]
  },
  {
+  "group": "From the curriculum",
   "says": "States and transitions, but no explicit edge list",
-  "reach_for": "It is still a graph: search over generated neighbours"
+  "reach_for": "It is still a graph: search over generated neighbours",
+  "because": "The absence of a prebuilt adjacency list is a red herring; every valid move from a state is an edge, and you generate those edges on the fly during BFS or DFS. Recognising the implicit graph structure lets you apply standard shortest-path or reachability algorithms without materialising the full graph.",
+  "problems": [139]
  },
  {
-  "says": "“return all subsets / permutations / combinations”",
-  "reach_for": "Backtracking; sort first if duplicates exist"
+  "group": "From the curriculum",
+  "says": "\u201creturn all subsets / permutations / combinations\u201d",
+  "reach_for": "Backtracking; sort first if duplicates exist",
+  "because": "The output is exponential in size, so there is no polynomial compression: every valid object must be emitted, and backtracking visits each one exactly once by undoing the last choice before trying the next. Sorting upfront allows duplicate-skipping at each level without a hash set.",
+  "problems": [78, 46, 39]
  },
  {
-  "says": "“how many ways”, “minimum cost to reach”",
-  "reach_for": "DP: define the state before writing anything"
+  "group": "From the curriculum",
+  "says": "\u201chow many ways\u201d, \u201cminimum cost to reach\u201d",
+  "reach_for": "DP: define the state before writing anything",
+  "because": "Both phrasings signal overlapping subproblems: the number of ways to reach state s is the sum over all predecessors, and the minimum cost is the min over all predecessors plus the edge cost. Writing the recurrence before any code forces you to identify the state dimensions and avoid recomputation.",
+  "problems": [70, 322, 139]
  },
  {
+  "group": "From the curriculum",
   "says": "Two sequences compared",
-  "reach_for": "2-D DP table"
+  "reach_for": "2-D DP table",
+  "because": "When the answer depends on prefixes of both sequences, a 1-D table cannot represent both axes simultaneously. The 2-D table lets dp[i][j] express a relationship between the first i characters of one sequence and the first j of the other, with recurrences that align, skip, or match characters.",
+  "problems": [1143, 72, 62]
  },
  {
-  "says": "“prefix matching across many words”",
-  "reach_for": "Trie"
+  "group": "From the curriculum",
+  "says": "\u201cprefix matching across many words\u201d",
+  "reach_for": "Trie",
+  "because": "A hashset answers exact membership only and cannot share structure across words with the same prefix. In a trie, all words sharing a prefix share the same root-to-node path, so a prefix query is a single O(L) traversal rather than scanning every stored word.",
+  "problems": [208, 211]
  },
  {
-  "says": "“everything appears twice except…”",
-  "reach_for": "XOR"
+  "group": "From the curriculum",
+  "says": "\u201ceverything appears twice except\u2026\u201d",
+  "reach_for": "XOR",
+  "because": "XOR is its own inverse: x \u2295 x = 0 and x \u2295 0 = x, so XORing all elements cancels every pair and leaves only the unpaired value. This achieves O(n) time and O(1) space with no hashmap, which is the intended constraint signal when the problem guarantees exactly one or two unique elements.",
+  "problems": [136, 268, 260]
  }
 ]

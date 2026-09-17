@@ -189,6 +189,11 @@ def cmd_undo(a):
               f"{label(cur.loggable(pid))}\n  now: {where}\n")
 
 
+def cmd_app(a):
+    from .app import main as app_main
+    app_main()
+
+
 def cmd_serve(a):
     from .server import serve
     serve(a.host, a.port, open_browser=not a.no_open)
@@ -336,6 +341,9 @@ def main(argv=None):
     p = net(sub.add_parser("serve", help="run the web UI in the foreground"))
     p.add_argument("--no-open", action="store_true")
     p.set_defaults(fn=cmd_serve)
+
+    p = sub.add_parser("app", help="launch the native desktop companion app (requires lcsr[app])")
+    p.set_defaults(fn=cmd_app)
 
     p = sub.add_parser("log", help="record attempts")
     p.add_argument("ids", nargs="+", type=int)
