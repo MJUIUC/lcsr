@@ -38,6 +38,7 @@ except ImportError:
     )
 
 from . import curriculum as cur
+from . import prefs as prefs_mod
 from . import settings as cfg
 from .plan import (curriculum_view, export_csv, foundations_left,
                    frequent_view, history_view, intake_week, todays_plan)
@@ -338,6 +339,20 @@ class LcsrAPI:
     def open_leetcode(self, url: str) -> dict:
         webbrowser.open(url)
         return {"ok": True}
+
+    # ------------------------------------------------------------ prefs
+
+    def get_prefs(self, args: dict | None = None) -> dict:
+        """Return all persisted UI preferences."""
+        return prefs_mod.load()
+
+    def set_pref(self, args: dict) -> dict:
+        """Set a single preference key and return the full updated prefs."""
+        key = args.get('key')
+        value = args.get('value')
+        if not key:
+            raise ValueError('key is required')
+        return prefs_mod.set(key, value)
 
     # ------------------------------------------------------------ internals
 

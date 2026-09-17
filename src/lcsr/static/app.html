@@ -1131,14 +1131,15 @@ function vAddProblem(){
   </details>`;
 }
 
-// Timer length lives in a module-level variable. localStorage is unreliable
-// in pywebview's WebKit context (file:// origin, per-window partitioning).
-// The Settings input is the source of truth; the variable shadows it in memory.
+// Timer length and other UI prefs are persisted to ~/.lcsr/prefs.json
+// via the Python API. The in-memory variable is the fast path; the
+// Python call persists it across app launches.
 let _timerMin = 25;
 function timerMinutes(){ return _timerMin; }
 function setTimerMinutes(v){
   const n = Math.max(1, Math.min(180, Math.round(v) || 25));
   _timerMin = n;
+  window.pywebview.api.set_pref({key:'timer_min', value:n}).catch(()=>{});
   return n;
 }
 function vSettings(){
@@ -1634,6 +1635,10 @@ window._lcsrTimerTimeout = async function({id, approach_min}){
 // JS bridge is fully set up, before bootstrapping the UI.
 window.addEventListener('pywebviewready', function(){
   (async ()=>{
+    // Load persisted prefs first so timerMinutes() is correct before
+    // any problem card renders its stopwatch button.
+    const prefs = await window.pywebview.api.get_prefs();
+    if(prefs && prefs.timer_min) _timerMin = prefs.timer_min;
     plan = await api('/api/plan');
     curric = await api('/api/curriculum');
     await ensureData(tab);
