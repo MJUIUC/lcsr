@@ -94,7 +94,8 @@ class LcsrAPI:
 
     # ---------------------------------------------------------------- reads
 
-    def get_plan(self, date: str | None = None) -> dict:
+    def get_plan(self, args: dict | None = None) -> dict:
+        date = (args or {}).get('date')
         on = date_.fromisoformat(date) if date else _today()
         today = _today()
         plan = todays_plan(on, today=today)
@@ -106,16 +107,16 @@ class LcsrAPI:
         plan["mistakes"] = list(MISTAKES)
         return plan
 
-    def get_curriculum(self) -> dict:
+    def get_curriculum(self, args: dict | None = None) -> dict:
         return curriculum_view()
 
-    def get_history(self) -> dict:
+    def get_history(self, args: dict | None = None) -> dict:
         return history_view()
 
-    def get_cues(self) -> list:
+    def get_cues(self, args: dict | None = None) -> list:
         return cur.cues()
 
-    def get_settings(self) -> dict:
+    def get_settings(self, args: dict | None = None) -> dict:
         attempted = set(replay())
         return cfg.describe(
             intake_week(attempted),
@@ -124,13 +125,17 @@ class LcsrAPI:
             current_sprint(),
         )
 
-    def get_frequent(self) -> dict:
+    def get_frequent(self, args: dict | None = None) -> dict:
         return frequent_view()
 
     # --------------------------------------------------------------- writes
 
-    def log(self, id, outcome: str, approach_min=None,
-            mistake: str | None = None, note: str | None = None) -> dict:
+    def log(self, args: dict) -> dict:
+        id = args.get('id')
+        outcome = args.get('outcome', '')
+        approach_min = args.get('approach_min')
+        mistake = args.get('mistake')
+        note = args.get('note')
         pid = _problem_id(id)
         cur.loggable(pid)
         with LOCK:
@@ -158,9 +163,13 @@ class LcsrAPI:
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
 
-    def log_again(self, id, outcome: str, approach_min=None,
-                  mistake: str | None = None, note: str | None = None) -> dict:
+    def log_again(self, args: dict) -> dict:
         """Re-open and re-log an already-solved problem."""
+        id = args.get('id')
+        outcome = args.get('outcome', '')
+        approach_min = args.get('approach_min')
+        mistake = args.get('mistake')
+        note = args.get('note')
         pid = _problem_id(id)
         cur.loggable(pid)
         with LOCK:
@@ -179,17 +188,19 @@ class LcsrAPI:
         return {"ok": True, "id": pid, "done": st.done,
                 "due": st.due.isoformat() if st.due else None}
 
-    def undo(self, id) -> dict:
-        pid = _problem_id(id)
+    def undo(self, args: dict) -> dict:
+        pid = _problem_id(args.get('id'))
         was = undo(pid)
         st = replay().get(pid)
         return {"ok": True, "id": pid, "undone": was["outcome"],
                 "date": was["date"],
                 "status": "new" if st is None else ("done" if st.done else "learning")}
 
-    def amend(self, id, outcome: str,
-              mistake: str | None = None, note: str | None = None) -> dict:
-        pid = _problem_id(id)
+    def amend(self, args: dict) -> dict:
+        pid = _problem_id(args.get('id'))
+        outcome = args.get('outcome', '')
+        mistake = args.get('mistake')
+        note = args.get('note')
         cur.loggable(pid)
         out = STUCK if outcome == STUCK else SOLVED
         mk = (mistake or None) if out == STUCK else None
@@ -201,13 +212,15 @@ class LcsrAPI:
                 "date": was["date"],
                 "due": st.due.isoformat() if st.due else None}
 
-    def skip(self, id, skip: bool = True) -> dict:
-        pid = _problem_id(id)
+    def skip(self, args: dict) -> dict:
+        pid = _problem_id(args.get('id'))
+        skip = args.get('skip', True)
         cur.loggable(pid)
         set_skipped(pid, skip)
         return {"ok": True, "id": pid, "skipped": skip}
 
-    def save_settings(self, **kwargs) -> dict:
+    def save_settings(self, args: dict | None = None) -> dict:
+        kwargs = args or {}
         cfg.update(**{k: kwargs[k] for k in
                       ("foundations", "core", "reps", "daily_total")
                       if k in kwargs})
@@ -215,24 +228,28 @@ class LcsrAPI:
         return cfg.describe(intake_week(attempted), foundations_left(attempted),
                             cfg.load(), current_sprint())
 
-    def reset_settings(self) -> dict:
+    def reset_settings(self, args: dict | None = None) -> dict:
         cfg.reset()
         attempted = set(replay())
         return cfg.describe(intake_week(attempted), foundations_left(attempted),
                             cfg.load(), current_sprint())
 
-    def start_sprint(self) -> dict:
+    def start_sprint(self, args: dict | None = None) -> dict:
         mark = start_sprint()
         return {"ok": True, "sprint": mark["sprint"], "date": mark["date"]}
 
-    def add_problem(self, id, title: str, block: str = "Added",
-                    cue: str | None = None, week: int | None = None,
-                    hard: bool = False) -> dict:
-        pid = _problem_id(id)
+    def add_problem(self, args: dict) -> dict:
+        pid = _problem_id(args.get('id'))
+        title = args.get('title', '')
+        block = args.get('block', 'Added')
+        cue = args.get('cue')
+        week = args.get('week')
+        hard = bool(args.get('hard', False))
         p = cur.add(pid, title, week=week, hard=hard, block=block, cue=cue)
         return {"ok": True, "id": pid, "title": p["title"]}
 
-    def export(self, fmt: str = "csv") -> dict:
+    def export(self, args: dict | None = None) -> dict:
+        fmt = (args or {}).get('format', 'csv')
         if fmt == "jsonl":
             from .store import LOG
             text = LOG.read_text(encoding="utf-8") if LOG.exists() else ""
@@ -244,14 +261,16 @@ class LcsrAPI:
 
     # ------------------------------------------------- timer / companion
 
-    def open_timer(self, id, title: str, url: str,
-                   timer_min: float = 25) -> dict:
+    def open_timer(self, args: dict) -> dict:
         """
         Open the LeetCode problem in the real browser, then pop out the
         timer window. Calling again while a timer is open for the same id
         just focuses the existing window.
         """
-        pid = _problem_id(id)
+        pid = _problem_id(args.get('id'))
+        title = args.get('title', '')
+        url = args.get('url', '')
+        timer_min = float(args.get('timer_min', 25))
         webbrowser.open(url)
 
         # If a timer is already open, just focus it.
@@ -283,19 +302,22 @@ class LcsrAPI:
 
         return {"ok": True, "reused": False}
 
-    def timer_done(self, id, elapsed_sec: float, paused_sec: float = 0) -> dict:
+    def timer_done(self, args: dict) -> dict:
         """Called by timer.html when Done is clicked (solved before timeout)."""
-        pid = _problem_id(id)
+        pid = _problem_id(args.get('id'))
+        elapsed_sec = float(args.get('elapsed_sec', 0))
+        paused_sec = float(args.get('paused_sec', 0))
         am = round(elapsed_sec / 60, 1)
-        result = self.log(pid, SOLVED, approach_min=am)
+        result = self.log({'id': pid, 'outcome': SOLVED, 'approach_min': am})
         self._close_timer()
         self._refresh_main()
         return result
 
-    def timer_timeout(self, id, elapsed_sec: float,
-                      paused_sec: float = 0) -> dict:
+    def timer_timeout(self, args: dict) -> dict:
         """Called by timer.html when the countdown reaches zero."""
-        pid = _problem_id(id)
+        pid = _problem_id(args.get('id'))
+        elapsed_sec = float(args.get('elapsed_sec', 0))
+        paused_sec = float(args.get('paused_sec', 0))
         am = round(elapsed_sec / 60, 1)
         # Don't log yet — pre-fill the stuck panel in the main window so
         # the user can still pick a mistake class and add a note before
@@ -310,8 +332,8 @@ class LcsrAPI:
         results = self._youtube_search(f"{title} leetcode solution")
         return {"ok": True, "id": pid, "results": results}
 
-    def video_search(self, query: str) -> list:
-        return self._youtube_search(query)
+    def video_search(self, args: dict) -> list:
+        return self._youtube_search(args.get('query', ''))
 
     def open_leetcode(self, url: str) -> dict:
         webbrowser.open(url)

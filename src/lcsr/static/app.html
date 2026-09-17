@@ -612,14 +612,17 @@ async function api(route, body){
   // settings POST branches on whether it's a reset or a save.
   if(method === 'settings' && Object.keys(args).length > 0){
     const fn = args.reset ? 'reset_settings' : 'save_settings';
-    const result = await pv.api[fn](args.reset ? {} : args);
+    const result = await pv.api[fn](args.reset ? null : args);
     if(result && result.error) throw new Error(result.error);
     return result;
   }
   const fn = methodMap[method];
   if(!fn) throw new Error(`unknown route ${route}`);
-  // pywebview.api calls return Promises; await them.
-  const result = await pv.api[fn](args);
+  // pywebview marshals JS args as positional: func(*param).
+  // Pass a single dict when there are args, nothing when there aren't,
+  // so Python always receives either 0 or 1 positional arguments.
+  const hasArgs = Object.keys(args).length > 0;
+  const result = hasArgs ? await pv.api[fn](args) : await pv.api[fn]();
   if(result && result.error) throw new Error(result.error);
   return result;
 }
