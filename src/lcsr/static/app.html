@@ -988,6 +988,7 @@ function cueCard(c, i){
     : '<div class="cue-noprob">No curriculum problems tagged yet.</div>';
   const body = isOpen ? `
     <div class="cue-body">
+      <div class="cuer" style="margin-bottom:12px;display:inline-block">${esc(c.reach_for)}</div>
       ${c.because ? `<div class="cue-because">${esc(c.because)}</div>` : ''}
       ${probsHtml}
     </div>` : '<div class="cue-body"></div>';
@@ -995,7 +996,6 @@ function cueCard(c, i){
     <div class="cue-head">
       <span class="cuen">${String(i+1).padStart(2,'0')}</span>
       <span class="cuel">${esc(c.says)}</span>
-      <span class="cuer">${esc(c.reach_for)}</span>
     </div>
     ${body}
   </div>`;
