@@ -220,9 +220,9 @@ main{max-width:1040px;margin:0 auto;padding:26px 22px 40px;min-height:62vh}
   gap:12px;flex-wrap:wrap;align-items:baseline}
 .pdetails a{color:var(--accent);text-decoration:none}
 .pdetails a:hover{text-decoration:underline}
-.pcue-inline{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:12px;
-  cursor:pointer}
-.pcue-inline:hover{color:var(--accent)}
+.pcue-inline{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:12px}
+.pcue-inline[data-cue-jump]{cursor:pointer}
+.pcue-inline[data-cue-jump]:hover{color:var(--accent)}
 .pcue-inline b{font-style:normal;color:var(--mid);font-weight:500}
 
 /* ---------- log panel ---------- */
@@ -785,7 +785,10 @@ function pRow(p, o={}){
       ${p.tier ? `<span>${esc(p.tier)}${p.week?' &middot; W'+p.week:''}</span>` : ''}
       <a href="${esc(p.url)}" target="_blank" rel="noopener">View on LeetCode &rarr;</a>
     </div>
-    ${p.cue ? `<div class="pcue-inline" data-cue-search="${esc(p.cue)}" title="Open in Cue table"><b>Cue:</b> ${esc(p.cue)}</div>` : ''}
+    ${p.cue ? `<div class="pcue-inline"
+        ${probToCueIdx.has(p.id) ? `data-cue-jump="${probToCueIdx.get(p.id)}"` : ''}
+        title="${probToCueIdx.has(p.id) ? 'Open in Cue table' : ''}"
+      ><b>Cue:</b> ${esc(p.cue)}</div>` : ''}
     ${meta}
     ${!inert ? stuckPanel(p) : ''}
   ` : '';
@@ -957,6 +960,9 @@ function vHistory(){
 // Cue card open state -- survives re-renders.
 const openCues = new Set();
 let cueQuery = '';
+// Inverted map: problem id -> first cue index that lists it.
+// Built once when cues load; used by problem cards to link directly.
+const probToCueIdx = new Map();
 
 function cueCard(c, i){
   const isOpen = openCues.has(i);
@@ -1407,7 +1413,15 @@ async function setDate(iso){
 async function ensureData(t){
   if(t==='curriculum' && !curric) curric = await api('/api/curriculum');
   if(t==='progress')              hist   = await api('/api/history');
-  if(t==='cues' && !cues)         cues   = await api('/api/cues');
+  if(t==='cues' && !cues){
+    cues = await api('/api/cues');
+    // Build inverted map: problem id -> first cue index that lists it.
+    cues.forEach((c,i)=>{
+      (c.problems||[]).forEach(p=>{
+        if(!probToCueIdx.has(p.id)) probToCueIdx.set(p.id, i);
+      });
+    });
+  }
   if(t==='settings')              load   = await api('/api/settings');
 }
 
@@ -1476,14 +1490,16 @@ document.addEventListener('click', async e=>{
     return render();
   }
 
-  // cue text on problem card: navigate to Cue table and pre-fill search
-  const cueLink = e.target.closest('[data-cue-search]');
+  // cue text on problem card: jump directly to the matching cue card
+  const cueLink = e.target.closest('[data-cue-jump]');
   if(cueLink){
-    cueQuery = cueLink.dataset.cueSearch;
+    const idx = +cueLink.dataset.cueJump;
+    openCues.add(idx);
+    cueQuery = '';
     await go('cues');
-    // After navigation, patch the list in place so the search is visible.
-    const list = document.getElementById('cue-list');
-    if(list) list.innerHTML = cueListHtml();
+    // Scroll the opened card into view after render.
+    document.querySelector(`[data-cueidx="${idx}"]`)
+      ?.scrollIntoView({block:'center', behavior:'smooth'});
     return;
   }
 
@@ -1735,6 +1751,9 @@ window.addEventListener('pywebviewready', function(){
     if(prefs && prefs.timer_min) _timerMin = prefs.timer_min;
     plan = await api('/api/plan');
     curric = await api('/api/curriculum');
+    // Load cues eagerly so the problem->cue map is ready before any card
+    // is expanded, regardless of which tab the user starts on.
+    await ensureData('cues');
     await ensureData(tab);
     render();
   })().catch(err => {
