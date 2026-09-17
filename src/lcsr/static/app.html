@@ -984,7 +984,7 @@ function cueCard(c, i){
   </div>`;
 }
 
-function vCues(){
+function cueListHtml(){
   const q = cueQuery.toLowerCase();
   const filtered = cues.map((c,i)=>({...c,i})).filter(c=>
     !q ||
@@ -993,23 +993,25 @@ function vCues(){
     (c.group||'').toLowerCase().includes(q) ||
     (c.because||'').toLowerCase().includes(q)
   );
+  if(!filtered.length)
+    return '<div class="empty"><b>No matches</b>Try a different keyword.</div>';
   const groups = [];
   filtered.forEach(c=>{
     const g = groups.find(x=>x.name===c.group);
     (g || (groups[groups.push({name:c.group||'From the curriculum', rows:[]})-1])).rows.push(c);
   });
+  return groups.map(g=>`
+    <div class="rolelbl" style="margin:18px 0 8px">${esc(g.name)}</div>
+    ${g.rows.map(c=>cueCard(c, c.i)).join('')}`).join('');
+}
+
+function vCues(){
   return `
     <div class="sec"><h2>Cue &rarr; pattern</h2>
       <span class="hint">click a card to see why and which problems to practice</span></div>
     <input class="cue-search" id="cue-search" type="search" placeholder="Filter by cue, pattern, or keyword&hellip;"
       value="${esc(cueQuery)}" autocomplete="off">
-    ${
-      filtered.length === 0
-        ? '<div class="empty"><b>No matches</b>Try a different keyword.</div>'
-        : groups.map(g=>`
-            <div class="rolelbl" style="margin:18px 0 8px">${esc(g.name)}</div>
-            ${g.rows.map(c=>cueCard(c, c.i)).join('')}`).join('')
-    }`;
+    <div id="cue-list">${cueListHtml()}</div>`;
 }
 
 async function loadFreq(){
@@ -1441,7 +1443,10 @@ document.addEventListener('input', e=>{
   }
   if(e.target.id === 'cue-search'){
     cueQuery = e.target.value;
-    render();
+    // Patch only the cue list, not the whole view -- a full render() destroys
+    // the input element and re-creates it, losing focus on every keystroke.
+    const list = document.getElementById('cue-list');
+    if(list) list.innerHTML = cueListHtml();
   }
 });
 
