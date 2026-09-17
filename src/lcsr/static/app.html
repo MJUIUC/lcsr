@@ -1582,14 +1582,20 @@ window._lcsrTimerTimeout = async function({id, approach_min}){
     ?.scrollIntoView({block:'center', behavior:'smooth'});
 };
 
-(async ()=>{
-  plan = await api('/api/plan');
-  curric = await api('/api/curriculum');
-  await ensureData(tab);
-  render();
-})().catch(err => {
-  document.getElementById('view').innerHTML =
-    `<div class="empty"><b>Could not start lcsr</b>${esc(err.message)}</div>`;
+// pywebview injects window.pywebview asynchronously after the DOM is ready.
+// Running api() before it is available gives "pywebview not available".
+// Wait for the 'pywebviewready' event, which pywebview dispatches once the
+// JS bridge is fully set up, before bootstrapping the UI.
+window.addEventListener('pywebviewready', function(){
+  (async ()=>{
+    plan = await api('/api/plan');
+    curric = await api('/api/curriculum');
+    await ensureData(tab);
+    render();
+  })().catch(err => {
+    document.getElementById('view').innerHTML =
+      `<div class="empty"><b>Could not start lcsr</b>${esc(err.message)}</div>`;
+  });
 });
 </script>
 </body>
