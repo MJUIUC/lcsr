@@ -1131,17 +1131,14 @@ function vAddProblem(){
   </details>`;
 }
 
-// Timer length is a per-browser UI preference stored in localStorage,
-// the same way theme is. Not part of the server-synced settings.
-const TIMER_MIN_KEY = 'lcsr-timer-min';
-function timerMinutes(){
-  let v;
-  try{ v = parseFloat(localStorage.getItem(TIMER_MIN_KEY)); }catch(e){ v = NaN; }
-  return (Number.isFinite(v) && v > 0) ? v : 25;
-}
+// Timer length lives in a module-level variable. localStorage is unreliable
+// in pywebview's WebKit context (file:// origin, per-window partitioning).
+// The Settings input is the source of truth; the variable shadows it in memory.
+let _timerMin = 25;
+function timerMinutes(){ return _timerMin; }
 function setTimerMinutes(v){
   const n = Math.max(1, Math.min(180, Math.round(v) || 25));
-  try{ localStorage.setItem(TIMER_MIN_KEY, n); }catch(e){}
+  _timerMin = n;
   return n;
 }
 function vSettings(){
@@ -1365,12 +1362,6 @@ document.addEventListener('input', e=>{
     (draft[id] = draft[id] || {}).note = e.target.value;
   }
 });
-document.addEventListener('change', e=>{
-  if(e.target.id === 'timer-min'){
-    e.target.value = setTimerMinutes(+e.target.value);
-  }
-});
-// Also save on input so a re-render triggered before blur doesn't discard the value.
 document.addEventListener('input', e=>{
   if(e.target.id === 'timer-min' && e.target.value){
     setTimerMinutes(+e.target.value);
